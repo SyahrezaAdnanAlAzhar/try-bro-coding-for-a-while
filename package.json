@@ -1,5 +1,5 @@
 {
-  "name": "bro-code",
+  "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,8 @@
     "class-variance-authority": "^0.7.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.12"
+    "tailwindcss": "^4.1.12",
+    "vite-plugin-pwa": "^1.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
