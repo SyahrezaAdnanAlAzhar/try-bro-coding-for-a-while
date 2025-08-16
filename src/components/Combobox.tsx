@@ -114,7 +114,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                         onKeyDown={handleKeyDown}
                         placeholder={placeholder}
                         disabled={disabled}
-                        className="h-12 w-full rounded-lg border border-mono-grey bg-mono-white px-4 py-2 pr-20 text-base text-mono-black transition-colors placeholder:text-mono-grey focus:border-blue-mtm-400 focus:outline-none focus:ring-2 focus:ring-blue-mtm-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="h-[40px] w-full rounded-[16px] border border-mono-grey bg-mono-white px-6 py-2 pr-20 text-base text-mono-black transition-colors placeholder:text-mono-grey focus:border-blue-mtm-400 focus:outline-none focus:ring-2 focus:ring-blue-mtm-400 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                         role="combobox"
                         aria-expanded={isOpen}
                         aria-controls={listboxId}
@@ -122,24 +122,29 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2">
                         {value && (
-                            <button type="button" onClick={handleClear} className="p-1 text-add-red">
-                                <X size={20} />
+                            <button
+                                type="button"
+                                onClick={handleClear}
+                                className="rounded-full p-1.5 text-add-red transition-colors hover:bg-add-red/15 focus:outline-none focus:ring-1 focus:ring-add-red"
+                                aria-label="Clear selection"
+                            >
+                                <X size={18} strokeWidth={3.5} />
                             </button>
                         )}
                         <button
                             type="button"
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-1 text-mono-grey"
+                            className="rounded-full p-1.5 text-blue-mtm-500 transition-colors hover:bg-blue-mtm-300/15 focus:outline-none focus:ring-1 focus:ring-blue-mtm-300/50"
                             aria-label="Toggle options"
                         >
-                            <ChevronDown size={20} />
+                            <ChevronDown size={18} strokeWidth={3.5} />
                         </button>
                     </div>
                 </div>
 
                 {isOpen && (
                     <ul
-                        className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-mono-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-mono-white py-0 text-base shadow-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
                         id={listboxId}
                         role="listbox"
                     >
@@ -149,8 +154,8 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                                     key={option.value}
                                     onClick={() => handleSelectOption(option)}
                                     className={twMerge(
-                                        'relative cursor-pointer select-none py-2 px-4',
-                                        activeIndex === index ? 'bg-blue-mtm-100 text-mono-black' : 'text-mono-dark-grey'
+                                        'relative cursor-pointer select-none py-2 px-6 text-mono-grey transition-colors hover:bg-blue-mtm-200/25 hover:text-mono-black',
+                                        activeIndex === index && 'bg-blue-mtm-200/25 text-mono-black'
                                     )}
                                     id={`${listboxId}-option-${index}`}
                                     role="option"
@@ -160,8 +165,8 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                                 </li>
                             ))
                         ) : (
-                            <li className="relative cursor-default select-none py-2 px-4 text-mono-grey">
-                                No options found.
+                            <li className="relative cursor-default select-none py-2 px-4 text-mono-dark-grey">
+                                Tidak ditemukan.
                             </li>
                         )}
                     </ul>

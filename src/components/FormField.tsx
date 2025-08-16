@@ -2,41 +2,39 @@ import { forwardRef, useId } from 'react';
 import { Input, type InputProps } from './Input';
 import { TextArea, type TextAreaProps } from './TextArea';
 
-type FormFieldElementProps =
-    | ({ as?: 'input' } & InputProps)
-    | ({ as: 'textarea' } & TextAreaProps);
-
-export type FormFieldProps = Omit<FormFieldElementProps, 'id' | 'isError'> & {
+interface FormFieldCommonProps {
     label: string;
     error?: string;
     helpText?: string;
     cornerHint?: string;
     id?: string;
-};
+    className?: string;
+}
+
+// 2. Buat tipe union yang benar-benar terpisah
+export type FormFieldProps =
+    | (FormFieldCommonProps & { as?: 'input' } & Omit<InputProps, 'id' | 'isError'>)
+    | (FormFieldCommonProps & { as: 'textarea' } & Omit<TextAreaProps, 'id' | 'isError'>);
+
 
 const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldProps>(
-    (
-        {
+    (props, ref) => {
+        const {
             label,
             error,
             helpText,
             cornerHint,
             id: propId,
             className,
-            as = 'input',
-            ...elementProps
-        },
-        ref
-    ) => {
+        } = props;
+
         const fallbackId = useId();
         const id = propId || fallbackId;
         const descriptionId = `${id}-description`;
 
-        const Component = as === 'textarea' ? TextArea : Input;
-
         return (
             <div className={className}>
-                {/* LABEL AND CORNER HINT */}
+                {/* LABEL AND CORNER HINT (Tidak berubah) */}
                 <div className="mb-1 flex items-baseline justify-between">
                     <label
                         htmlFor={id}
@@ -52,16 +50,26 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
                 </div>
 
                 {/* TEXTAREA OR INPUT COMPONENT */}
-                <Component
-                    id={id}
-                    // @ts-ignore - Ref type is handled by forwardRef generic
-                    ref={ref}
-                    isError={!!error}
-                    aria-describedby={error || helpText ? descriptionId : undefined}
-                    {...(elementProps as any)}
-                />
+                {/* Kita gunakan 'props.as' untuk membedakan tipe */}
+                {props.as === 'textarea' ? (
+                    <TextArea
+                        id={id}
+                        ref={ref as React.Ref<HTMLTextAreaElement>}
+                        isError={!!error}
+                        aria-describedby={error || helpText ? descriptionId : undefined}
+                        {...props}
+                    />
+                ) : (
+                    <Input
+                        id={id}
+                        ref={ref as React.Ref<HTMLInputElement>}
+                        isError={!!error}
+                        aria-describedby={error || helpText ? descriptionId : undefined}
+                        {...props}
+                    />
+                )}
 
-                {/* HELP TEXT OR ERROR */}
+                {/* HELP TEXT OR ERROR (Tidak berubah) */}
                 <div className="mt-1 h-6">
                     {error ? (
                         <p id={descriptionId} className="text-base font-normal text-add-red">
