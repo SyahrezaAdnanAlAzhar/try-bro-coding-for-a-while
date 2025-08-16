@@ -50,6 +50,20 @@
   --elevation-400: 0 2px 3px 0 rgb(0 0 0 / 0.3), 0 6px 10px 4px rgb(0 0 0 / 0.15);
   --elevation-500: 0 4px 4px 0 rgb(0 0 0 / 0.3), 0 8px 12px 6px rgb(0 0 0 / 0.15);
 
+  --font-size-display: 3rem;
+  --font-size-heading-xl: 2.25rem;
+  --font-size-heading-lg: 1.5rem;
+  --font-size-heading-md: 1.25rem;
+  --font-size-body-lg: 1.125rem;
+  --font-size-body-md: 1rem;
+  --font-size-body-sm: 0.875rem;
+  --font-size-caption: 0.75rem;
+
+  --line-height-display: 1.1;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-caption: 1.3;
+
   box-shadow: {
     100: var(--shadow-100);
     200: var(--shadow-200);
@@ -66,4 +80,8 @@
     'e-500': var(--elevation-500);
   }
 
+}
+
+body {
+  font-family: 'Inter', sans-serif;
 }
