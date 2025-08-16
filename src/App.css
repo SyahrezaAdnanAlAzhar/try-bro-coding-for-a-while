@@ -1,42 +1,52 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+@import "tailwindcss";
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+@theme {
+  --color-blue-mtm-100: oklch(89.26% 0.103 229.68);
+  --color-blue-mtm-200: oklch(79.79% 0.129 232.74);
+  --color-blue-mtm-300: oklch(70.21% 0.151 236.43);
+  --color-blue-mtm-400: oklch(58.33% 0.183 239.56);
+  --color-blue-mtm-500: oklch(51.58% 0.155 240.23);
+  --color-blue-mtm-600: oklch(42.54% 0.121 241.22);
+  --color-blue-mtm-700: oklch(34.12% 0.091 242.06);
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+  --color-mono-white: oklch(96.38% 0.009 265.71);
+  --color-mono-light-grey: oklch(82.23% 0 0);
+  --color-mono-grey: oklch(59.9% 0 0);
+  --color-mono-dark-grey: oklch(36.19% 0.005 270);
+  --color-mono-black: oklch(14.01% 0.007 266.67);
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
+  --color-add-dark-yellow: oklch(61.88% 0.134 88.54);
+  --color-add-brown: oklch(42.55% 0.139 37.64);
+  --color-add-blue: oklch(33.58% 0.223 263.31);
+  --color-add-green: oklch(69.83% 0.177 141.69);
+  --color-add-red: oklch(62.37% 0.257 29.23);
+  --color-add-dark-red: oklch(45.98% 0.177 30.69);
 
-.card {
-  padding: 2em;
-}
+  /* 4px */
+  --spacing-1: 0.25rem;
+  /* 8px */
+  --spacing-2: 0.5rem;
+  /* 12px */
+  --spacing-3: 0.75rem;
+  /* 16px */
+  --spacing-4: 1rem;
+  /* 24px */
+  --spacing-6: 1.5rem;
+  /* 32px */
+  --spacing-8: 2rem;
 
-.read-the-docs {
-  color: #888;
+  --shadow-100: 0 2px 4px -2px rgb(24 39 75 / 0.12), 0 4px 4px -2px rgb(24 39 75 / 0.08);
+  --shadow-200: 0 4px 6px -4px rgb(24 39 75 / 0.12), 0 8px 8px -4px rgb(24 39 75 / 0.08);
+  --shadow-300: 0 6px 8px -6px rgb(24 39 75 / 0.12), 0 8px 16px -6px rgb(24 39 75 / 0.08);
+  --shadow-400: 0 6px 12px -6px rgb(24 39 75 / 0.12), 0 8px 24px -4px rgb(24 39 75 / 0.08);
+  --shadow-500: 0 6px 14px -6px rgb(24 39 75 / 0.12), 0 10px 32px -4px rgb(24 39 75 / 0.10);
+  --shadow-600: 0 8px 18px -6px rgb(24 39 75 / 0.12), 0 12px 42px -4px rgb(24 39 75 / 0.12);
+  --shadow-700: 0 8px 22px -6px rgb(24 39 75 / 0.12), 0 14px 64px -4px rgb(24 39 75 / 0.12);
+  --shadow-800: 0 8px 28px -6px rgb(24 39 75 / 0.12), 0 18px 88px -4px rgb(24 39 75 / 0.14);
+
+  --elevation-100: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 1px rgb(0 0 0 / 0.15);
+  --elevation-200: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
+  --elevation-300: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 4px 8px 3px rgb(0 0 0 / 0.15);
+  --elevation-400: 0 2px 3px 0 rgb(0 0 0 / 0.3), 0 6px 10px 4px rgb(0 0 0 / 0.15);
+  --elevation-500: 0 4px 4px 0 rgb(0 0 0 / 0.3), 0 8px 12px 6px rgb(0 0 0 / 0.15);
 }
