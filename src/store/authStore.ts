@@ -12,13 +12,16 @@ export interface AuthState {
 export interface AuthActions {
     login: (username: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
-    refreshToken: () => Promise<string | null>; 
+    refreshToken: () => Promise<string | null>;
     requestWsTicket: () => Promise<string | null>;
+    _setTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
 }
 
 export type AuthStore = AuthState & {
     actions: AuthActions;
 };
+
+const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const useAuthStore = create<AuthStore>()(
     persist(
@@ -29,21 +32,119 @@ export const useAuthStore = create<AuthStore>()(
             status: 'idle',
             actions: {
                 login: async (username, password) => {
-                    // POSTPONE: Implement API call to POST /login
-                    console.log(username, password);
-                    return false;
+                    set({ status: 'loading' });
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password }),
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => null);
+                            console.error('Login failed:', errorData?.status?.message || response.statusText);
+                            set({ status: 'unauthenticated', accessToken: null, refreshToken: null, user: null });
+                            return false;
+                        }
+
+                        const { data } = await response.json();
+                        set({
+                            accessToken: data.access_token,
+                            refreshToken: data.refresh_token,
+                            user: data.user,
+                            status: 'authenticated',
+                        });
+                        return true;
+                    } catch (error) {
+                        console.error('Network or parsing error during login:', error);
+                        set({ status: 'unauthenticated', accessToken: null, refreshToken: null, user: null });
+                        return false;
+                    }
                 },
+
                 logout: async () => {
-                    // POSTPONE: Implement API call to POST /logout and clear state
+                    const { accessToken } = get();
+                    if (accessToken) {
+                        try {
+                            await fetch(`${API_BASE_URL}/logout`, {
+                                method: 'POST',
+                                headers: { Authorization: `Bearer ${accessToken}` },
+                            });
+                        } catch (error) {
+                            console.error('Logout API call failed, but proceeding with local logout:', error);
+                        }
+                    }
+                    set({ accessToken: null, refreshToken: null, user: null, status: 'unauthenticated' });
                 },
+
                 refreshToken: async () => {
-                    // POSTPONE: Implement API call to POST /refresh
-                    return null;
+                    const { refreshToken } = get();
+                    if (!refreshToken) {
+                        set({ status: 'unauthenticated' });
+                        return null;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/refresh`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ refresh_token: refreshToken }),
+                        });
+
+                        if (!response.ok) {
+                            get().actions.logout();
+                            return null;
+                        }
+
+                        const { data } = await response.json();
+                        set({
+                            accessToken: data.access_token,
+                            refreshToken: data.refresh_token,
+                            user: data.user,
+                            status: 'authenticated',
+                        });
+                        return data.access_token;
+                    } catch (error) {
+                        console.error('Network error during token refresh:', error);
+                        get().actions.logout();
+                        return null;
+                    }
                 },
+
                 requestWsTicket: async () => {
-                    // POSTPONE: Implement API call to POST /auth/ws-ticket
-                    return null;
+                    const { accessToken } = get();
+                    if (!accessToken) {
+                        console.error('Cannot request WebSocket ticket without an access token.');
+                        return null;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/auth/ws-ticket`, {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${accessToken}` },
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 401) {
+                                const newAccessToken = await get().actions.refreshToken();
+                                if (newAccessToken) {
+                                    return await get().actions.requestWsTicket();
+                                }
+                            }
+                            throw new Error(`Failed to get WebSocket ticket: ${response.statusText}`);
+                        }
+
+                        const { data } = await response.json();
+                        return data.ticket;
+                    } catch (error) {
+                        console.error('Error requesting WebSocket ticket:', error);
+                        return null;
+                    }
                 },
+
+                _setTokens: ({ accessToken, refreshToken }) => {
+                    set({ accessToken, refreshToken });
+                }
             },
         }),
         {
@@ -58,6 +159,7 @@ export const useAuthStore = create<AuthStore>()(
         }
     )
 );
+
 
 export const useAuthActions = () => useAuthStore((state) => state.actions);
 export const useAuthUser = () => useAuthStore((state) => state.user);
