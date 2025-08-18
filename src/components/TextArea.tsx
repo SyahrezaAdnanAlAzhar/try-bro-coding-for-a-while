@@ -32,6 +32,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
                 minRows={rows}
                 maxRows={autoGrow ? undefined : rows}
                 className={twMerge(textAreaVariants({ isError, className }))}
+                placeholder={props.placeholder}
                 {...props}
             />
         );

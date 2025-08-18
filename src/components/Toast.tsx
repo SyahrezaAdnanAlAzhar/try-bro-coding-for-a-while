@@ -55,24 +55,97 @@ export const showToast = (
             config.className
         );
     }
-
-    toast(message, {
-        icon: options?.icon ?? config.icon,
-        className: finalClassName,
-        progressClassName: "bg-mono-grey",
-        closeButton: (
-            <button className="ml-2 text-mono-grey hover:text-mono-black">
-                <X className="w-4 h-4" />
-            </button>
-        ),
-        autoClose: 10000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: "touch",
-        transition: Slide,
-        ...options,
-    });
+    if (variant == "info") {
+        toast.info(message, {
+            icon: options?.icon ?? config.icon,
+            className: finalClassName,
+            progressClassName: "bg-mono-grey",
+            closeButton: (
+                <button className="ml-2 text-mono-grey hover:text-mono-black">
+                    <X className="w-4 h-4" />
+                </button>
+            ),
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: "touch",
+            transition: Slide,
+            ...options,
+        });
+    } else if (variant == "success") {
+        toast.success(message, {
+            icon: options?.icon ?? config.icon,
+            className: finalClassName,
+            progressClassName: "bg-mono-grey",
+            closeButton: (
+                <button className="ml-2 text-mono-grey hover:text-mono-black">
+                    <X className="w-4 h-4" />
+                </button>
+            ),
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: "touch",
+            transition: Slide,
+            ...options,
+        });
+    } else if (variant == "warning") {
+        toast.warn(message, {
+            icon: options?.icon ?? config.icon,
+            className: finalClassName,
+            progressClassName: "bg-mono-grey",
+            closeButton: (
+                <button className="ml-2 text-mono-grey hover:text-mono-black">
+                    <X className="w-4 h-4" />
+                </button>
+            ),
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: "touch",
+            transition: Slide,
+            ...options,
+        });
+    } else if (variant == "error") {
+        toast.error(message, {
+            icon: options?.icon ?? config.icon,
+            className: finalClassName,
+            progressClassName: "bg-mono-grey",
+            closeButton: (
+                <button className="ml-2 text-mono-grey hover:text-mono-black">
+                    <X className="w-4 h-4" />
+                </button>
+            ),
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: "touch",
+            transition: Slide,
+            ...options,
+        });
+    } else {
+        toast(message, {
+            icon: options?.icon ?? config.icon,
+            className: finalClassName,
+            progressClassName: "bg-mono-grey",
+            closeButton: (
+                <button className="ml-2 text-mono-grey hover:text-mono-black">
+                    <X className="w-4 h-4" />
+                </button>
+            ),
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: "touch",
+            transition: Slide,
+            ...options,
+        });
+    }
 };
 
 export const ToastProvider = () => (

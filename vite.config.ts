@@ -65,13 +65,13 @@ export default defineConfig({
     proxy: {
       // Proxy API & WebSocket ke backend
       '/api': {
-        target: 'http://localhost:8080/api/e-memo-job-reservation',
+        target: 'http://api:8080',
         changeOrigin: true
       },
       '/ws': {
-        target: 'ws://localhost:3000', // WebSocket
+        target: 'ws://api:3000', 
         ws: true
-      }
+      },
     }
   }
 })

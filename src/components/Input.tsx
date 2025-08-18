@@ -35,6 +35,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 type={type}
                 className={twMerge(inputVariants({ width, isError, className }))}
                 ref={ref}
+                placeholder={props.placeholder}
                 {...props}
             />
         );

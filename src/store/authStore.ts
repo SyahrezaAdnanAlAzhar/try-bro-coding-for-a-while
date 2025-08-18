@@ -10,7 +10,7 @@ export interface AuthState {
 }
 
 export interface AuthActions {
-    login: (username: string, password: string) => Promise<boolean>;
+    login: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
     logout: () => Promise<void>;
     refreshToken: () => Promise<string | null>;
     requestWsTicket: () => Promise<string | null>;
@@ -42,9 +42,10 @@ export const useAuthStore = create<AuthStore>()(
 
                         if (!response.ok) {
                             const errorData = await response.json().catch(() => null);
-                            console.error('Login failed:', errorData?.status?.message || response.statusText);
+                            const errorMessage = errorData?.status?.message || 'An unknown error occurred.';
+                            console.error('Login failed:', errorMessage);
                             set({ status: 'unauthenticated', accessToken: null, refreshToken: null, user: null });
-                            return false;
+                            return { success: false, message: errorMessage };
                         }
 
                         const { data } = await response.json();
@@ -54,11 +55,11 @@ export const useAuthStore = create<AuthStore>()(
                             user: data.user,
                             status: 'authenticated',
                         });
-                        return true;
+                        return { success: true };
                     } catch (error) {
                         console.error('Network or parsing error during login:', error);
                         set({ status: 'unauthenticated', accessToken: null, refreshToken: null, user: null });
-                        return false;
+                        return { success: false, message: 'Could not connect to the server.' };
                     }
                 },
 

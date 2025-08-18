@@ -8,6 +8,7 @@ interface FormFieldCommonProps {
     helpText?: string;
     cornerHint?: string;
     id?: string;
+    textPlaceholder?: string;
     className?: string;
 }
 
@@ -25,6 +26,7 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
             helpText,
             cornerHint,
             id: propId,
+            textPlaceholder,
             className,
         } = props;
 
@@ -57,6 +59,7 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
                         ref={ref as React.Ref<HTMLTextAreaElement>}
                         isError={!!error}
                         aria-describedby={error || helpText ? descriptionId : undefined}
+                        placeholder={textPlaceholder}
                         {...props}
                     />
                 ) : (
@@ -65,6 +68,7 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
                         ref={ref as React.Ref<HTMLInputElement>}
                         isError={!!error}
                         aria-describedby={error || helpText ? descriptionId : undefined}
+                        placeholder={textPlaceholder}
                         {...props}
                     />
                 )}
