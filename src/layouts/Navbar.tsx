@@ -1,25 +1,51 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
+import { useDepartmentSelectors, useDepartments, useSelectedDepartmentId } from '../store/departmentStore';
 import { Button } from '../components/ui/Button';
 import MtmLogo from '../assets/Logo-MTM.svg?react';
 import { LogOut } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import "../App.css"
+import { useMemo } from 'react';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
     const user = useAuthUser();
     const { logout } = useAuthActions();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const departments = useDepartments();
+    const selectedDepartmentId = useSelectedDepartmentId();
+    const { getNavbarColorClass } = useDepartmentSelectors();
 
     const isLoggedIn = authStatus === 'authenticated' && user;
+    const firstName = user?.employee_name.split(' ')[0] || '';
+
+    const navbarColorClass = useMemo(() => {
+        if (location.pathname.startsWith('/job') && user) {
+            return getNavbarColorClass(user.employee_department);
+        }
+        if (location.pathname === '/' && selectedDepartmentId) {
+            const selectedDept = departments.find(d => d.id === selectedDepartmentId);
+            return getNavbarColorClass(selectedDept?.name);
+        }
+        return 'bg-blue-mtm-100';
+    }, [location.pathname, user, selectedDepartmentId, departments, getNavbarColorClass]);
+
+    const canViewJobLink = useMemo(() => {
+        if (!isLoggedIn || !user?.employee_department || departments.length === 0) {
+            return false;
+        }
+        return departments.some(
+            (dep) => dep.name.toUpperCase() === user.employee_department.toUpperCase()
+        );
+    }, [isLoggedIn, user?.employee_department, departments]);
 
     const handleLogout = async () => {
         await logout();
         navigate('/');
     };
-
-    const firstName = user?.employee_name.split(' ')[0] || '';
 
     const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
         twMerge(
@@ -43,22 +69,23 @@ export const Navbar = () => {
                     </Link>
                 </div>
 
-                {/* Bagian Tengah (Navigasi) - Akan memanjang mengisi ruang */}
+                {/* TICKET NAV */}
                 <div className="items-baseline">
                     <NavLink to="/" className={navLinkClasses} end>
                         Ticket
                     </NavLink>
                 </div>
 
+                {/* JOB NAV -  IF AVAILABLE */}
                 <div className="items-baseline">
-                    {isLoggedIn && (
+                    {canViewJobLink && (
                         <NavLink to="/job" className={navLinkClasses}>
                             Job
                         </NavLink>
                     )}
                 </div>
 
-                {/* Bagian Kanan (Auth) - Tidak akan memanjang */}
+                {/* AUTH */}
                 <div className="flex-shrink-0">
                     {isLoggedIn ? (
                         <div className="flex items-center gap-3">
