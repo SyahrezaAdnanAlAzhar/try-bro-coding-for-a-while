@@ -22,6 +22,14 @@
   --color-add-red: oklch(62.37% 0.257 29.23);
   --color-add-dark-red: oklch(45.98% 0.177 30.69);
 
+  --color-basic-red: oklch(0.627 0.257 29.234);
+  --color-basic-orange: oklch(0.755 0.169 59.933);
+  --color-basic-yellow: oklch(0.967 0.210 100.490);
+  --color-basic-green: oklch(0.793 0.214 142.495);
+  --color-basic-blue: oklch(0.452 0.274 264.169);
+  --color-basic-purple: oklch(0.617 0.303 308.605);
+
+
   /* 4px */
   --spacing-1: 0.25rem;
   /* 8px */
