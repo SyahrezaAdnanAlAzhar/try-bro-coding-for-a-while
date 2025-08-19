@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
 import { Button } from '../components/Button';
-import { ReactComponent as MtmLogo } from '../assets/Logo-MTM.svg'; 
+import MtmLogo from '../assets/Logo-MTM.svg?react';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
