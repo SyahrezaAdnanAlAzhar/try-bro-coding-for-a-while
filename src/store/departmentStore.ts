@@ -11,12 +11,12 @@ export interface Department {
 }
 
 const NAVBAR_COLORS = [
-    'bg-basic-red/15',
-    'bg-basic-orange/15',
-    'bg-basic-yellow/15',
-    'bg-basic-green/15',
-    'bg-basic-blue/15',
-    'bg-basic-purple/15',
+    'bg-basic-red/20',
+    'bg-basic-orange/20',
+    'bg-basic-yellow/20',
+    'bg-basic-green/20',
+    'bg-basic-blue/20',
+    'bg-basic-purple/20',
 ];
 
 interface DepartmentState {

@@ -7,7 +7,7 @@ const textVariants = cva(
     {
         variants: {
             variant: {
-                display: 'text-6xl leading-none tracking-tight',
+                display: 'text-4xl leading-none tracking-tight',
                 'heading-xl': 'text-5xl leading-tight',
                 'heading-lg': 'text-4xl leading-snug',
                 'heading-md': 'text-3xl leading-snug',
