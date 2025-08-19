@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { useAuthStore } from './authStore';
+// import { useAuthStore } from './authStore';
 
 export interface Department {
     id: number;
@@ -50,16 +50,10 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
     actions: {
         fetchDepartments: async () => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
 
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/department?receive_job=true&is_active=true`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    }
+                    `${API_BASE_URL}/departments?receive_job=true&is_active=true`,
                 );
 
                 if (!response.ok) throw new Error('Failed to fetch departments');
