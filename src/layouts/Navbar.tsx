@@ -1,9 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
 import { Button } from '../components/Button';
-import Logo from '../assets/Logo-MTM.svg';
-
-
+import { ReactComponent as MtmLogo } from '../assets/Logo-MTM.svg'; 
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
@@ -35,7 +33,7 @@ export const Navbar = () => {
                         to="/"
                         className="flex items-center gap-2 rounded-full bg-mono-white px-4 py-2 text-blue-mtm-700 shadow-sm"
                     >
-                        <img src={Logo} alt="Logo MTM" />
+                        <MtmLogo className="h-6 w-auto" />
                         <span className="font-bold">Job Reservation</span>
                     </Link>
                     <div className="hidden md:flex items-baseline gap-2">
