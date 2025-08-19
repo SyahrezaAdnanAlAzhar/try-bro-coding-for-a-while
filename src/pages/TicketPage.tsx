@@ -18,7 +18,7 @@ export default function TicketPage() {
 
     return (
         <div className="space-y-6">
-            <Text as="h1" variant="display" weight="bold">
+            <Text as="h1" variant="display" weight="bold" className="text-center">
                 Dashboard Ticket Reservation
             </Text>
 

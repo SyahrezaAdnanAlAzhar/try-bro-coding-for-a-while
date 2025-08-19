@@ -60,7 +60,7 @@ export const Navbar = () => {
             "shadow-s-500 sticky top-0 z-50 transition-colors duration-300",
             navbarColorClass 
         )}>
-            <nav className="container mx-auto flex h-16 items-center justify-between px-4">
+            <nav className="container mx-auto flex h-16 items-center justify-between px-16">
                 {/* LOGO AND NAVIGATION */}
                 <div className="flex-shrink-0">
                     <Link

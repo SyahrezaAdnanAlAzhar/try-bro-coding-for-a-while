@@ -7,22 +7,24 @@ export const DepartmentSelector = () => {
     const { setSelectedDepartment } = useDepartmentActions();
 
     if (!departments || departments.length === 0) {
-        return null; 
+        return null;
     }
 
     return (
-        <div className="flex flex-wrap gap-x-[6.66vw] sm:gap-x-8 gap-y-4">
+
+        <div className="flex flex-wrap justify-around space-x-16">
             {departments.map((department) => (
                 <Button
                     key={department.id}
                     onClick={() => setSelectedDepartment(department.id)}
                     variant={selectedId === department.id ? 'blue-mtm-dark' : 'secondary'}
                     size="base"
-                    className="min-w-[120px] flex-grow sm:flex-grow-0"
+                    className="min-w-[160px] flex-1"
                 >
                     {department.name}
                 </Button>
             ))}
         </div>
+
     );
 };
