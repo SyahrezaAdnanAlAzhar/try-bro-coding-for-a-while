@@ -18,6 +18,6 @@ const StatusBadge = forwardRef<HTMLDivElement, BadgeProps>(
     }
 );
 
-StatusBadge.displayName = 'Badge';
+StatusBadge.displayName = 'StatusBadge';
 
 export { StatusBadge };
