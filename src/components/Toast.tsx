@@ -65,7 +65,7 @@ export const showToast = (
                     <X className="w-4 h-4" />
                 </button>
             ),
-            autoClose: 10000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -83,7 +83,7 @@ export const showToast = (
                     <X className="w-4 h-4" />
                 </button>
             ),
-            autoClose: 10000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -101,7 +101,7 @@ export const showToast = (
                     <X className="w-4 h-4" />
                 </button>
             ),
-            autoClose: 10000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -119,7 +119,7 @@ export const showToast = (
                     <X className="w-4 h-4" />
                 </button>
             ),
-            autoClose: 10000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -137,7 +137,7 @@ export const showToast = (
                     <X className="w-4 h-4" />
                 </button>
             ),
-            autoClose: 10000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
