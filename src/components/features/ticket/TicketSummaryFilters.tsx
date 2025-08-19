@@ -46,14 +46,14 @@ export const TicketSummaryFilters = () => {
                 value={selectedMonth}
                 onChange={(option) => setFilter({ month: option ? (option.value as number) : null })}
                 placeholder="Pilih Bulan"
-                className="w-40"
+                className="w-48"
             />
             <Combobox
                 options={yearOptions}
                 value={selectedYear}
                 onChange={(option) => setFilter({ year: option ? (option.value as number) : null })}
                 placeholder="Pilih Tahun"
-                className="w-32"
+                className="w-48"
             />
         </div>
     );

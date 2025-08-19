@@ -29,7 +29,7 @@ export const TicketSummary = () => {
                 </MessageBar>
             )}
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg p-4">
+            <div className="flex flex-wrap items-center justify-between gap-12 rounded-lg px-24">
                 <div className="flex-grow">
                     <TicketSummaryBar data={summaryData} />
                 </div>
