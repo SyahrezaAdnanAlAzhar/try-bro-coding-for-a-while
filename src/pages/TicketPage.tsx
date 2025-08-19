@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Text } from '../components/ui/Text';
-import { useAuthStatus } from '../store/authStore';
+// import { useAuthStatus } from '../store/authStore';
 import { useDepartmentActions, useDepartmentStatus } from '../store/departmentStore';
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 
 export default function TicketPage() {
-    const authStatus = useAuthStatus();
-    const isLoggedIn = authStatus === 'authenticated';
+    // const authStatus = useAuthStatus();
+    // const isLoggedIn = authStatus === 'authenticated';
     const departmentStatus = useDepartmentStatus();
     const { fetchDepartments } = useDepartmentActions();
 
