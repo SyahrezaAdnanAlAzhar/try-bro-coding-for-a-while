@@ -11,12 +11,12 @@ export interface Department {
 }
 
 const NAVBAR_COLORS = [
-    'bg-basic-red',
-    'bg-basic-orange',
-    'bg-basic-yellow',
-    'bg-basic-green',
-    'bg-basic-blue',
-    'bg-basic-purple',
+    'bg-basic-red/15',
+    'bg-basic-orange/15',
+    'bg-basic-yellow/15',
+    'bg-basic-green/15',
+    'bg-basic-blue/15',
+    'bg-basic-purple/15',
 ];
 
 interface DepartmentState {
@@ -85,7 +85,7 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
 
     selectors: {
         getNavbarColorClass: (departmentName) => {
-            const sortedDepartments = get().selectors.getSortedDepartments();
+            const sortedDepartments = get().departments;
             if (!departmentName || sortedDepartments.length === 0) {
                 return 'bg-blue-mtm-100';
             }

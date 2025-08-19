@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
-import '../App.css'
+import '../../App.css'
 
 const inputVariants = cva(
     'h-[32px] rounded-[16px] border bg-mono-white px-6 py-2 text-base text-mono-black transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-mono-grey focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50',
