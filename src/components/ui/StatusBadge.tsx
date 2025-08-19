@@ -1,9 +1,9 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export interface BadgeProps extends HTMLAttributes<HTMLDivElement> { }
+export interface StatusBadgeProps extends HTMLAttributes<HTMLDivElement> { }
 
-const StatusBadge = forwardRef<HTMLDivElement, BadgeProps>(
+const StatusBadge = forwardRef<HTMLDivElement, StatusBadgeProps>(
     ({ className, ...props }, ref) => {
         return (
             <div
