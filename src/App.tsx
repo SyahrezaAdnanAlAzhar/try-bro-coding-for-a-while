@@ -3,33 +3,29 @@ import './App.css'
 import { ToastProvider } from './components/Toast'
 import LoginPage from './pages/LoginPage'
 import { ProtectedRoute } from './router/ProtectedRoute'
-import DashboardPage from './pages/DashboardPage'
+import TicketPage from './pages/TicketPage'
 import { MainLayout } from './layouts/MainLayout';
 import JobPage from './pages/JobPage';
-
-const TicketPage = DashboardPage;
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<TicketPage />} />
+            <Route path="/login" element={<LoginPage />} />
 
-          <Route
-            path="/*"
-            element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <Routes>
-                    <Route path="/" element={<TicketPage />} />
-                    <Route path="/job" element={<JobPage />} />
-                  </Routes>
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            <Route
+              path="/job"
+              element={
+                <ProtectedRoute>
+                  <JobPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </MainLayout>
       </BrowserRouter>
       <ToastProvider />
     </>

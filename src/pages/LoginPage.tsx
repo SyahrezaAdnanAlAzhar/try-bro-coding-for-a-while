@@ -65,7 +65,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-mono-white p-4">
+        <div className="flex min-h-screen items-start justify-center bg-mono-white p-4">
             <Panel shadow="s-500" className="w-full max-w-md">
                 <form onSubmit={handleLogin} className="flex flex-col gap-6" noValidate>
                     <Text as="h1" variant="heading-xl" weight="bold" className="text-center">
