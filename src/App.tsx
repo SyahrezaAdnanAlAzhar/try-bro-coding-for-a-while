@@ -4,6 +4,10 @@ import { ToastProvider } from './components/Toast'
 import LoginPage from './pages/LoginPage'
 import { ProtectedRoute } from './router/ProtectedRoute'
 import DashboardPage from './pages/DashboardPage'
+import { MainLayout } from './layouts/MainLayout';
+import JobPage from './pages/JobPage';
+
+const TicketPage = DashboardPage;
 
 function App() {
   return (
@@ -13,12 +17,15 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
 
           <Route
-            path="/*" 
+            path="/*"
             element={
               <ProtectedRoute>
-                <Routes>
-                  <Route path="/" element={<DashboardPage />} />
-                </Routes>
+                <MainLayout>
+                  <Routes>
+                    <Route path="/" element={<TicketPage />} />
+                    <Route path="/job" element={<JobPage />} />
+                  </Routes>
+                </MainLayout>
               </ProtectedRoute>
             }
           />
