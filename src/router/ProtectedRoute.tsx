@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStatus } from '../store/authStore';
-import { FullScreenLoader } from '../components/FullScreenLoader';
+import { FullScreenLoader } from '../components/ui/FullScreenLoader';
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const authStatus = useAuthStatus();

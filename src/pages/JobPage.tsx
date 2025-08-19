@@ -1,4 +1,4 @@
-import { Text } from '../components/Text';
+import { Text } from '../components/ui/Text';
 
 export default function JobPage() {
     return (

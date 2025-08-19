@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
-import { Button } from '../components/Button';
+import { Button } from '../components/ui/Button';
 import MtmLogo from '../assets/Logo-MTM.svg?react';
 import { LogOut } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';

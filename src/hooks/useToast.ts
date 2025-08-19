@@ -1,4 +1,4 @@
-import { showToast } from "../components/Toast";
+import { showToast } from "../components/ui/Toast";
 import type { ToastOptions } from "react-toastify";
 import React from "react";
 

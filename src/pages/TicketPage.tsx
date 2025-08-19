@@ -1,5 +1,5 @@
-import { Button } from '../components/Button';
-import { Text } from '../components/Text';
+import { Button } from '../components/ui/Button';
+import { Text } from '../components/ui/Text';
 import { useAuthStatus } from '../store/authStore';
 
 export default function TicketPage() {

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthActions } from '../store/authStore';
-import { Button } from '../components/Button';
-import { FormField } from '../components/FormField';
-import { Panel } from '../components/Panel';
-import { Text } from '../components/Text';
+import { Button } from '../components/ui/Button';
+import { FormField } from '../components/ui/FormField';
+import { Panel } from '../components/ui/Panel';
+import { Text } from '../components/ui/Text';
 import { useToast } from '../hooks/useToast';
 import { useState } from 'react';
 
@@ -16,7 +16,7 @@ export default function LoginPage() {
     const { login } = useAuthActions();
     const toast = useToast();
 
-    const [formData, setFormData] = useState({ npk: ''});
+    const [formData, setFormData] = useState({ npk: '' });
     const [errors, setErrors] = useState<FormErrors>({});
 
     const validateForm = (): boolean => {
