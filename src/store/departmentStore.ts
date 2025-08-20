@@ -1,13 +1,16 @@
 import { create } from 'zustand';
 import type { Department } from '../types/api';
+import { useLocation } from 'react-router-dom';
+import { useAuthUser } from './authStore';
+import { useMemo } from 'react';
 
 const NAVBAR_COLORS = [
-    'bg-basic-red/20',
-    'bg-basic-orange/20',
-    'bg-basic-yellow/20',
-    'bg-basic-green/20',
-    'bg-basic-blue/20',
-    'bg-basic-purple/20',
+    'bg-basic-red-light',
+    'bg-basic-orange-light',
+    'bg-basic-yellow-light',
+    'bg-basic-green-light',
+    'bg-basic-blue-light',
+    'bg-basic-purple-light',
 ];
 
 interface DepartmentState {
@@ -92,6 +95,25 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
         },
     },
 }));
+
+export const useNavbarColor = () => {
+    const location = useLocation();
+    const user = useAuthUser();
+    const departments = useDepartments();
+    const selectedDepartmentId = useSelectedDepartmentId();
+    const { getNavbarColorClass } = useDepartmentSelectors();
+
+    return useMemo(() => {
+        if (location.pathname.startsWith('/job') && user) {
+            return getNavbarColorClass(user.employee_department);
+        }
+        if (location.pathname === '/' && selectedDepartmentId) {
+            const selectedDept = departments.find(d => d.id === selectedDepartmentId);
+            return getNavbarColorClass(selectedDept?.name);
+        }
+        return 'bg-blue-mtm-100';
+    }, [location.pathname, user, selectedDepartmentId, departments, getNavbarColorClass]);
+};
 
 export const useDepartments = () => useDepartmentStore((state) => state.departments);
 export const useSelectedDepartmentId = () => useDepartmentStore((state) => state.selectedDepartmentId);

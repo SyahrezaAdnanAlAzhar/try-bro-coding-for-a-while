@@ -9,7 +9,7 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
     return (
         <WebSocketProvider>
-            <div className="flex min-h-screen flex-col bg-mono-white">
+            <div className="flex min-h-screen flex-col transition-colors duration-300 bg-mono-white">
                 <Navbar />
                 <main className="flex-grow px-16 py-8 sm:px-6 lg:px-16">
                     {children}

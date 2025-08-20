@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
-import { useDepartmentSelectors, useDepartments, useSelectedDepartmentId } from '../store/departmentStore';
+import { useDepartments, useDepartmentSelectors, useSelectedDepartmentId } from '../store/departmentStore';
 import { Button } from '../components/ui/Button';
 import MtmLogo from '../assets/Logo-MTM.svg?react';
 import { LogOut } from 'lucide-react';
@@ -56,57 +56,56 @@ export const Navbar = () => {
         );
 
     return (
-        <header className={twMerge(
-            "shadow-s-500 sticky top-0 z-50 transition-colors duration-300",
-            navbarColorClass 
-        )}>
-            <nav className="container mx-auto flex h-16 items-center justify-between px-16">
-                {/* LOGO AND NAVIGATION */}
-                <div className="flex-shrink-0">
-                    <Link
-                        to="/"
-                        className="flex items-center gap-2 rounded-full bg-mono-white px-3 py-2 text-blue-mtm-700 shadow-sm"
-                    >
-                        <MtmLogo className="h-6 w-auto" />
-                        <span className="font-bold">Job Reservation</span>
-                    </Link>
-                </div>
+        <header className={twMerge("sticky top-0 z-50 transition-colors duration-300", navbarColorClass)}>
+            <div>
+                <nav className={twMerge("container mx-auto flex h-16 items-center justify-between rounded-t-2xl px-16 shadow-s-500")}>
+                    {/* LOGO AND NAVIGATION */}
+                    <div className="flex-shrink-0">
+                        <Link
+                            to="/"
+                            className="flex items-center gap-2 rounded-full bg-mono-white px-3 py-2 text-blue-mtm-700 shadow-sm"
+                        >
+                            <MtmLogo className="h-6 w-auto" />
+                            <span className="font-bold">Job Reservation</span>
+                        </Link>
+                    </div>
 
-                {/* TICKET NAV */}
-                <div className="items-baseline">
-                    <NavLink to="/" className={navLinkClasses} end>
-                        Ticket
-                    </NavLink>
-                </div>
-
-                {/* JOB NAV -  IF AVAILABLE */}
-                <div className="items-baseline">
-                    {canViewJobLink && (
-                        <NavLink to="/job" className={navLinkClasses}>
-                            Job
+                    {/* TICKET NAV */}
+                    <div className="items-baseline">
+                        <NavLink to="/" className={navLinkClasses} end>
+                            Ticket
                         </NavLink>
-                    )}
-                </div>
+                    </div>
 
-                {/* AUTH */}
-                <div className="flex-shrink-0">
-                    {isLoggedIn ? (
-                        <div className="flex items-center gap-3">
-                            <div className="hidden sm:block rounded-full bg-mono-white px-4 py-2 text-sm font-semibold text-mono-dark-grey">
-                                <span>{user.employee_npk} - </span>
-                                <span className="text-blue-mtm-500">{firstName}</span>
+                    {/* JOB NAV -  IF AVAILABLE */}
+                    <div className="items-baseline">
+                        {canViewJobLink && (
+                            <NavLink to="/job" className={navLinkClasses}>
+                                Job
+                            </NavLink>
+                        )}
+                    </div>
+
+                    {/* AUTH */}
+                    <div className="flex-shrink-0">
+                        {isLoggedIn ? (
+                            <div className="flex items-center gap-3">
+                                <div className="hidden sm:block rounded-full bg-mono-white px-4 py-2 text-sm font-semibold text-mono-dark-grey">
+                                    <span>{user.employee_npk} - </span>
+                                    <span className="text-blue-mtm-500">{firstName}</span>
+                                </div>
+                                <Button variant="destructive" size="sm" onClick={handleLogout} leftIcon={<LogOut size={16} strokeWidth={4} />}>
+                                    Keluar
+                                </Button>
                             </div>
-                            <Button variant="destructive" size="sm" onClick={handleLogout} leftIcon={<LogOut size={16} strokeWidth={4} />}>
-                                Keluar
+                        ) : (
+                            <Button variant="primary-blue" size="sm" onClick={() => navigate('/login')}>
+                                Masuk
                             </Button>
-                        </div>
-                    ) : (
-                        <Button variant="primary-blue" size="sm" onClick={() => navigate('/login')}>
-                            Masuk
-                        </Button>
-                    )}
-                </div>
-            </nav>
+                        )}
+                    </div>
+                </nav>
+            </div>
         </header>
     );
 };
