@@ -1,14 +1,5 @@
 import { create } from 'zustand';
-// import { useAuthStore } from './authStore';
-
-export interface Department {
-    id: number;
-    name: string;
-    receive_job: boolean;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-}
+import type { Department } from '../types/api';
 
 const NAVBAR_COLORS = [
     'bg-basic-red/20',

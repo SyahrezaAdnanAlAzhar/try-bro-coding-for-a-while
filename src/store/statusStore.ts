@@ -1,13 +1,5 @@
 import { create } from 'zustand';
-
-export interface TicketStatus {
-    id: number;
-    name: string;
-    sequence: number;
-    is_active: boolean;
-    section_id: number;
-    hex_color: string;
-}
+import type { TicketStatus } from '../types/api';
 
 interface StatusState {
     statuses: TicketStatus[];

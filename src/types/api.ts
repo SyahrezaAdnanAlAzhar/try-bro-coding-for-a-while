@@ -10,6 +10,48 @@ export interface User {
     permissions: string[];
 }
 
+export interface Department {
+    id: number;
+    name: string;
+    receive_job: boolean;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface TicketStatus {
+    id: number;
+    name: string;
+    sequence: number;
+    is_active: boolean;
+    section_id: number;
+    hex_color: string;
+}
+
+export interface Ticket {
+    ticket_id: number;
+    description: string;
+    ticket_priority: number;
+    version: number;
+    department_target_id: number;
+    department_target_name: string;
+    job_id: number | null;
+    job_priority: number | null;
+    location_name: string;
+    specified_location_name: string | null;
+    created_at: string;
+    ticket_age_days: number;
+    deadline: string | null;
+    days_remaining: number | null;
+    requestor_name: string;
+    requestor_department: string;
+    pic_name: string | null;
+    pic_area_name: string | null;
+    current_status: string;
+    current_status_hex_code: string;
+    current_section_name: string;
+}
+
 export interface WebSocketMessage<T = any> {
     event: string;
     payload: T;
