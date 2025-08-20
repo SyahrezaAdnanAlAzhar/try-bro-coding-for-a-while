@@ -52,6 +52,17 @@ export interface Ticket {
     current_section_name: string;
 }
 
+export interface PhysicalLocation {
+    id: number;
+    name: string;
+}
+
+export interface SpecifiedLocation {
+    id: number;
+    physical_location_id: number;
+    name: string;
+}
+
 export interface WebSocketMessage<T = any> {
     event: string;
     payload: T;

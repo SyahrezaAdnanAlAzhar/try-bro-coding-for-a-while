@@ -99,7 +99,7 @@ export const Navbar = () => {
                                 </Button>
                             </div>
                         ) : (
-                            <Button variant="primary-blue" size="sm" onClick={() => navigate('/login')}>
+                            <Button variant="blue-mtm-dark" size="sm" onClick={() => navigate('/login')}>
                                 Masuk
                             </Button>
                         )}
