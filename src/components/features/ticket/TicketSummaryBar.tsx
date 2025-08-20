@@ -23,7 +23,7 @@ export const TicketSummaryBar = ({ data }: TicketSummaryBarProps) => {
                         </Text>
                     </div>
                     <div className="flex h-full items-center justify-center p-1">
-                        <Text variant="heading-md" weight="bold">
+                        <Text variant="body-lg" weight="bold">
                             {item.total}
                         </Text>
                     </div>

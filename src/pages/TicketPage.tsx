@@ -4,19 +4,21 @@ import { useDepartmentStatus, useSelectedDepartmentId } from '../store/departmen
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { TicketSummary } from '../components/features/ticket/TicketSummary';
 import { useEffect } from 'react';
-import { useTicketTableActions } from '../store/ticketTableStore';
+import { useTicketTableActions, useTicketTableFilters } from '../store/ticketTableStore';
 import { TicketTable } from '../components/features/ticket/table/TicketTable';
+import { TicketToolbar } from '../components/features/ticket/TicketToolbar';
 
 export default function TicketPage() {
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
+    const tableFilters = useTicketTableFilters();
     const { fetchTickets } = useTicketTableActions();
 
     useEffect(() => {
         if (selectedDepartmentId) {
             fetchTickets({ departmentId: selectedDepartmentId });
         }
-    }, [selectedDepartmentId, fetchTickets]);
+    }, [selectedDepartmentId, tableFilters, fetchTickets]);
 
     return (
         <div className="space-y-6">
@@ -28,12 +30,15 @@ export default function TicketPage() {
             {departmentStatus === 'error' && <Text color="add-red">Failed to load departments.</Text>}
             {departmentStatus === 'success' && (
                 <>
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                         <DepartmentSelector />
                         <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
                         <TicketSummary />
                         <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
-                        <TicketTable />
+                        <div className="space-y-8">
+                            <TicketToolbar />
+                            <TicketTable />
+                        </div>
                     </div>
                 </>
             )}

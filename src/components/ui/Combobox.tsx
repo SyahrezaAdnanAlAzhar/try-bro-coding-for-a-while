@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useId, forwardRef } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, Trash2 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 export interface ComboboxOption {
@@ -128,7 +128,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                                 className="rounded-full p-1.5 text-add-red transition-colors hover:bg-add-red/15 focus:outline-none focus:ring-1 focus:ring-add-red"
                                 aria-label="Clear selection"
                             >
-                                <X size={18} strokeWidth={3.5} />
+                                <Trash2 size={18} strokeWidth={2} />
                             </button>
                         )}
                         <button

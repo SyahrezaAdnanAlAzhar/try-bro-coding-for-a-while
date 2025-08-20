@@ -1,5 +1,5 @@
 import { useState, useEffect, type FC } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, Delete } from 'lucide-react';
 import { Input } from './Input';
 
 export interface SearchBarProps {
@@ -36,7 +36,7 @@ export const SearchBar: FC<SearchBarProps> = ({
         return () => {
             clearTimeout(handler);
         };
-    }, [query, debounceMs, onSearch]);
+    }, [query, debounceMs, onSearch, value]);
 
     useEffect(() => {
         setQuery(value);
@@ -49,8 +49,8 @@ export const SearchBar: FC<SearchBarProps> = ({
 
     return (
         <div className={`relative w-full ${className}`}>
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Search className="h-5 w-5 text-blue-mtm-400" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-6">
+                <Search className="text-blue-mtm-400" size={16} aria-hidden="true" />
             </div>
 
             <Input
@@ -59,7 +59,7 @@ export const SearchBar: FC<SearchBarProps> = ({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 disabled={disabled || isLoading}
-                className="pl-10 pr-10"
+                className="rounded-full pl-16 pr-10 py-6"
             />
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -72,7 +72,7 @@ export const SearchBar: FC<SearchBarProps> = ({
                         className="rounded-full p-1 text-add-red hover:bg-add-red/10 focus:outline-none focus:ring-2 focus:ring-add-red"
                         aria-label="Clear search"
                     >
-                        <X className="h-5 w-5" />
+                        <Delete className="h-5 w-5" />
                     </button>
                 ) : null}
             </div>
