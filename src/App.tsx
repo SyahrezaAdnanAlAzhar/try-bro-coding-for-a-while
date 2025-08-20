@@ -6,11 +6,13 @@ import { ProtectedRoute } from './router/ProtectedRoute'
 import TicketPage from './pages/TicketPage'
 import { MainLayout } from './layouts/MainLayout';
 import JobPage from './pages/JobPage';
+import { AppInitializer } from './components/AppInitializer'
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <AppInitializer />
         <MainLayout>
           <Routes>
             <Route path="/" element={<TicketPage />} />

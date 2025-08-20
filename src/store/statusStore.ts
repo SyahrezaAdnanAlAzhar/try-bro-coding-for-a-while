@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import tinycolor from 'tinycolor2';
 
 export interface TicketStatus {
     id: number;
@@ -22,7 +21,7 @@ interface StatusActions {
 
 interface StatusSelectors {
     getStatusById: (id: number) => TicketStatus | undefined;
-    getTextColorForStatus: (id: number) => 'text-mono-white' | 'text-mono-black';
+    getTextColorForStatus: (id: number) => 'text-mono-white';
 }
 
 type StatusStore = StatusState & {
@@ -39,7 +38,8 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
 
     actions: {
         fetchStatuses: async () => {
-            if (get().status !== 'idle') return; 
+            const { status } = get();
+            if (status === 'loading' || status === 'success') return;
             set({ status: 'loading' });
 
             try {
@@ -61,12 +61,8 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
         getStatusById: (id) => {
             return get().statusMap.get(id);
         },
-        getTextColorForStatus: (id) => {
-            const status = get().statusMap.get(id);
-            if (!status) return 'text-mono-black';
-
-            const color = tinycolor(status.hex_color);
-            return color.isLight() ? 'text-mono-black' : 'text-mono-white';
+        getTextColorForStatus: (_id) => {
+            return 'text-mono-white';
         },
     },
 }));

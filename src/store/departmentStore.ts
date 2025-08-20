@@ -49,6 +49,8 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
 
     actions: {
         fetchDepartments: async () => {
+            const { status } = get();
+            if (status === 'loading' || status === 'success') return;
             set({ status: 'loading' });
 
             try {

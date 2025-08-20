@@ -1,6 +1,6 @@
 import { Navbar } from './Navbar';
 import { WebSocketProvider } from '../providers/WebSocketProvider';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 interface MainLayoutProps {
     children: ReactNode;

@@ -1,21 +1,11 @@
-import { useEffect } from 'react';
 import { Text } from '../components/ui/Text';
 // import { useAuthStatus } from '../store/authStore';
-import { useDepartmentActions, useDepartmentStatus } from '../store/departmentStore';
+import { useDepartmentStatus } from '../store/departmentStore';
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { TicketSummary } from '../components/features/ticket/TicketSummary';
 
 export default function TicketPage() {
-    // const authStatus = useAuthStatus();
-    // const isLoggedIn = authStatus === 'authenticated';
     const departmentStatus = useDepartmentStatus();
-    const { fetchDepartments } = useDepartmentActions();
-
-    useEffect(() => {
-        if (departmentStatus === 'idle') {
-            fetchDepartments();
-        }
-    }, [departmentStatus, fetchDepartments]);
 
     return (
         <div className="space-y-6">
@@ -34,7 +24,6 @@ export default function TicketPage() {
                     </div>
                 </>
             )}
-
         </div>
     );
 }
