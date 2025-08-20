@@ -8,7 +8,6 @@ interface FormFieldCommonProps {
     helpText?: string;
     cornerHint?: string;
     id?: string;
-    textPlaceholder?: string;
     className?: string;
 }
 
@@ -26,13 +25,28 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
             helpText,
             cornerHint,
             id: propId,
-            textPlaceholder,
             className,
         } = props;
 
         const fallbackId = useId();
         const id = propId || fallbackId;
         const descriptionId = `${id}-description`;
+
+        const getElementSpecificProps = () => {
+            const {
+                label: _l,
+                error: _e,
+                helpText: _h,
+                cornerHint: _c,
+                id: _i,
+                className: _cn,
+                as: _a,
+                ...rest
+            } = props;
+            return rest;
+        };
+
+        const elementProps = getElementSpecificProps();
 
         return (
             <div className={className}>
@@ -59,8 +73,7 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
                         ref={ref as React.Ref<HTMLTextAreaElement>}
                         isError={!!error}
                         aria-describedby={error || helpText ? descriptionId : undefined}
-                        placeholder={textPlaceholder}
-                        {...props}
+                        {...(elementProps as TextAreaProps)}
                     />
                 ) : (
                     <Input
@@ -68,8 +81,7 @@ const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, FormFieldPr
                         ref={ref as React.Ref<HTMLInputElement>}
                         isError={!!error}
                         aria-describedby={error || helpText ? descriptionId : undefined}
-                        placeholder={textPlaceholder}
-                        {...props}
+                        {...(elementProps as InputProps)}
                     />
                 )}
 

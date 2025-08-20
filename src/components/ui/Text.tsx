@@ -7,10 +7,10 @@ const textVariants = cva(
     {
         variants: {
             variant: {
-                display: 'text-4xl leading-none tracking-tight',
-                'heading-xl': 'text-5xl leading-tight',
-                'heading-lg': 'text-4xl leading-snug',
-                'heading-md': 'text-3xl leading-snug',
+                display: 'text-3xl leading-none tracking-tight',
+                'heading-xl': 'text-3xl leading-tight',
+                'heading-lg': 'text-2xl leading-snug',
+                'heading-md': 'text-xl leading-snug',
                 'body-lg': 'text-lg leading-relaxed',
                 'body-md': 'text-base leading-relaxed',
                 'body-sm': 'text-sm leading-relaxed',

@@ -7,12 +7,17 @@ import { useEffect } from 'react';
 import { useTicketTableActions, useTicketTableFilters } from '../store/ticketTableStore';
 import { TicketTable } from '../components/features/ticket/table/TicketTable';
 import { TicketToolbar } from '../components/features/ticket/TicketToolbar';
+import { useNavigate } from 'react-router-dom';
+import { Can } from '../components/auth/Can';
+import { Button } from '../components/ui/Button';
+import { Plus } from 'lucide-react';
 
 export default function TicketPage() {
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
     const tableFilters = useTicketTableFilters();
     const { fetchTickets } = useTicketTableActions();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (selectedDepartmentId) {
@@ -30,11 +35,24 @@ export default function TicketPage() {
             {departmentStatus === 'error' && <Text color="add-red">Failed to load departments.</Text>}
             {departmentStatus === 'success' && (
                 <>
-                    <div className="space-y-12">
+                    <div className="space-y-10">
                         <DepartmentSelector />
-                        <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
+                        <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
                         <TicketSummary />
-                        <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
+                        <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
+                        <Can permission="CREATE_TICKET">
+                            <Button
+                                variant="blue-mtm-light"
+                                size="lg"
+                                fullWidth
+                                leftIcon={<Plus size={24} strokeWidth={3}/>}
+                                onClick={() => navigate('/create-ticket')}
+                                className='shadow-s-400'
+                            >
+                                Tambah Job Reservation
+                            </Button>
+                            <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
+                        </Can>
                         <div className="space-y-8">
                             <TicketToolbar />
                             <TicketTable />

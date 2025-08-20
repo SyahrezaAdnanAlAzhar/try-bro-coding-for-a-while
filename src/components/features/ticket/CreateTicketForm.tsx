@@ -6,6 +6,8 @@ import { FileInput } from '../../ui/FileInput';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format } from 'date-fns';
+import { Text } from '../../ui/Text';
+import { DatePicker } from '../../ui/DatePicker';
 
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
@@ -34,14 +36,14 @@ export const CreateTicketForm = () => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Department */}
             <div className="md:col-span-2">
-                <FormField label="Department" error={errors.department_target_id}>
-                    <Combobox
-                        options={departmentOptions}
-                        value={selectedDepartment}
-                        onChange={(option) => setFormField('department_target_id', option ? (option.value as number) : null)}
-                        placeholder="Pilih department"
-                    />
-                </FormField>
+                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Department</label>
+                <Combobox
+                    options={departmentOptions}
+                    value={selectedDepartment}
+                    onChange={(option) => setFormField('department_target_id', option ? (option.value as number) : null)}
+                    placeholder="Pilih department"
+                />
+                {errors.department_target_id && <Text variant="body-sm" color="add-red" className="mt-1">{errors.department_target_id}</Text>}
             </div>
 
             {/* Job Description */}
@@ -59,31 +61,29 @@ export const CreateTicketForm = () => {
 
             {/* Lokasi Area */}
             <div>
-                <FormField label="Lokasi Area (Opsional)">
-                    <Combobox
-                        options={physicalLocationOptions}
-                        value={selectedPhysicalLocation}
-                        onChange={(option) => {
-                            const id = option ? (option.value as number) : null;
-                            setFormField('physical_location_id', id);
-                            if (id) fetchSpecifiedLocations(id);
-                        }}
-                        placeholder="Pilih Area"
-                    />
-                </FormField>
+                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Lokasi Area (Opsional)</label>
+                <Combobox
+                    options={physicalLocationOptions}
+                    value={selectedPhysicalLocation}
+                    onChange={(option) => {
+                        const id = option ? (option.value as number) : null;
+                        setFormField('physical_location_id', id);
+                        if (id) fetchSpecifiedLocations(id);
+                    }}
+                    placeholder="Pilih Area"
+                />
             </div>
 
             {/* Lokasi Daerah */}
             <div>
-                <FormField label="Lokasi Daerah (Opsional)">
-                    <Combobox
-                        options={specifiedLocationOptions}
-                        value={selectedSpecifiedLocation}
-                        onChange={(option) => setFormField('specified_location_id', option ? (option.value as number) : null)}
-                        placeholder="Pilih Daerah"
-                        disabled={!formData.physical_location_id || options.specifiedLocations.length === 0}
-                    />
-                </FormField>
+                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Lokasi Daerah (Opsional)</label>
+                <Combobox
+                    options={specifiedLocationOptions}
+                    value={selectedSpecifiedLocation}
+                    onChange={(option) => setFormField('specified_location_id', option ? (option.value as number) : null)}
+                    placeholder="Pilih Daerah"
+                    disabled={!formData.physical_location_id || options.specifiedLocations.length === 0}
+                />
             </div>
 
             {/* File Pendukung */}
@@ -98,15 +98,11 @@ export const CreateTicketForm = () => {
 
             {/* Deadline */}
             <div className="md:col-span-2">
-                <FormField label="Deadline (Opsional)">
-                    <DayPicker
-                        mode="single"
-                        selected={formData.deadline}
-                        onSelect={(date) => setFormField('deadline', date || null)}
-                        className="rounded-md border"
-                        footer={formData.deadline ? `Terpilih: ${format(formData.deadline, 'PPP')}` : 'Pilih tanggal'}
-                    />
-                </FormField>
+                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Deadline (Opsional)</label>
+                <DatePicker
+                    value={formData.deadline}
+                    onChange={(date) => setFormField('deadline', date)}
+                />
             </div>
         </div>
     );

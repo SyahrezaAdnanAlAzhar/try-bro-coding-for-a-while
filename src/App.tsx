@@ -7,6 +7,8 @@ import TicketPage from './pages/TicketPage'
 import { MainLayout } from './layouts/MainLayout';
 import JobPage from './pages/JobPage';
 import { AppInitializer } from './components/AppInitializer'
+import CreateTicketPage from './pages/CreateTicketPage';
+import { Can } from './components/auth/Can'
 
 function App() {
   return (
@@ -26,6 +28,18 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/create-ticket"
+              element={
+                <ProtectedRoute>
+                  <Can permission="CREATE_TICKET">
+                    <CreateTicketPage />
+                  </Can>
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
         </MainLayout>
       </BrowserRouter>
