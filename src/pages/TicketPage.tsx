@@ -1,11 +1,22 @@
 import { Text } from '../components/ui/Text';
 // import { useAuthStatus } from '../store/authStore';
-import { useDepartmentStatus } from '../store/departmentStore';
+import { useDepartmentStatus, useSelectedDepartmentId } from '../store/departmentStore';
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { TicketSummary } from '../components/features/ticket/TicketSummary';
+import { useEffect } from 'react';
+import { useTicketTableActions } from '../store/ticketTableStore';
+import { TicketTable } from '../components/features/ticket/table/TicketTable';
 
 export default function TicketPage() {
     const departmentStatus = useDepartmentStatus();
+    const selectedDepartmentId = useSelectedDepartmentId();
+    const { fetchTickets } = useTicketTableActions();
+
+    useEffect(() => {
+        if (selectedDepartmentId) {
+            fetchTickets({ departmentId: selectedDepartmentId });
+        }
+    }, [selectedDepartmentId, fetchTickets]);
 
     return (
         <div className="space-y-6">
@@ -21,6 +32,8 @@ export default function TicketPage() {
                         <DepartmentSelector />
                         <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
                         <TicketSummary />
+                        <hr className="h-[3px] w-full bg-mono-light-grey border-none" />
+                        <TicketTable />
                     </div>
                 </>
             )}

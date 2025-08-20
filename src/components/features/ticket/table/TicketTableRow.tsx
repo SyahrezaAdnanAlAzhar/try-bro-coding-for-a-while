@@ -10,6 +10,8 @@ interface TicketTableRowProps {
 }
 
 export const TicketTableRow = ({ ticket, index }: TicketTableRowProps) => {
+    const firstNamePic = ticket.pic_name?.split(' ')[0] || '';
+    const firstNameRequestor = ticket.requestor_name?.split(' ')[0] || '';
     return (
         <tr className="border-b border-mono-light-grey bg-mono-white hover:bg-blue-mtm-100/20">
             <td className="px-4 py-3 text-center">
@@ -19,23 +21,27 @@ export const TicketTableRow = ({ ticket, index }: TicketTableRowProps) => {
                 <Text>{ticket.description}</Text>
             </td>
             <td className="px-4 py-3">
-                <StatusCell statusName={ticket.current_status} hexCode={ticket.current_status_hex_code} />
+                <div className="flex items-center justify-center">
+                    <StatusCell statusName={ticket.current_status} hexCode={ticket.current_status_hex_code} />
+                </div>
             </td>
             <td className="px-4 py-3">
-                <Text>{ticket.ticket_age_days} Hari</Text>
+                <Text className="text-right">{ticket.ticket_age_days} Hari</Text>
             </td>
             <td className="px-4 py-3">
                 <DeadlineCell deadline={ticket.deadline} daysRemaining={ticket.days_remaining} />
             </td>
             <td className="px-4 py-3">
-                <Text>{ticket.requestor_name}</Text>
+                <Text>{firstNameRequestor}</Text>
                 <Text weight="bold">{ticket.requestor_department}</Text>
             </td>
             <td className="px-4 py-3">
-                <Text>{ticket.pic_name || '-'}</Text>
+                <Text>{firstNamePic || '-'}</Text>
             </td>
             <td className="px-4 py-3">
-                <ActionsCell ticketId={ticket.ticket_id} />
+                <div className="flex items-center justify-center">
+                    <ActionsCell ticketId={ticket.ticket_id} />
+                </div>
             </td>
         </tr>
     );
