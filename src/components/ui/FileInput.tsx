@@ -51,10 +51,6 @@ export const FileInput = ({
     const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
     useEffect(() => {
-        setFiles(initialFiles);
-    }, [initialFiles]);
-
-    useEffect(() => {
         const newUrls: Record<string, string> = {};
         files.forEach(file => {
             if (file instanceof File) {

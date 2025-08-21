@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useCreateTicket, useCreateTicketActions } from '../../../store/createTicketStore';
 import { FormField } from '../../ui/FormField';
 import { Combobox, type ComboboxOption } from '../../ui/Combobox';
-import { FileInput } from '../../ui/FileInput';
+import { FileInput, type UploadedFile } from '../../ui/FileInput';
 import { DatePicker } from '../../ui/DatePicker';
 import 'react-day-picker/dist/style.css';
 import { Text } from '../../ui/Text';
@@ -24,6 +24,13 @@ export const CreateTicketForm = () => {
     const specifiedLocationOptions: ComboboxOption[] = useMemo(
         () => options.specifiedLocations.map((l) => ({ value: l.id, label: l.name })),
         [options.specifiedLocations]
+    );
+
+    const handleFilesChange = useCallback(
+        (files: (File | UploadedFile)[]) => {
+            setFormField('support_files', files as File[]);
+        },
+        [setFormField]
     );
 
     const selectedDepartment = departmentOptions.find(d => d.value === formData.department_target_id) || null;
@@ -88,7 +95,7 @@ export const CreateTicketForm = () => {
             <div className="md:col-span-2">
                 <FileInput
                     label="File Pendukung (Opsional)"
-                    onFilesChange={(files) => setFormField('support_files', files as File[])}
+                    onFilesChange={handleFilesChange}
                     helpText="Anda bisa upload lebih dari satu file"
                     multiple
                 />
