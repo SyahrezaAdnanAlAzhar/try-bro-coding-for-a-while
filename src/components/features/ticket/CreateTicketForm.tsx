@@ -3,11 +3,9 @@ import { useCreateTicket, useCreateTicketActions } from '../../../store/createTi
 import { FormField } from '../../ui/FormField';
 import { Combobox, type ComboboxOption } from '../../ui/Combobox';
 import { FileInput } from '../../ui/FileInput';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
-import { format } from 'date-fns';
-import { Text } from '../../ui/Text';
 import { DatePicker } from '../../ui/DatePicker';
+import 'react-day-picker/dist/style.css';
+import { Text } from '../../ui/Text';
 
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
@@ -101,7 +99,7 @@ export const CreateTicketForm = () => {
                 <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Deadline (Opsional)</label>
                 <DatePicker
                     value={formData.deadline}
-                    onChange={(date) => setFormField('deadline', date)}
+                    onChange={(date) => setFormField('deadline', date || null)}
                 />
             </div>
         </div>
