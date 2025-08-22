@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactElement } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
+import tinycolor from 'tinycolor2';
 import '../../App.css'
 
 
@@ -40,6 +41,7 @@ export interface ButtonProps
     isLoading?: boolean;
     leftIcon?: ReactElement;
     rightIcon?: ReactElement;
+    customColor?: string;
 }
 
 
@@ -54,19 +56,31 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             leftIcon,
             rightIcon,
             children,
+            customColor,
+            style,
             ...props
         },
         ref
     ) => {
         const iconClasses = 'mx-2';
 
+        const customStyle = customColor
+            ? {
+                backgroundColor: customColor,
+                color: 'white',
+                '--hover-bg-color': tinycolor(customColor).setAlpha(0.75).toString(),
+            }
+            : {};
+
         return (
             <button
                 className={twMerge(
-                    buttonVariants({ variant, size, fullWidth, className })
+                    customColor ? 'text-mono-white hover:bg-[--hover-bg-color]' : buttonVariants({ variant, size, fullWidth }),
+                    className
                 )}
                 ref={ref}
                 disabled={isLoading || props.disabled}
+                style={{ ...style, ...customStyle }}
                 {...props}
             >
                 {isLoading ? (
