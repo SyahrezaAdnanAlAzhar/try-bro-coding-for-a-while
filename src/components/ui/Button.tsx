@@ -44,7 +44,6 @@ export interface ButtonProps
     customColor?: string;
 }
 
-
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
@@ -67,7 +66,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const customStyle = customColor
             ? {
                 backgroundColor: customColor,
-                color: 'white',
                 '--hover-bg-color': tinycolor(customColor).setAlpha(0.75).toString(),
             }
             : {};
@@ -75,7 +73,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <button
                 className={twMerge(
-                    customColor ? 'text-mono-white hover:bg-[--hover-bg-color]' : buttonVariants({ variant, size, fullWidth }),
+                    buttonVariants({ variant: customColor ? null : variant, size, fullWidth }),
+                    customColor ? 'text-mono-white hover:bg-[--hover-bg-color]' : '',
                     className
                 )}
                 ref={ref}
