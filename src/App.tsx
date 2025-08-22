@@ -8,7 +8,8 @@ import { MainLayout } from './layouts/MainLayout';
 import JobPage from './pages/JobPage';
 import { AppInitializer } from './components/AppInitializer'
 import CreateTicketPage from './pages/CreateTicketPage';
-import { Can } from './components/auth/Can'
+import { Can } from './components/auth/Can';
+import ApprovalPage from './pages/ApprovalPage'; 
 
 function App() {
   return (
@@ -25,6 +26,17 @@ function App() {
               element={
                 <ProtectedRoute>
                   <JobPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/approval"
+              element={
+                <ProtectedRoute>
+                  <Can permission="CREATE_TICKET">
+                    <ApprovalPage />
+                  </Can>
                 </ProtectedRoute>
               }
             />

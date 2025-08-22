@@ -7,6 +7,7 @@ import { LogOut } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import "../App.css"
 import { useMemo } from 'react';
+import { useAuthorization } from '../hooks/useAuthorization';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
@@ -14,6 +15,7 @@ export const Navbar = () => {
     const { logout } = useAuthActions();
     const navigate = useNavigate();
     const location = useLocation();
+    const { can } = useAuthorization();
 
     const departments = useDepartments();
     const selectedDepartmentId = useSelectedDepartmentId();
@@ -70,15 +72,16 @@ export const Navbar = () => {
                         </Link>
                     </div>
 
-                    {/* TICKET NAV */}
+                    {/* MAIN NAV */}
                     <div className="items-baseline">
                         <NavLink to="/" className={navLinkClasses} end>
                             Ticket
                         </NavLink>
-                    </div>
-
-                    {/* JOB NAV -  IF AVAILABLE */}
-                    <div className="items-baseline">
+                        {isLoggedIn && can('CREATE_TICKET') && (
+                            <NavLink to="/approval" className={navLinkClasses}>
+                                Approval
+                            </NavLink>
+                        )}
                         {canViewJobLink && (
                             <NavLink to="/job" className={navLinkClasses}>
                                 Job
