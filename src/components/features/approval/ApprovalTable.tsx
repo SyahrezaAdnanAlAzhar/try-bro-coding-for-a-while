@@ -5,13 +5,13 @@ import { Text } from '../../ui/Text';
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
         <tr>
-            <th className="w-12 px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">No</th>
-            <th className="px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">Job Description</th>
-            <th className="px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">Status</th>
-            <th className="px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">Umur Tiket</th>
-            <th className="px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">Deadline</th>
-            <th className="px-4 py-3 text-left text-sm font-bold uppercase text-mono-dark-grey">Requestor</th>
-            <th className="w-56 px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Actions</th>
+            <th className="w-[48px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">No</th>
+            <th className="px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Job Description</th>
+            <th className="w-[100px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Status</th>
+            <th className="w-[100px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Umur Tiket</th>
+            <th className="w-[200px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Deadline</th>
+            <th className="w-[160px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Requestor</th>
+            <th className="w-[120px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Actions</th>
         </tr>
     </thead>
 );

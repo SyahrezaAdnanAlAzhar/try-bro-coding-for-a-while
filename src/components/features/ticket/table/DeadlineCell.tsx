@@ -31,7 +31,7 @@ const formatDurationFromDays = (totalDays: number): string => {
 
 export const DeadlineCell = ({ deadline, daysRemaining }: DeadlineCellProps) => {
     if (!deadline) {
-        return <Text variant="body-md">-</Text>;
+        return <Text variant="body-md" className="text-center">-</Text>;
     }
 
     const isOverdue = daysRemaining !== null && daysRemaining < 0;
