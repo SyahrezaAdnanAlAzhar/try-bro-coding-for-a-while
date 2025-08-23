@@ -1,8 +1,8 @@
 import { type Ticket } from '../../../../types/api';
 import { Text } from '../../../ui/Text';
-import { StatusCell } from './StatusCell';
 import { DeadlineCell } from './DeadlineCell';
 import { ActionsCell } from './ActionsCell';
+import { StatusCell } from './StatusCell';
 
 interface TicketTableRowProps {
     ticket: Ticket;
@@ -22,7 +22,7 @@ export const TicketTableRow = ({ ticket, index }: TicketTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <div className="flex items-center justify-center">
-                    <StatusCell statusName={ticket.current_status} hexCode={ticket.current_status_hex_code} />
+                    <StatusCell statusName={ticket.current_status} />
                 </div>
             </td>
             <td className="px-4 py-3">

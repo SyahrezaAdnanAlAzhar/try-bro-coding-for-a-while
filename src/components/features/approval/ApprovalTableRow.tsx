@@ -3,6 +3,7 @@ import { Text } from '../../ui/Text';
 import { StatusCell } from '../../features/ticket/table/StatusCell';
 import { DeadlineCell } from '../../features/ticket/table/DeadlineCell';
 import { ApprovalActionsCell } from './ApprovalActionsCell';
+import { DepartmentBadge } from '../department/DepartmentBadge';
 
 interface ApprovalTableRowProps {
     ticket: Ticket;
@@ -21,7 +22,12 @@ export const ApprovalTableRow = ({ ticket, index }: ApprovalTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <div className="flex justify-center">
-                    <StatusCell statusName={ticket.current_status} hexCode={ticket.current_status_hex_code} />
+                    <DepartmentBadge departmentName={ticket.department_target_name} />
+                </div>
+            </td>
+            <td className="px-4 py-3">
+                <div className="flex justify-center">
+                    <StatusCell statusName={ticket.current_status} />
                 </div>
             </td>
             <td className="px-4 py-3 text-center">

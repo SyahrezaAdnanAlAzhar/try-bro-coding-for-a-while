@@ -13,6 +13,15 @@ const NAVBAR_COLORS = [
     'bg-basic-purple-light',
 ];
 
+const BADGE_COLORS = [
+    'bg-basic-red',
+    'bg-basic-orange',
+    'bg-basic-yellow',
+    'bg-basic-green',
+    'bg-basic-blue',
+    'bg-basic-purple',
+]
+
 interface DepartmentState {
     departments: Department[];
     selectedDepartmentId: number | null;
@@ -26,6 +35,7 @@ interface DepartmentActions {
 
 interface DepartmentSelectors {
     getNavbarColorClass: (departmentName?: string) => string;
+    getBadgeColorClass: (departmentName?: string) => string;
     getSortedDepartments: () => Department[];
 }
 
@@ -89,6 +99,22 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
             }
 
             return NAVBAR_COLORS[index % NAVBAR_COLORS.length];
+        },
+        getBadgeColorClass: (departmentName) => {
+            const sortedDepartments = get().departments;
+            if (!departmentName || sortedDepartments.length === 0) {
+                return 'bg-blue-mtm-100';
+            }
+
+            const index = sortedDepartments.findIndex(
+                (dep) => dep.name.toUpperCase() === departmentName.toUpperCase()
+            );
+
+            if (index === -1) {
+                return 'bg-blue-mtm-100';
+            }
+
+            return BADGE_COLORS[index % NAVBAR_COLORS.length];
         },
         getSortedDepartments: () => {
             return get().departments;

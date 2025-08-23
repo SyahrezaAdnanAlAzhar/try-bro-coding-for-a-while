@@ -4,6 +4,7 @@ import type { TicketStatus } from '../types/api';
 interface StatusState {
     statuses: TicketStatus[];
     statusMap: Map<number, TicketStatus>;
+    statusNameMap: Map<string, TicketStatus>;
     status: 'idle' | 'loading' | 'success' | 'error';
 }
 
@@ -13,7 +14,7 @@ interface StatusActions {
 
 interface StatusSelectors {
     getStatusById: (id: number) => TicketStatus | undefined;
-    getTextColorForStatus: (id: number) => 'text-mono-white';
+    getStatusByName: (name: string) => TicketStatus | undefined;
 }
 
 type StatusStore = StatusState & {
@@ -26,6 +27,7 @@ const API_BASE_URL = '/api/e-memo-job-reservation';
 export const useStatusStore = create<StatusStore>((set, get) => ({
     statuses: [],
     statusMap: new Map(),
+    statusNameMap: new Map(),
     status: 'idle',
 
     actions: {
@@ -40,8 +42,9 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
 
                 const { data }: { data: TicketStatus[] } = await response.json();
                 const statusMap = new Map(data.map((status) => [status.id, status]));
+                const statusNameMap = new Map(data.map((status) => [status.name.toUpperCase(), status]));
 
-                set({ statuses: data, statusMap, status: 'success' });
+                set({ statuses: data, statusMap, statusNameMap, status: 'success' });
             } catch (error) {
                 console.error('Error fetching statuses:', error);
                 set({ status: 'error' });
@@ -53,9 +56,10 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
         getStatusById: (id) => {
             return get().statusMap.get(id);
         },
-        getTextColorForStatus: (_id) => {
-            return 'text-mono-white';
-        },
+
+        getStatusByName: (name) => {
+            return get().statusNameMap.get(name.toUpperCase());
+        }
     },
 }));
 
