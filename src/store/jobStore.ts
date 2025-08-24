@@ -34,11 +34,12 @@ export const useJobStore = create<JobStore>((set) => ({
             }
 
             const params = new URLSearchParams({
+                section_id: '2',
                 department_target_name: user.employee_department,
             });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/jobs?${params.toString()}`, {
+                const response = await fetch(`${API_BASE_URL}/tickets?${params.toString()}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
