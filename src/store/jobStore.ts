@@ -32,7 +32,7 @@ export const useJobStore = create<JobStore>((set) => ({
                 set({ jobs: [], status: 'success' });
                 return;
             }
-
+            console.log(user.employee_department)
             const params = new URLSearchParams({
                 section_id: '2',
                 department_target_name: user.employee_department,
