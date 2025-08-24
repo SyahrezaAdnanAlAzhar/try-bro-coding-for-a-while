@@ -17,7 +17,7 @@ export const ApprovalTableRow = ({ ticket, index }: ApprovalTableRowProps) => {
             <td className="px-4 py-3 text-center">
                 <Text weight="bold">{index + 1}</Text>
             </td>
-            <td className="px-4 py-3">
+            <td className="px-4 py-3 text-left">
                 <Text>{ticket.description}</Text>
             </td>
             <td className="px-4 py-3">

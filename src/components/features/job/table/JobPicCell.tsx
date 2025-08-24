@@ -53,7 +53,7 @@ export const JobPicCell = ({ picName, jobId, jobDescription }: JobPicCellProps) 
                 jobDescription={jobDescription}
                 onConfirm={handleAssignConfirm}
             >
-                <Button size="base" variant="blue-mtm-dark">
+                <Button size="base" variant="blue-mtm-light">
                     Assign
                 </Button>
             </AssignPicModal>

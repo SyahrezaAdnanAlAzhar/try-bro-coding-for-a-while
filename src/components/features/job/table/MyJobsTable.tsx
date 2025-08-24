@@ -1,6 +1,6 @@
-import { useJobs, useJobStatus } from '../../../../store/jobStore';
+import { useMyJobs, useMyJobsStatus } from '../../../../store/jobStore';
+import { MyJobsTableRow } from './MyJobsTableRow';
 import { Text } from '../../../ui/Text';
-import { JobTableRow } from './JobTableRow';
 
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
@@ -11,9 +11,8 @@ const TableHeader = () => (
             <th className="w-[120px] px-4 py-3 text-center">Umur Tiket</th>
             <th className="w-[200px] px-4 py-3 text-center">Deadline</th>
             <th className="w-[160px] px-4 py-3 text-center">Requestor</th>
-            <th className="w-[160px] px-4 py-3 text-center">PIC Job</th>
             <th className="w-[160px] px-4 py-3 text-center">Lokasi</th>
-            <th className="w-32 px-4 py-3 text-right"></th>
+            <th className="w-52 px-4 py-3 text-right"></th>
         </tr>
     </thead>
 );
@@ -28,7 +27,6 @@ const TableSkeleton = () => (
                 <td className="px-4 py-3"><div className="h-6 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-10 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-10 w-full rounded bg-gray-200 animate-pulse"></div></td>
-                <td className="px-4 py-3"><div className="h-10 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-6 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-8 w-full rounded bg-gray-200 animate-pulse"></div></td>
             </tr>
@@ -36,9 +34,9 @@ const TableSkeleton = () => (
     </tbody>
 );
 
-export const JobTable = () => {
-    const jobs = useJobs();
-    const status = useJobStatus();
+export const MyJobsTable = () => {
+    const myJobs = useMyJobs();
+    const status = useMyJobsStatus();
 
     return (
         <div className="overflow-x-auto rounded-[24px] border border-mono-light-grey shadow-s-400">
@@ -47,18 +45,18 @@ export const JobTable = () => {
                 {status === 'loading' && <TableSkeleton />}
                 {status === 'success' && (
                     <tbody>
-                        {jobs.length > 0 ? (
-                            jobs.map((job, index) => (
-                                <JobTableRow key={job.ticket_id} job={job} index={index} />
+                        {myJobs.length > 0 ? (
+                            myJobs.map((job, index) => (
+                                <MyJobsTableRow key={job.ticket_id} job={job} index={index} />
                             ))
                         ) : (
-                            <tr><td colSpan={9} className="py-10 text-center"><Text color="mono-grey">Tidak ada data job yang ditemukan.</Text></td></tr>
+                            <tr><td colSpan={8} className="py-10 text-center"><Text color="mono-grey">Anda tidak memiliki job yang di-assign.</Text></td></tr>
                         )}
                     </tbody>
                 )}
                 {status === 'error' && (
                     <tbody>
-                        <tr><td colSpan={9} className="py-10 text-center"><Text color="add-red">Gagal memuat data job.</Text></td></tr>
+                        <tr><td colSpan={8} className="py-10 text-center"><Text color="add-red">Gagal memuat data job Anda.</Text></td></tr>
                     </tbody>
                 )}
             </table>
