@@ -21,6 +21,7 @@ interface TicketTableActions {
     fetchTickets: (params: { departmentId: number }) => Promise<void>;
     setFilters: (newFilters: Partial<TicketTableFilters>) => void;
     setSort: (newSort: TicketTableSort) => void;
+    reset: () => void;
 }
 
 type TicketTableStore = TicketTableState & {
@@ -29,7 +30,7 @@ type TicketTableStore = TicketTableState & {
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
-export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
+const initialState: TicketTableState = {
     tickets: [],
     status: 'idle',
     filters: {
@@ -39,6 +40,10 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         by: 'priority',
         direction: 'asc',
     },
+}
+
+export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
+    ...initialState,
 
     actions: {
         fetchTickets: async ({ departmentId }) => {
@@ -76,6 +81,9 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         setSort: (newSort) => {
             set({ sort: newSort });
         },
+        reset: () => {
+            initialState
+        }
     },
 }));
 

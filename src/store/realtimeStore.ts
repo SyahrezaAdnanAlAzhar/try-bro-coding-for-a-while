@@ -10,15 +10,20 @@ export interface RealtimeActions {
     setConnectionStatus: (status: RealtimeState['connectionStatus']) => void;
     handleEditingStarted: (payload: EditingPayload) => void;
     handleEditingFinished: (payload: EditingPayload) => void;
+    reset: () => void;
 }
 
 export type RealtimeStore = RealtimeState & {
     actions: RealtimeActions;
 };
 
-export const useRealtimeStore = create<RealtimeStore>((set, get) => ({
+const initialState: RealtimeState = {
     connectionStatus: 'disconnected',
     activeEditor: null,
+};
+
+export const useRealtimeStore = create<RealtimeStore>((set, get) => ({
+    ...initialState,
     actions: {
         setConnectionStatus: (status) => set({ connectionStatus: status }),
         handleEditingStarted: (payload) => {
@@ -30,6 +35,9 @@ export const useRealtimeStore = create<RealtimeStore>((set, get) => ({
             if (get().activeEditor?.context_id === payload.context_id) {
                 set({ activeEditor: null });
             }
+        },
+        reset: () => {
+            set(initialState);
         },
     },
 }));

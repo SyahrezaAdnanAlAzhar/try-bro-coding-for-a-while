@@ -23,6 +23,7 @@ interface TicketSummaryActions {
     fetchOldestYear: () => Promise<void>;
     fetchSummaryData: (params: { departmentId: number | null }) => Promise<void>;
     setFilter: (newFilters: Partial<TicketSummaryFilters>) => void;
+    reset: () => void;
 }
 
 type TicketSummaryStore = TicketSummaryState & {
@@ -31,7 +32,7 @@ type TicketSummaryStore = TicketSummaryState & {
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
-export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
+const initialState: TicketSummaryState = {
     summaryData: [],
     oldestYear: null,
     filters: {
@@ -39,6 +40,10 @@ export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
         year: new Date().getFullYear(),
     },
     status: 'idle',
+};
+
+export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
+    ...initialState,
 
     actions: {
         fetchOldestYear: async () => {
@@ -94,6 +99,10 @@ export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
                 filters: { ...state.filters, ...newFilters },
             }));
         },
+
+        reset: () => {
+            initialState
+        }
     },
 }));
 

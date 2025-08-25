@@ -12,6 +12,7 @@ interface JobState {
 interface JobActions {
     fetchJobs: () => Promise<void>;
     fetchMyJobs: () => Promise<void>;
+    reset: () => void;
 }
 
 type JobStore = JobState & {
@@ -20,11 +21,15 @@ type JobStore = JobState & {
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
-export const useJobStore = create<JobStore>((set) => ({
+const initialState: JobState = {
     jobs: [],
     myJobs: [],
     status: 'idle',
     myJobsStatus: 'idle',
+};
+
+export const useJobStore = create<JobStore>((set) => ({
+    ...initialState,
 
     actions: {
         fetchJobs: async () => {
@@ -86,6 +91,9 @@ export const useJobStore = create<JobStore>((set) => ({
                 console.error('Error fetching my jobs:', error);
                 set({ myJobsStatus: 'error' });
             }
+        },
+        reset: () => {
+            set(initialState);
         },
     },
 }));

@@ -9,6 +9,7 @@ interface ApprovalState {
 
 interface ApprovalActions {
     fetchApprovalTickets: () => Promise<void>;
+    reset: () => void;
 }
 
 type ApprovalStore = ApprovalState & {
@@ -16,6 +17,11 @@ type ApprovalStore = ApprovalState & {
 };
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
+
+const initialState: ApprovalState = {
+    tickets: [],
+    status: 'idle',
+};
 
 const getDepartmentIdByName = async (name: string): Promise<number | null> => {
     try {
@@ -30,8 +36,7 @@ const getDepartmentIdByName = async (name: string): Promise<number | null> => {
 };
 
 export const useApprovalStore = create<ApprovalStore>((set) => ({
-    tickets: [],
-    status: 'idle',
+    ...initialState,
 
     actions: {
         fetchApprovalTickets: async () => {
@@ -73,6 +78,9 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
                 console.error('Error fetching approval tickets:', error);
                 set({ status: 'error' });
             }
+        },
+        reset: () => {
+            set(initialState);
         },
     },
 }));
