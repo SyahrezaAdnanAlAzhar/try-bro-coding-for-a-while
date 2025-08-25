@@ -1,9 +1,11 @@
 import { Text } from '../../../ui/Text';
 import { addDays, format, intervalToDuration, startOfToday } from 'date-fns';
+import { twMerge } from 'tailwind-merge';
 
 interface DeadlineCellProps {
     deadline: string | null;
     daysRemaining: number | null;
+    className?: string;
 }
 
 const formatDurationFromDays = (totalDays: number): string => {
@@ -29,9 +31,9 @@ const formatDurationFromDays = (totalDays: number): string => {
 };
 
 
-export const DeadlineCell = ({ deadline, daysRemaining }: DeadlineCellProps) => {
+export const DeadlineCell = ({ deadline, daysRemaining, className }: DeadlineCellProps) => {
     if (!deadline) {
-        return <Text variant="body-md" className="text-center">-</Text>;
+        return <Text variant="body-md" className={twMerge("text-center", className)}>-</Text>;
     }
 
     const isOverdue = daysRemaining !== null && daysRemaining < 0;
@@ -42,14 +44,14 @@ export const DeadlineCell = ({ deadline, daysRemaining }: DeadlineCellProps) => 
         : isUrgent
             ? 'text-basic-orange'
             : 'text-mono-dark-grey';
-    
+
     const absoluteDays = daysRemaining !== null ? Math.abs(daysRemaining) : 0;
     const durationText = formatDurationFromDays(absoluteDays);
     const suffix = isOverdue ? 'Terlambat' : 'Lagi';
 
     return (
-        <div>
-            <Text weight="bold" className={`${ daysRemainingColor } text-center`}>
+        <div className={className}>
+            <Text weight="bold" className={`${daysRemainingColor} text-center`}>
                 {durationText} {absoluteDays > 0 ? suffix : ''}
             </Text>
             <Text variant="body-sm" color="mono-dark-grey" className="text-center">
