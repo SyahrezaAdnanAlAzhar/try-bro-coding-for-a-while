@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import type { User } from "../types/api";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { useApprovalStore } from "./approvalStore";
+import { useCreateTicketStore } from "./createTicketStore";
+import { useJobStore } from "./jobStore";
+import { useRealtimeStore } from "./realtimeStore";
+import { useTicketSummaryStore } from "./ticketSummaryStore";
+import { useTicketTableStore } from "./ticketTableStore";
 
 export interface AuthState {
     accessToken: string | null;
@@ -75,6 +81,14 @@ export const useAuthStore = create<AuthStore>()(
                             console.error('Logout API call failed, but proceeding with local logout:', error);
                         }
                     }
+
+                    useApprovalStore.getState().actions.reset();
+                    useCreateTicketStore.getState().actions.reset();
+                    useJobStore.getState().actions.reset();
+                    useRealtimeStore.getState().actions.reset();
+                    useTicketSummaryStore.getState().actions.reset();
+                    useTicketTableStore.getState().actions.reset();
+
                     set({ accessToken: null, refreshToken: null, user: null, status: 'unauthenticated' });
                 },
 
