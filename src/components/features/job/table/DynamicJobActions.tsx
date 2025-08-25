@@ -66,7 +66,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
             }
 
             toast.success(`Aksi berhasil dijalankan.`);
-            fetchMyJobs(); // Refresh tabel
+            fetchMyJobs();
         } catch (error: any) {
             toast.error(error.message || 'An unexpected error occurred');
         } finally {
@@ -79,7 +79,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
     }
 
     if (actions.length === 0) {
-        return <Text variant="body-sm" color="mono-grey">-</Text>;
+        return <Text variant="body-sm" color="mono-grey"></Text>;
     }
 
     return (

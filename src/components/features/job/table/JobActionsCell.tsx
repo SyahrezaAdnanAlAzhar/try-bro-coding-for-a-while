@@ -14,7 +14,7 @@ export const JobActionsCell = ({ jobId }: JobActionsCellProps) => {
     const handlePriorityDown = () => console.log(`Priority down for job ${jobId}`);
 
     return (
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex items-center justify-center gap-1">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleView}>
                 <Eye className="h-5 w-5 text-blue-mtm-500" />
             </Button>
