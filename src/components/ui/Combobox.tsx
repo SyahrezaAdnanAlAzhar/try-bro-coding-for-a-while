@@ -110,7 +110,6 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                             setActiveIndex(-1);
                         }}
                         onClick={() => setIsOpen(!isOpen)}
-                        onFocus={() => setIsOpen(true)}
                         onKeyDown={handleKeyDown}
                         placeholder={placeholder}
                         disabled={disabled}
