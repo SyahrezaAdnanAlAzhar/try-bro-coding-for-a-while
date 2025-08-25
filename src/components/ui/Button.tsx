@@ -7,7 +7,7 @@ import '../../App.css'
 
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
+    'inline-flex items-center justify-center font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
     {
         variants: {
             variant: {
@@ -66,7 +66,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const customStyle = customColor
             ? {
                 backgroundColor: customColor,
-                '--hover-bg-color': tinycolor(customColor).setAlpha(0.75).toString(),
+                '--hover-bg-color': tinycolor(customColor).darken(20).toString(),
             }
             : {};
 
@@ -74,7 +74,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 className={twMerge(
                     buttonVariants({ variant: customColor ? null : variant, size, fullWidth }),
-                    customColor ? 'text-mono-white hover:bg-[--hover-bg-color]' : '',
+                    customColor ? 'text-mono-white hover:brightness-85' : '',
                     className
                 )}
                 ref={ref}
