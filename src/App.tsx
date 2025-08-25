@@ -9,7 +9,8 @@ import JobPage from './pages/JobPage';
 import { AppInitializer } from './components/AppInitializer'
 import CreateTicketPage from './pages/CreateTicketPage';
 import { Can } from './components/auth/Can';
-import ApprovalPage from './pages/ApprovalPage'; 
+import ApprovalPage from './pages/ApprovalPage';
+import TicketDetailPage from './pages/TicketDetailPage'
 
 function App() {
   return (
@@ -52,6 +53,14 @@ function App() {
               }
             />
 
+            <Route
+              path="/ticket/:id"
+              element={
+                <ProtectedRoute>
+                  <TicketDetailPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </MainLayout>
       </BrowserRouter>

@@ -1,13 +1,15 @@
 import { Eye, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { Can } from '../../../auth/Can';
+import { useNavigate } from 'react-router-dom';
 
 interface ActionsCellProps {
     ticketId: number;
 }
 
 export const ActionsCell = ({ ticketId }: ActionsCellProps) => {
-    const handleView = () => console.log(`View ticket ${ticketId}`);
+    const navigate = useNavigate();
+    const handleView = () => navigate(`/ticket/${ticketId}`);
     const handlePriorityUp = () => console.log(`Priority up for ticket ${ticketId}`);
     const handlePriorityDown = () => console.log(`Priority down for ticket ${ticketId}`);
 
