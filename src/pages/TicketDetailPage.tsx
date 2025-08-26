@@ -1,28 +1,26 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useNavigate, useParams } from 'react-router-dom';
 import { type Ticket } from '../types/api';
 import { Panel } from '../components/ui/Panel';
 import { Text } from '../components/ui/Text';
 import { TicketDetailView } from '../components/features/ticket/TicketDetailView';
+import { Button } from '../components/ui/Button';
+import { ArrowLeft } from 'lucide-react';
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export default function TicketDetailPage() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate(); 
     const [ticket, setTicket] = useState<Ticket | null>(null);
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-    const accessToken = useAuthStore((state) => state.accessToken);
 
     useEffect(() => {
         if (!id) return;
         const fetchTicket = async () => {
             setStatus('loading');
             try {
-                // Asumsi endpoint GET /tickets/{id} ada dan memerlukan auth
-                const response = await fetch(`${API_BASE_URL}/tickets/${id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const response = await fetch(`${API_BASE_URL}/tickets/${id}`);
                 if (!response.ok) throw new Error('Failed to fetch ticket details');
                 const { data } = await response.json();
                 setTicket(data);
@@ -33,14 +31,24 @@ export default function TicketDetailPage() {
             }
         };
         fetchTicket();
-    }, [id, accessToken]);
+    }, [id]);
 
     return (
         <Panel shadow="s-400">
             <div className="flex flex-col gap-6">
-                <Text as="h1" variant="heading-xl" weight="bold">
-                    Detail Tiket #{id}
-                </Text>
+                <div className="flex items-center gap-4">
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-10 w-10 p-0"
+                        onClick={() => navigate(-1)}
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <Text as="h1" variant="heading-xl" weight="bold">
+                        Detail Tiket #{id}
+                    </Text>
+                </div>
 
                 {status === 'loading' && <Text className="text-center">Loading details...</Text>}
                 {status === 'error' && <Text color="add-red" className="text-center">Gagal memuat detail tiket.</Text>}

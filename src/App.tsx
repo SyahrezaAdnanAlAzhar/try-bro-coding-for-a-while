@@ -56,9 +56,7 @@ function App() {
             <Route
               path="/ticket/:id"
               element={
-                <ProtectedRoute>
-                  <TicketDetailPage />
-                </ProtectedRoute>
+                <TicketDetailPage />
               }
             />
           </Routes>

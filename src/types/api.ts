@@ -44,8 +44,10 @@ export interface Ticket {
     deadline: string | null;
     days_remaining: number | null;
     requestor_name: string;
+    requestor_npk: string;
     requestor_department: string;
     pic_name: string | null;
+    pic_npk: string | null;
     pic_area_name: string | null;
     current_status: string;
     current_status_hex_code: string;

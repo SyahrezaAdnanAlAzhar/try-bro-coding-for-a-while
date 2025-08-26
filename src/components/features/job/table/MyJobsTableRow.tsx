@@ -29,7 +29,7 @@ export const MyJobsTableRow = ({ job, index }: MyJobsTableRowProps) => {
                 <Text>{job.ticket_age_days} Hari</Text>
             </td>
             <td className="px-4 py-3">
-                <DeadlineCell deadline={job.deadline} daysRemaining={job.days_remaining} />
+                <DeadlineCell deadline={job.deadline} daysRemaining={job.days_remaining} className="text-center" />
             </td>
             <td className="px-4 py-3">
                 <JobLocationCell physical={job.location_name} specified={job.specified_location_name} />

@@ -30,7 +30,7 @@ export const JobTableRow = ({ job, index }: JobTableRowProps) => {
                 <Text>{job.ticket_age_days} Hari</Text>
             </td>
             <td className="px-4 py-3">
-                <DeadlineCell deadline={job.deadline} daysRemaining={job.days_remaining} />
+                <DeadlineCell deadline={job.deadline} daysRemaining={job.days_remaining} className="text-center" />
             </td>
             <td className="px-4 py-3 text-center">
                 <JobPicCell picName={job.pic_name} jobId={job.job_id!} jobDescription={job.description} />

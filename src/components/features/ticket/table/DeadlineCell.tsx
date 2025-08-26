@@ -51,10 +51,10 @@ export const DeadlineCell = ({ deadline, daysRemaining, className }: DeadlineCel
 
     return (
         <div className={className}>
-            <Text weight="bold" className={`${daysRemainingColor} text-center`}>
+            <Text weight="bold" className={`${daysRemainingColor}`}>
                 {durationText} {absoluteDays > 0 ? suffix : ''}
             </Text>
-            <Text variant="body-sm" color="mono-dark-grey" className="text-center">
+            <Text variant="body-sm" color="mono-dark-grey">
                 {format(new Date(deadline), 'd MMMM yyyy')}
             </Text>
         </div>

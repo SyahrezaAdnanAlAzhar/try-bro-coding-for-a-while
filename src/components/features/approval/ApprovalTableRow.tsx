@@ -34,7 +34,7 @@ export const ApprovalTableRow = ({ ticket, index }: ApprovalTableRowProps) => {
                 <Text>{ticket.ticket_age_days} Hari</Text>
             </td>
             <td className="px-4 py-3">
-                <DeadlineCell deadline={ticket.deadline} daysRemaining={ticket.days_remaining} />
+                <DeadlineCell deadline={ticket.deadline} daysRemaining={ticket.days_remaining} className="text-center"/>
             </td>
             <td className="px-4 py-3">
                 <Text>{firstNameRequestor}</Text>
