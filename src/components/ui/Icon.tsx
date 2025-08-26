@@ -1,24 +1,37 @@
-import { forwardRef, type HTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
+import React, { useState, useEffect, type SVGProps } from 'react';
 
-interface IconProps extends HTMLAttributes<HTMLSpanElement> {
+interface IconProps extends SVGProps<SVGSVGElement> {
     name: string;
+    size?: number;
 }
 
-const Icon = forwardRef<HTMLSpanElement, IconProps>(
-    ({ name, className, ...props }, ref) => {
-        return (
-            <span
-                ref={ref}
-                className={twMerge('material-symbols-rounded', className)}
-                {...props}
-            >
-                {name}
-            </span>
-        );
+export const Icon = ({ name, size = 24, className, ...props }: IconProps) => {
+    const [SvgIcon, setSvgIcon] = useState<React.FC<React.SVGProps<SVGSVGElement>> | null>(null);
+
+    useEffect(() => {
+        const importIcon = async () => {
+            try {
+                const importedIcon = await import(`../../assets/icons/${name}.svg?react`);
+                setSvgIcon(() => importedIcon.default);
+            } catch (error) {
+                console.error(`Icon not found: ${name}`, error);
+                setSvgIcon(null);
+            }
+        };
+
+        importIcon();
+    }, [name]);
+
+    if (!SvgIcon) {
+        return <div style={{ width: size, height: size }} />;
     }
-);
 
-Icon.displayName = 'Icon';
-
-export { Icon };
+    return (
+        <SvgIcon
+            width={size}
+            height={size}
+            className={className}
+            {...props}
+        />
+    );
+};
