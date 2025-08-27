@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type { Ticket } from '../types/api';
+import { useAuthStore } from './authStore';
+import { useDepartmentStore } from './departmentStore';
 
 interface TicketTableFilters {
     search?: string;
@@ -22,6 +24,8 @@ interface TicketTableActions {
     setFilters: (newFilters: Partial<TicketTableFilters>) => void;
     setSort: (newSort: TicketTableSort) => void;
     reset: () => void;
+    reorderTickets: (sourceIndex: number, destinationIndex: number) => void;
+    saveTicketOrder: () => Promise<boolean>;
 }
 
 type TicketTableStore = TicketTableState & {
@@ -83,7 +87,52 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         },
         reset: () => {
             initialState
-        }
+        },
+        reorderTickets: (sourceIndex, destinationIndex) => {
+            set((state) => {
+                const items = Array.from(state.tickets);
+                const [reorderedItem] = items.splice(sourceIndex, 1);
+                items.splice(destinationIndex, 0, reorderedItem);
+                return { tickets: items };
+            });
+        },
+        saveTicketOrder: async () => {
+            const originalTickets = get().tickets;
+            const accessToken = useAuthStore.getState().accessToken;
+            const selectedDepartmentId = useDepartmentStore.getState().selectedDepartmentId;
+
+            if (originalTickets.length === 0 || !selectedDepartmentId) return false;
+
+            const payload = {
+                department_target_id: selectedDepartmentId,
+                items: originalTickets.map((ticket) => ({
+                    ticket_id: ticket.ticket_id,
+                    version: ticket.version,
+                })),
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/tickets/reorder`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to save order: ${response.status}`);
+                }
+
+                get().actions.fetchTickets({ departmentId: selectedDepartmentId });
+                return true;
+            } catch (error) {
+                console.error('Error saving ticket order:', error);
+                set({ tickets: originalTickets });
+                return false;
+            }
+        },
     },
 }));
 
