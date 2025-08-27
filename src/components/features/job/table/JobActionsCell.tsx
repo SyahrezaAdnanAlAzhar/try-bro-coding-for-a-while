@@ -1,10 +1,10 @@
-import { Eye, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { Can } from '../../../auth/Can';
 import { useNavigate } from 'react-router-dom';
 import { useJobActions, useJobs } from '../../../../store/jobStore';
 import { useToast } from '../../../../hooks/useToast';
 import { useDebouncedCallback } from 'use-debounce';
+import { Icon } from '../../../ui/Icon';
 
 interface JobActionsCellProps {
     jobId: number | null;
@@ -44,19 +44,19 @@ export const JobActionsCell = ({ jobId, currentIndex }: JobActionsCellProps) => 
 
     return (
         <div className="flex items-center justify-center gap-1">
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleView}>
-                <Eye className="h-5 w-5 text-blue-mtm-500" />
+            <Button customColor="transparent" size="sm" className="h-8 w-8 p-0" onClick={handleView}>
+                <Icon name="view_detail" size={28} />
             </Button>
             <Can permission="JOB_PRIORITY_MANAGE">
                 <div className="flex items-center">
                     {currentIndex > 0 && (
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handlePriorityUp}>
-                            <ArrowUp className="h-5 w-5 text-add-green" />
+                        <Button customColor="transparent" size="sm" className="h-8 w-8 p-0" onClick={handlePriorityUp}>
+                            <Icon name="prioritize_up" size={32} />
                         </Button>
                     )}
                     {currentIndex < jobs.length - 1 && (
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handlePriorityDown}>
-                            <ArrowDown className="h-5 w-5 text-add-red" />
+                        <Button customColor="transparent" size="sm" className="h-8 w-8 p-0" onClick={handlePriorityDown}>
+                            <Icon name="prioritize_down" size={32} />
                         </Button>
                     )}
                 </div>

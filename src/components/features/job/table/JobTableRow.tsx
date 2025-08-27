@@ -14,7 +14,7 @@ interface JobTableRowProps {
 
 export const JobTableRow = ({ job, index }: JobTableRowProps) => {
     return (
-        <tr className="border-b border-mono-light-grey bg-mono-white hover:bg-blue-mtm-100/20">
+        <>
             <td className="px-4 py-3 text-center">
                 <Text weight="bold">{index + 1}</Text>
             </td>
@@ -46,6 +46,6 @@ export const JobTableRow = ({ job, index }: JobTableRowProps) => {
                     {job.job_id && <DynamicJobActions jobId={job.job_id} jobDescription={job.description} />}
                 </div>
             </td>
-        </tr>
+        </>
     );
 };
