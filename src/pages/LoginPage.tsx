@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthActions } from '../store/authStore';
+import { useAuthActions, useAuthStatus } from '../store/authStore';
 import { Button } from '../components/ui/Button';
 import { FormField } from '../components/ui/FormField';
 import { Panel } from '../components/ui/Panel';
 import { Text } from '../components/ui/Text';
 import { useToast } from '../hooks/useToast';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface FormErrors {
     npk?: string;
@@ -14,10 +14,17 @@ interface FormErrors {
 export default function LoginPage() {
     const navigate = useNavigate();
     const { login } = useAuthActions();
+    const authStatus = useAuthStatus();
     const toast = useToast();
 
     const [formData, setFormData] = useState({ npk: '' });
     const [errors, setErrors] = useState<FormErrors>({});
+
+    useEffect(() => {
+        if (authStatus === 'authenticated') {
+            navigate('/', { replace: true });
+        }
+    }, [authStatus, navigate]);
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
@@ -63,6 +70,14 @@ export default function LoginPage() {
             );
         }
     };
+
+    if (authStatus === 'loading' || authStatus === 'authenticated') {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <Text>Loading...</Text>
+            </div>
+        );
+    }
 
     return (
         <div className="flex min-h-screen items-start justify-center bg-mono-white p-4">
