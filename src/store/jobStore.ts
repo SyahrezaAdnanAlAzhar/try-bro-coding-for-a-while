@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
+import { useDepartmentStore } from './departmentStore';
 
 interface JobState {
     jobs: Ticket[];
@@ -13,6 +14,8 @@ interface JobActions {
     fetchJobs: () => Promise<void>;
     fetchMyJobs: () => Promise<void>;
     reset: () => void;
+    reorderJobs: (sourceIndex: number, destinationIndex: number) => void;
+    saveJobOrder: () => Promise<boolean>;
 }
 
 type JobStore = JobState & {
@@ -28,7 +31,7 @@ const initialState: JobState = {
     myJobsStatus: 'idle',
 };
 
-export const useJobStore = create<JobStore>((set) => ({
+export const useJobStore = create<JobStore>((set, get) => ({
     ...initialState,
 
     actions: {
@@ -94,6 +97,57 @@ export const useJobStore = create<JobStore>((set) => ({
         },
         reset: () => {
             set(initialState);
+        },
+        reorderJobs: (sourceIndex, destinationIndex) => {
+            set((state) => {
+                const items = Array.from(state.jobs);
+                const [reorderedItem] = items.splice(sourceIndex, 1);
+                items.splice(destinationIndex, 0, reorderedItem);
+                return { jobs: items };
+            });
+        },
+        saveJobOrder: async () => {
+            const originalJobs = get().jobs;
+            const { user } = useAuthStore.getState();
+            const accessToken = useAuthStore.getState().accessToken;
+            const { departments } = useDepartmentStore.getState();
+
+            if (originalJobs.length === 0 || !user?.employee_department) return false;
+
+            const userDepartment = departments.find(
+                (dep) => dep.name.toUpperCase() === user.employee_department.toUpperCase()
+            );
+            if (!userDepartment) return false;
+
+            const payload = {
+                department_target_id: userDepartment.id,
+                items: originalJobs.map((job) => ({
+                    job_id: job.job_id,
+                    version: job.version,
+                })),
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/jobs/reorder`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to save order: ${response.status}`);
+                }
+
+                get().actions.fetchJobs();
+                return true;
+            } catch (error) {
+                console.error('Error saving job order:', error);
+                set({ jobs: originalJobs });
+                return false;
+            }
         },
     },
 }));
