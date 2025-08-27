@@ -1,10 +1,15 @@
-import { useTickets, useTicketTableStatus } from '../../../../store/ticketTableStore';
+import { useTickets, useTicketTableActions, useTicketTableStatus } from '../../../../store/ticketTableStore';
 import { TicketTableRow } from './TicketTableRow';
 import { Text } from '../../../ui/Text';
+import { SortableTable } from '../../../dnd/SortableTable';
+import { SortableTableRow } from '../../../dnd/SortableTableRow';
+import { useAuthorization } from '../../../../hooks/useAuthorization';
+import { Can } from '../../../auth/Can';
 
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
         <tr>
+            <Can permission="TICKET_PRIORITY_MANAGE"><th className="w-12 px-2 py-3"></th></Can>
             <th className="w-[48px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">No</th>
             <th className="px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Job Description</th>
             <th className="w-[100px] px-4 py-3 text-center text-sm font-bold uppercase text-mono-dark-grey">Status</th>
@@ -45,6 +50,31 @@ const TableSkeleton = () => (
 export const TicketTable = () => {
     const tickets = useTickets();
     const status = useTicketTableStatus();
+    const { reorderTickets } = useTicketTableActions();
+    const { can } = useAuthorization();
+
+    const canReorder = can('TICKET_PRIORITY_MANAGE');
+    const sortableItems = tickets.map(t => ({ id: t.ticket_id }));
+
+    const tableBody = (
+        <tbody>
+            {tickets.length > 0 ? (
+                tickets.map((ticket, index) =>
+                    canReorder ? (
+                        <SortableTableRow key={ticket.ticket_id} id={ticket.ticket_id}>
+                            <TicketTableRow ticket={ticket} index={index} />
+                        </SortableTableRow>
+                    ) : (
+                        <tr key={ticket.ticket_id} className="border-b border-mono-light-grey bg-mono-white">
+                            <TicketTableRow ticket={ticket} index={index} />
+                        </tr>
+                    )
+                )
+            ) : (
+                <tr><td colSpan={canReorder ? 9 : 8} className="py-10 text-center"><Text color="mono-grey">Tidak ada data tiket.</Text></td></tr>
+            )}
+        </tbody>
+    );
 
     return (
         <div className="overflow-x-auto rounded-[24px] border border-mono-light-grey shadow-s-400">
@@ -52,19 +82,13 @@ export const TicketTable = () => {
                 <TableHeader />
                 {status === 'loading' && <TableSkeleton />}
                 {status === 'success' && (
-                    <tbody>
-                        {tickets.length > 0 ? (
-                            tickets.map((ticket, index) => (
-                                <TicketTableRow key={ticket.ticket_id} ticket={ticket} index={index} />
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={8} className="py-10 text-center">
-                                    <Text color="mono-grey">Tidak ada data tiket yang ditemukan.</Text>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
+                    canReorder ? (
+                        <SortableTable items={sortableItems} onReorder={reorderTickets}>
+                            {tableBody}
+                        </SortableTable>
+                    ) : (
+                        tableBody
+                    )
                 )}
                 {status === 'error' && (
                     <tbody>

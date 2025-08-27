@@ -26,7 +26,7 @@ export const SortableTableRow = ({ id, children }: SortableTableRowProps) => {
     };
 
     return (
-        <tr ref={setNodeRef} style={style} {...attributes}>
+        <tr ref={setNodeRef} style={style} {...attributes} className="border-b border-mono-light-grey bg-mono-white hover:bg-blue-mtm-100/20">
             <td className="px-2 py-3 align-middle">
                 <button
                     {...listeners}

@@ -13,7 +13,7 @@ export const TicketTableRow = ({ ticket, index }: TicketTableRowProps) => {
     const firstNamePic = ticket.pic_name?.split(' ')[0] || '';
     const firstNameRequestor = ticket.requestor_name?.split(' ')[0] || '';
     return (
-        <tr className="border-b border-mono-light-grey bg-mono-white hover:bg-blue-mtm-100/20">
+        <>
             <td className="px-4 py-3 text-center">
                 <Text weight="bold">{index + 1}</Text>
             </td>
@@ -40,9 +40,9 @@ export const TicketTableRow = ({ ticket, index }: TicketTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <div className="flex items-center justify-center">
-                    <ActionsCell ticketId={ticket.ticket_id} />
+                    <ActionsCell ticketId={ticket.ticket_id} currentIndex={index} />
                 </div>
             </td>
-        </tr>
+        </>
     );
 };
