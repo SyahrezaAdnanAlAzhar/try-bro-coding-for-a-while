@@ -1,10 +1,15 @@
-import { useJobs, useJobStatus } from '../../../../store/jobStore';
+import { useAuthorization } from '../../../../hooks/useAuthorization';
+import { useJobActions, useJobs, useJobStatus } from '../../../../store/jobStore';
+import { Can } from '../../../auth/Can';
+import { SortableTable } from '../../../dnd/SortableTable';
+import { SortableTableRow } from '../../../dnd/SortableTableRow';
 import { Text } from '../../../ui/Text';
 import { JobTableRow } from './JobTableRow';
 
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
         <tr>
+            <Can permission="JOB_PRIORITY_MANAGE"><th className="w-12 px-2 py-3"></th></Can>
             <th className="w-[48px] px-4 py-3 text-center">No</th>
             <th className="px-4 py-3 text-center">Job Description</th>
             <th className="w-[100px] px-4 py-3 text-center">Status</th>
@@ -39,6 +44,31 @@ const TableSkeleton = () => (
 export const JobTable = () => {
     const jobs = useJobs();
     const status = useJobStatus();
+    const { reorderJobs } = useJobActions();
+    const { can } = useAuthorization();
+
+    const canReorder = can('JOB_PRIORITY_MANAGE');
+    const sortableItems = jobs.map(j => ({ id: j.ticket_id }));
+
+    const tableBody = (
+        <tbody>
+            {jobs.length > 0 ? (
+                jobs.map((job, index) =>
+                    canReorder ? (
+                        <SortableTableRow key={job.ticket_id} id={job.ticket_id}>
+                            <JobTableRow job={job} index={index} />
+                        </SortableTableRow>
+                    ) : (
+                        <tr key={job.ticket_id} className="border-b border-mono-light-grey bg-mono-white">
+                            <JobTableRow job={job} index={index} />
+                        </tr>
+                    )
+                )
+            ) : (
+                <tr><td colSpan={canReorder ? 10 : 9} className="py-10 text-center"><Text color="mono-grey">Tidak ada data job.</Text></td></tr>
+            )}
+        </tbody>
+    );
 
     return (
         <div className="overflow-x-auto rounded-[24px] border border-mono-light-grey shadow-s-400">
@@ -46,19 +76,17 @@ export const JobTable = () => {
                 <TableHeader />
                 {status === 'loading' && <TableSkeleton />}
                 {status === 'success' && (
-                    <tbody>
-                        {jobs.length > 0 ? (
-                            jobs.map((job, index) => (
-                                <JobTableRow key={job.ticket_id} job={job} index={index} />
-                            ))
-                        ) : (
-                            <tr><td colSpan={9} className="py-10 text-center"><Text color="mono-grey">Tidak ada data job yang ditemukan.</Text></td></tr>
-                        )}
-                    </tbody>
+                    canReorder ? (
+                        <SortableTable items={sortableItems} onReorder={reorderJobs}>
+                            {tableBody}
+                        </SortableTable>
+                    ) : (
+                        tableBody
+                    )
                 )}
                 {status === 'error' && (
                     <tbody>
-                        <tr><td colSpan={9} className="py-10 text-center"><Text color="add-red">Gagal memuat data job.</Text></td></tr>
+                        <tr><td colSpan={canReorder ? 10 : 9} className="py-10 text-center"><Text color="add-red">Gagal memuat data.</Text></td></tr>
                     </tbody>
                 )}
             </table>

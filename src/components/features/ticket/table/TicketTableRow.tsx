@@ -1,7 +1,7 @@
 import { type Ticket } from '../../../../types/api';
 import { Text } from '../../../ui/Text';
 import { DeadlineCell } from './DeadlineCell';
-import { ActionsCell } from './ActionsCell';
+import { ActionsCell } from './TicketActionsCell';
 import { StatusCell } from './StatusCell';
 
 interface TicketTableRowProps {

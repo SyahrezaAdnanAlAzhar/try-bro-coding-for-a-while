@@ -92,11 +92,7 @@ export const TicketTable = () => {
                 )}
                 {status === 'error' && (
                     <tbody>
-                        <tr>
-                            <td colSpan={8} className="py-10 text-center">
-                                <Text color="add-red">Gagal memuat data tiket.</Text>
-                            </td>
-                        </tr>
+                        <tr><td colSpan={canReorder ? 9 : 8} className="py-10 text-center"><Text color="add-red">Gagal memuat data.</Text></td></tr>
                     </tbody>
                 )}
             </table>

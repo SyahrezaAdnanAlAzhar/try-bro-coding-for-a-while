@@ -39,7 +39,7 @@ export const JobTableRow = ({ job, index }: JobTableRowProps) => {
                 <JobLocationCell physical={job.location_name} specified={job.specified_location_name} />
             </td>
             <td className="px-4 py-3">
-                <JobActionsCell jobId={job.job_id} />
+                <JobActionsCell jobId={job.job_id} currentIndex={index} />
             </td>
             <td className="px-4 py-3">
                 <div className="flex justify-center">
