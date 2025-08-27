@@ -26,9 +26,8 @@ export const FileCard = ({
     const formattedDate = format(new Date(uploadedAt), 'd MMMM yyyy', { locale: id });
 
     return (
-        <div className="flex items-center gap-4 rounded-lg bg-mono-light-grey/50 p-3">
-            <Icon name={iconName} size={40} className="flex-shrink-0 text-mono-dark-grey" />
-
+        <div className="flex items-center gap-4 rounded-[24px] bg-mono-light-grey/20 px-5 py-2">
+            <Icon name={iconName} size={40} className="flex-shrink-0" />
             <div className="flex-grow overflow-hidden">
                 <Text weight="bold" className="truncate">
                     {fileName}
@@ -42,10 +41,10 @@ export const FileCard = ({
             </div>
 
             <div className="flex flex-shrink-0 items-center gap-2">
-                <Button variant="ghost" size="sm" className="h-10 w-10 p-0" onClick={onView}>
+                <Button customColor="#F5F5FA" size="sm" className="h-10 w-10 p-0" onClick={onView}>
                     <Icon name="view_detail" size={24} />
                 </Button>
-                <Button variant="ghost" size="sm" className="h-10 w-10 p-0" onClick={onDownload}>
+                <Button customColor="#F5F5FA" size="sm" className="h-10 w-10 p-0" onClick={onDownload}>
                     <Icon name="download" size={24} />
                 </Button>
             </div>
