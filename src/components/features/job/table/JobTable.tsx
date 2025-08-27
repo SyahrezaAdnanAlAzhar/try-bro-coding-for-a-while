@@ -1,4 +1,6 @@
+import { useDebouncedCallback } from 'use-debounce';
 import { useAuthorization } from '../../../../hooks/useAuthorization';
+import { useToast } from '../../../../hooks/useToast';
 import { useJobActions, useJobs, useJobStatus } from '../../../../store/jobStore';
 import { Can } from '../../../auth/Can';
 import { SortableTable } from '../../../dnd/SortableTable';
@@ -44,8 +46,23 @@ const TableSkeleton = () => (
 export const JobTable = () => {
     const jobs = useJobs();
     const status = useJobStatus();
-    const { reorderJobs } = useJobActions();
+    const { reorderJobs, saveJobOrder } = useJobActions();
     const { can } = useAuthorization();
+    const toast = useToast();
+
+    const debouncedSave = useDebouncedCallback(async () => {
+        const success = await saveJobOrder();
+        if (success) {
+            toast.success('Urutan prioritas job berhasil disimpan.');
+        } else {
+            toast.error('Gagal menyimpan urutan job. Data akan dikembalikan.');
+        }
+    }, 5000);
+
+    const handleReorder = (sourceIndex: number, destinationIndex: number) => {
+        reorderJobs(sourceIndex, destinationIndex);
+        debouncedSave();
+    };
 
     const canReorder = can('JOB_PRIORITY_MANAGE');
     const sortableItems = jobs.map(j => ({ id: j.ticket_id }));
@@ -77,7 +94,7 @@ export const JobTable = () => {
                 {status === 'loading' && <TableSkeleton />}
                 {status === 'success' && (
                     canReorder ? (
-                        <SortableTable items={sortableItems} onReorder={reorderJobs}>
+                        <SortableTable items={sortableItems} onReorder={handleReorder}>
                             {tableBody}
                         </SortableTable>
                     ) : (

@@ -3,6 +3,8 @@ import { Button } from '../../../ui/Button';
 import { Can } from '../../../auth/Can';
 import { useNavigate } from 'react-router-dom';
 import { useJobActions, useJobs } from '../../../../store/jobStore';
+import { useToast } from '../../../../hooks/useToast';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface JobActionsCellProps {
     jobId: number | null;
@@ -11,20 +13,32 @@ interface JobActionsCellProps {
 
 export const JobActionsCell = ({ jobId, currentIndex }: JobActionsCellProps) => {
     const navigate = useNavigate();
-    const { reorderJobs } = useJobActions();
+    const { reorderJobs, saveJobOrder } = useJobActions();
     const jobs = useJobs();
+    const toast = useToast();
 
     if (!jobId) return null;
+
+    const debouncedSave = useDebouncedCallback(async () => {
+        const success = await saveJobOrder();
+        if (success) {
+            toast.success('Urutan prioritas job berhasil disimpan.');
+        } else {
+            toast.error('Gagal menyimpan urutan job. Data akan dikembalikan.');
+        }
+    }, 5000);
 
     const handleView = () => navigate(`/ticket/${jobId}`);
     const handlePriorityUp = () => {
         if (currentIndex > 0) {
             reorderJobs(currentIndex, currentIndex - 1);
+            debouncedSave();
         }
     };
     const handlePriorityDown = () => {
         if (currentIndex < jobs.length - 1) {
             reorderJobs(currentIndex, currentIndex + 1);
+            debouncedSave();
         }
     };
 

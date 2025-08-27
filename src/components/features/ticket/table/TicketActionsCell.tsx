@@ -3,6 +3,8 @@ import { Can } from '../../../auth/Can';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../../ui/Icon';
 import { useTickets, useTicketTableActions } from '../../../../store/ticketTableStore';
+import { useToast } from '../../../../hooks/useToast';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface ActionsCellProps {
     ticketId: number;
@@ -11,18 +13,30 @@ interface ActionsCellProps {
 
 export const ActionsCell = ({ ticketId, currentIndex }: ActionsCellProps) => {
     const navigate = useNavigate();
-    const { reorderTickets } = useTicketTableActions();
+    const { reorderTickets, saveTicketOrder } = useTicketTableActions();
     const tickets = useTickets();
+    const toast = useToast();
+
+    const debouncedSave = useDebouncedCallback(async () => {
+        const success = await saveTicketOrder();
+        if (success) {
+            toast.success('Urutan prioritas berhasil disimpan.');
+        } else {
+            toast.error('Gagal menyimpan urutan. Data akan dikembalikan.');
+        }
+    }, 5000);
 
     const handleView = () => navigate(`/ticket/${ticketId}`);
     const handlePriorityUp = () => {
         if (currentIndex > 0) {
             reorderTickets(currentIndex, currentIndex - 1);
+            debouncedSave();
         }
     };
     const handlePriorityDown = () => {
         if (currentIndex < tickets.length - 1) {
             reorderTickets(currentIndex, currentIndex + 1);
+            debouncedSave();
         }
     };
 

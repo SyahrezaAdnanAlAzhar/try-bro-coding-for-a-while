@@ -1,10 +1,12 @@
 import { useTickets, useTicketTableActions, useTicketTableStatus } from '../../../../store/ticketTableStore';
+import { useDebouncedCallback } from 'use-debounce';
 import { TicketTableRow } from './TicketTableRow';
 import { Text } from '../../../ui/Text';
 import { SortableTable } from '../../../dnd/SortableTable';
 import { SortableTableRow } from '../../../dnd/SortableTableRow';
 import { useAuthorization } from '../../../../hooks/useAuthorization';
 import { Can } from '../../../auth/Can';
+import { useToast } from '../../../../hooks/useToast';
 
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
@@ -50,8 +52,23 @@ const TableSkeleton = () => (
 export const TicketTable = () => {
     const tickets = useTickets();
     const status = useTicketTableStatus();
-    const { reorderTickets } = useTicketTableActions();
+    const { reorderTickets, saveTicketOrder } = useTicketTableActions();
     const { can } = useAuthorization();
+    const toast = useToast();
+
+    const debouncedSave = useDebouncedCallback(async () => {
+        const success = await saveTicketOrder();
+        if (success) {
+            toast.success('Urutan prioritas berhasil disimpan.');
+        } else {
+            toast.error('Gagal menyimpan urutan. Data akan dikembalikan.');
+        }
+    }, 5000);
+
+    const handleReorder = (sourceIndex: number, destinationIndex: number) => {
+        reorderTickets(sourceIndex, destinationIndex);
+        debouncedSave();
+    };
 
     const canReorder = can('TICKET_PRIORITY_MANAGE');
     const sortableItems = tickets.map(t => ({ id: t.ticket_id }));
@@ -83,7 +100,7 @@ export const TicketTable = () => {
                 {status === 'loading' && <TableSkeleton />}
                 {status === 'success' && (
                     canReorder ? (
-                        <SortableTable items={sortableItems} onReorder={reorderTickets}>
+                        <SortableTable items={sortableItems} onReorder={handleReorder}>
                             {tableBody}
                         </SortableTable>
                     ) : (

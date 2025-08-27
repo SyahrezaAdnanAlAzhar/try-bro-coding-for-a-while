@@ -36,7 +36,7 @@ export const MyJobsTableRow = ({ job, index }: MyJobsTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <div className="flex justify-center">
-                    <JobActionsCell jobId={job.job_id} />
+                    <JobActionsCell jobId={job.job_id} currentIndex={index} />
                 </div>
             </td>
             <td className="px-4 py-3">
