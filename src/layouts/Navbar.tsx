@@ -8,6 +8,7 @@ import { twMerge } from 'tailwind-merge';
 import "../App.css"
 import { useMemo } from 'react';
 import { useAuthorization } from '../hooks/useAuthorization';
+import { HistoryDropdown } from './HistoryDropdown';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
@@ -87,6 +88,9 @@ export const Navbar = () => {
                                 Job
                             </NavLink>
                         )}
+                        {isLoggedIn &&
+                            <HistoryDropdown navLinkClasses={navLinkClasses} />
+                        }
                     </div>
 
                     {/* AUTH */}

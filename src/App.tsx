@@ -11,6 +11,8 @@ import CreateTicketPage from './pages/CreateTicketPage';
 import { Can } from './components/auth/Can';
 import ApprovalPage from './pages/ApprovalPage';
 import TicketDetailPage from './pages/TicketDetailPage'
+import HistoryAllTicketsPage from './pages/HistoryAllTicketsPage'
+import HistoryMyTicketsPage from './pages/HistoryMyTicketsPage'
 
 function App() {
   return (
@@ -59,6 +61,16 @@ function App() {
                 <TicketDetailPage />
               }
             />
+
+            <Route
+              path="/history/all"
+              element={<ProtectedRoute><HistoryAllTicketsPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/history/my"
+              element={<ProtectedRoute><HistoryMyTicketsPage /></ProtectedRoute>}
+            />
+
           </Routes>
         </MainLayout>
       </BrowserRouter>
