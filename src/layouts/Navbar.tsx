@@ -29,7 +29,7 @@ export const Navbar = () => {
         if (location.pathname.startsWith('/job') && user) {
             return getNavbarColorClass(user.employee_department);
         }
-        if (location.pathname === '/' && selectedDepartmentId) {
+        if ((location.pathname === '/' || location.pathname.startsWith('/history')) && selectedDepartmentId) {
             const selectedDept = departments.find(d => d.id === selectedDepartmentId);
             return getNavbarColorClass(selectedDept?.name);
         }

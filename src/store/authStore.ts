@@ -7,7 +7,7 @@ import { useJobStore } from "./jobStore";
 import { useRealtimeStore } from "./realtimeStore";
 import { useTicketSummaryStore } from "./ticketSummaryStore";
 import { useTicketTableStore } from "./ticketTableStore";
-import { useHistoryAllStore } from "./historyAllStore";
+import { useHistoryAllStore } from "./historyAllTicketsStore";
 
 export interface AuthState {
     accessToken: string | null;

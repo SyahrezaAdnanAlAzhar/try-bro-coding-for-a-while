@@ -1,4 +1,4 @@
-import { useHistoryAllTickets, useHistoryAllStatus } from '../../../../store/historyAllStore';
+import { useHistoryAllTickets, useHistoryAllStatus } from '../../../../store/historyAllTicketsStore';
 import { HistoryTableRow } from './HistoryTableRow';
 import { Text } from '../../../ui/Text';
 

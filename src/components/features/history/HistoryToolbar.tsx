@@ -1,4 +1,4 @@
-import { useHistoryAllActions, useHistoryAllFilters } from '../../../store/historyAllStore';
+import { useHistoryAllActions, useHistoryAllFilters } from '../../../store/historyAllTicketsStore';
 import { SearchBar } from '../../ui/SearchBar';
 import { Button } from '../../ui/Button';
 import { Filter } from 'lucide-react';
