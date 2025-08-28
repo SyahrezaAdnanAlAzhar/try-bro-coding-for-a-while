@@ -1,6 +1,6 @@
-import { useHistoryAllTickets, useHistoryAllTicketStatus } from '../../../../store/historyAllTicketsStore';
 import { HistoryTableRow } from './HistoryTableRow';
 import { Text } from '../../../ui/Text';
+import type { Ticket } from '../../../../types/api';
 
 const TableHeader = () => (
     <thead className="bg-mono-light-grey/70">
@@ -34,10 +34,17 @@ const TableSkeleton = () => (
     </tbody>
 );
 
-export const HistoryTable = () => {
-    const tickets = useHistoryAllTickets();
-    const status = useHistoryAllTicketStatus();
+interface HistoryTableProps {
+    tickets: Ticket[];
+    status: 'idle' | 'loading' | 'success' | 'error';
+    emptyMessage?: string;
+}
 
+export const HistoryTable = ({
+    tickets,
+    status,
+    emptyMessage = "Tidak ada data riwayat tiket.",
+}: HistoryTableProps) => {
     return (
         <div className="overflow-x-auto rounded-[24px] border border-mono-light-grey shadow-s-400">
             <table className="min-w-full table-auto">
@@ -50,7 +57,7 @@ export const HistoryTable = () => {
                                 <HistoryTableRow key={ticket.ticket_id} ticket={ticket} index={index} />
                             ))
                         ) : (
-                            <tr><td colSpan={8} className="py-10 text-center"><Text color="mono-grey">Tidak ada data riwayat tiket.</Text></td></tr>
+                            <tr><td colSpan={8} className="py-10 text-center"><Text color="mono-grey">{emptyMessage}</Text></td></tr>
                         )}
                     </tbody>
                 )}
