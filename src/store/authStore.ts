@@ -7,7 +7,8 @@ import { useJobStore } from "./jobStore";
 import { useRealtimeStore } from "./realtimeStore";
 import { useTicketSummaryStore } from "./ticketSummaryStore";
 import { useTicketTableStore } from "./ticketTableStore";
-import { useHistoryAllStore } from "./historyAllTicketsStore";
+import { useHistoryAllTicketStore } from "./historyAllTicketsStore";
+import { useHistoryMyTicketStore } from "./historyMyTicketStore";
 
 export interface AuthState {
     accessToken: string | null;
@@ -85,7 +86,8 @@ export const useAuthStore = create<AuthStore>()(
 
                     useApprovalStore.getState().actions.reset();
                     useCreateTicketStore.getState().actions.reset();
-                    useHistoryAllStore.getState().actions.reset();
+                    useHistoryAllTicketStore.getState().actions.reset();
+                    useHistoryMyTicketStore.getState().actions.reset();
                     useJobStore.getState().actions.reset();
                     useRealtimeStore.getState().actions.reset();
                     useTicketSummaryStore.getState().actions.reset();

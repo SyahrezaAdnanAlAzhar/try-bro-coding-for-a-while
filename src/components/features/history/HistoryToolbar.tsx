@@ -1,11 +1,11 @@
-import { useHistoryAllActions, useHistoryAllFilters } from '../../../store/historyAllTicketsStore';
+import { useHistoryAllTicketActions, useHistoryAllTicketFilters } from '../../../store/historyAllTicketsStore';
 import { SearchBar } from '../../ui/SearchBar';
 import { Button } from '../../ui/Button';
 import { Filter } from 'lucide-react';
 
 export const HistoryToolbar = () => {
-    const filters = useHistoryAllFilters();
-    const { setFilters } = useHistoryAllActions();
+    const filters = useHistoryAllTicketFilters();
+    const { setFilters } = useHistoryAllTicketActions();
 
     const handleSearch = (query: string) => {
         setFilters({ search: query });

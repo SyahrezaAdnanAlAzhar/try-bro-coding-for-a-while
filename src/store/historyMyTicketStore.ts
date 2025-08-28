@@ -79,7 +79,7 @@ export const useHistoryMyTicketStore = create<HistoryMyTicketStore>((set, get) =
     },
 }));
 
-export const useHistoryMyTicketTickets = () => useHistoryMyTicketStore((state) => state.tickets);
+export const useHistoryMyTickets = () => useHistoryMyTicketStore((state) => state.tickets);
 export const useHistoryMyTicketStatus = () => useHistoryMyTicketStore((state) => state.status);
 export const useHistoryMyTicketFilters = () => useHistoryMyTicketStore((state) => state.filters);
 export const useHistoryMyTicketActions = () => useHistoryMyTicketStore((state) => state.actions);

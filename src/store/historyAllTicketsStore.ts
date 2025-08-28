@@ -5,25 +5,25 @@ interface HistoryFilters {
     search?: string;
 }
 
-interface HistoryAllState {
+interface HistoryAllTicketState {
     tickets: Ticket[];
     status: 'idle' | 'loading' | 'success' | 'error';
     filters: HistoryFilters;
 }
 
-interface HistoryAllActions {
+interface HistoryAllTicketActions {
     fetchHistoryTickets: (params: { departmentId: number }) => Promise<void>;
     setFilters: (newFilters: Partial<HistoryFilters>) => void;
     reset: () => void;
 }
 
-type HistoryAllStore = HistoryAllState & {
-    actions: HistoryAllActions;
+type HistoryAllTicketStore = HistoryAllTicketState & {
+    actions: HistoryAllTicketActions;
 };
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
-const initialState: HistoryAllState = {
+const initialState: HistoryAllTicketState = {
     tickets: [],
     status: 'idle',
     filters: {
@@ -31,7 +31,7 @@ const initialState: HistoryAllState = {
     },
 };
 
-export const useHistoryAllStore = create<HistoryAllStore>((set, get) => ({
+export const useHistoryAllTicketStore = create<HistoryAllTicketStore>((set, get) => ({
     ...initialState,
 
     actions: {
@@ -72,7 +72,7 @@ export const useHistoryAllStore = create<HistoryAllStore>((set, get) => ({
     },
 }));
 
-export const useHistoryAllTickets = () => useHistoryAllStore((state) => state.tickets);
-export const useHistoryAllStatus = () => useHistoryAllStore((state) => state.status);
-export const useHistoryAllFilters = () => useHistoryAllStore((state) => state.filters);
-export const useHistoryAllActions = () => useHistoryAllStore((state) => state.actions);
+export const useHistoryAllTickets = () => useHistoryAllTicketStore((state) => state.tickets);
+export const useHistoryAllTicketStatus = () => useHistoryAllTicketStore((state) => state.status);
+export const useHistoryAllTicketFilters = () => useHistoryAllTicketStore((state) => state.filters);
+export const useHistoryAllTicketActions = () => useHistoryAllTicketStore((state) => state.actions);

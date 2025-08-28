@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Text } from '../components/ui/Text';
 import { useDepartmentStatus, useSelectedDepartmentId } from '../store/departmentStore';
-import { useHistoryAllActions, useHistoryAllFilters } from '../store/historyAllTicketsStore';
+import { useHistoryAllTicketActions, useHistoryAllTicketFilters } from '../store/historyAllTicketsStore';
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { HistoryToolbar } from '../components/features/history/HistoryToolbar';
 import { HistoryTable } from '../components/features/history/table/HistoryTable';
@@ -9,8 +9,8 @@ import { HistoryTable } from '../components/features/history/table/HistoryTable'
 export default function HistoryAllTicketsPage() {
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
-    const historyFilters = useHistoryAllFilters();
-    const { fetchHistoryTickets } = useHistoryAllActions();
+    const historyFilters = useHistoryAllTicketFilters();
+    const { fetchHistoryTickets } = useHistoryAllTicketActions();
 
     useEffect(() => {
         if (selectedDepartmentId) {

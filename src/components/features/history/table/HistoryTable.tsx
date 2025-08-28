@@ -1,4 +1,4 @@
-import { useHistoryAllTickets, useHistoryAllStatus } from '../../../../store/historyAllTicketsStore';
+import { useHistoryAllTickets, useHistoryAllTicketStatus } from '../../../../store/historyAllTicketsStore';
 import { HistoryTableRow } from './HistoryTableRow';
 import { Text } from '../../../ui/Text';
 
@@ -36,7 +36,7 @@ const TableSkeleton = () => (
 
 export const HistoryTable = () => {
     const tickets = useHistoryAllTickets();
-    const status = useHistoryAllStatus();
+    const status = useHistoryAllTicketStatus();
 
     return (
         <div className="overflow-x-auto rounded-[24px] border border-mono-light-grey shadow-s-400">
