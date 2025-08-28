@@ -64,11 +64,21 @@ function App() {
 
             <Route
               path="/history/all"
-              element={<ProtectedRoute><HistoryAllTicketsPage /></ProtectedRoute>}
+              element={
+                <ProtectedRoute>
+                  <HistoryAllTicketsPage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/history/my"
-              element={<ProtectedRoute><HistoryMyTicketsPage /></ProtectedRoute>}
+              element={
+                <ProtectedRoute>
+                  <Can permission="CREATE_TICKET">
+                    <HistoryMyTicketsPage />
+                  </Can>
+                </ProtectedRoute>
+              }
             />
 
           </Routes>
