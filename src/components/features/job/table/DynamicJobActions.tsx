@@ -27,7 +27,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const accessToken = useAuthStore((state) => state.accessToken);
-    const { fetchMyJobs } = useJobActions();
+    const { fetchMyJobs, fetchJobs } = useJobActions();
     const toast = useToast();
 
     useEffect(() => {
@@ -66,6 +66,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
             }
 
             toast.success(`Aksi berhasil dijalankan.`);
+            await Promise.all([fetchJobs(), fetchMyJobs()]);
             fetchMyJobs();
         } catch (error: any) {
             toast.error(error.message || 'An unexpected error occurred');
