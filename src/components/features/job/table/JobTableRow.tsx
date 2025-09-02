@@ -6,6 +6,7 @@ import { JobPicCell } from './JobPicCell';
 import { JobLocationCell } from './JobLocationCell';
 import { JobActionsCell } from './JobActionsCell';
 import { DynamicJobActions } from './DynamicJobActions';
+import { SpendingAmountCell } from './SpendingAmountCell';
 
 interface JobTableRowProps {
     job: Ticket;
@@ -37,6 +38,9 @@ export const JobTableRow = ({ job, index }: JobTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <JobLocationCell physical={job.location_name} specified={job.specified_location_name} />
+            </td>
+            <td className="px-4 py-3 text-right align-middle">
+                <SpendingAmountCell amount={job.spending_amount} />
             </td>
             <td className="px-4 py-3">
                 <JobActionsCell jobId={job.job_id} currentIndex={index} />

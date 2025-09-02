@@ -5,6 +5,7 @@ import { DeadlineCell } from '../../../features/ticket/table/DeadlineCell';
 import { JobLocationCell } from './JobLocationCell';
 import { DynamicJobActions } from './DynamicJobActions';
 import { JobActionsCell } from './JobActionsCell';
+import { SpendingAmountCell } from './SpendingAmountCell';
 
 interface MyJobsTableRowProps {
     job: Ticket;
@@ -33,6 +34,9 @@ export const MyJobsTableRow = ({ job, index }: MyJobsTableRowProps) => {
             </td>
             <td className="px-4 py-3">
                 <JobLocationCell physical={job.location_name} specified={job.specified_location_name} />
+            </td>
+            <td className="px-4 py-3 text-right align-middle">
+                <SpendingAmountCell amount={job.spending_amount} />
             </td>
             <td className="px-4 py-3">
                 <div className="flex justify-center">

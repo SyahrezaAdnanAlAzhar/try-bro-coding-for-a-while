@@ -37,6 +37,7 @@ export interface Ticket {
     department_target_name: string;
     job_id: number | null;
     job_priority: number | null;
+    spending_amount: number | null;
     location_name: string;
     specified_location_name: string | null;
     created_at: string;

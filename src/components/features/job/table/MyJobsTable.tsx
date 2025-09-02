@@ -11,6 +11,7 @@ const TableHeader = () => (
             <th className="w-[120px] px-4 py-3 text-center">Umur Tiket</th>
             <th className="w-[200px] px-4 py-3 text-center">Deadline</th>
             <th className="w-[160px] px-4 py-3 text-center">Lokasi</th>
+            <th className="w-[160px] px-4 py-3 text-right">Biaya Pengeluaran</th>
             <th className="w-10 px-4 py-3 text-right"></th>
             <th className="w-56 px-4 py-3 text-right"></th>
         </tr>
@@ -26,6 +27,7 @@ const TableSkeleton = () => (
                 <td className="px-4 py-3"><div className="h-10 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-6 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-10 w-full rounded bg-gray-200 animate-pulse"></div></td>
+                <td className="px-4 py-3"><div className="h-6 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-6 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-8 w-full rounded bg-gray-200 animate-pulse"></div></td>
                 <td className="px-4 py-3"><div className="h-8 w-full rounded bg-gray-200 animate-pulse"></div></td>
