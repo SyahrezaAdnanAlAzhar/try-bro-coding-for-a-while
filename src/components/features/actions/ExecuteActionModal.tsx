@@ -3,6 +3,7 @@ import { Modal, ModalContent, ModalHeader, ModalFooter, ModalTitle, ModalTrigger
 import { Button } from '../../ui/Button';
 import { FormField } from '../../ui/FormField';
 import { FileInput } from '../../ui/FileInput';
+import { CustomCurrencyInput } from '../../ui/CurrencyInput';
 import { PrebuiltActionButton } from './PrebuiltActionButton';
 import { Text } from '../../ui/Text';
 
@@ -25,6 +26,7 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
     const [open, setOpen] = useState(false);
     const [reason, setReason] = useState('');
     const [files, setFiles] = useState<File[]>([]);
+    const [spendingAmount, setSpendingAmount] = useState<number | undefined>(0);
 
     const handleSubmit = () => {
         const body = new FormData();
@@ -34,6 +36,9 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
         }
         if (action.require_file) {
             files.forEach(file => body.append('Files', file));
+        }
+        if (action.action_name === 'Selesaikan Job' && spendingAmount && spendingAmount > 0) {
+            body.append('spending_amount', String(spendingAmount));
         }
         onConfirm(body);
         setOpen(false);
@@ -66,6 +71,17 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
                             rows={4}
                             required
                         />
+                    )}
+                    {action.action_name === 'Selesaikan Job' && (
+                        <div>
+                            <label className="mb-1 block text-base font-semibold text-blue-mtm-400">
+                                Biaya Pengeluaran (Opsional)
+                            </label>
+                            <CustomCurrencyInput
+                                value={spendingAmount}
+                                onValueChange={(value) => setSpendingAmount(value ? Number(value) : 0)}
+                            />
+                        </div>
                     )}
                     {action.require_file && (
                         <FileInput
