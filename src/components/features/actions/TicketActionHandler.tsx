@@ -19,7 +19,8 @@ interface TicketActionHandlerProps {
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, buttonSize = 'lg', fullWidth }: TicketActionHandlerProps) => {
-    const [actions, setActions] = useState<AvailableAction[]>([]);
+    const [ticketActions, setTicketActions] = useState<AvailableAction[]>([]);
+    const [jobActions, setJobActions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
@@ -31,15 +32,26 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
         const fetchAvailableActions = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/available-actions`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                if (!response.ok) throw new Error('Failed to fetch actions');
-                const { data } = await response.json();
-                setActions(data || []);
+                const [ticketActionsRes, jobActionsRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/tickets/${ticketId}/available-actions`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    }),
+                    fetch(`${API_BASE_URL}/jobs/${ticketId}/available-actions`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    }),
+                ]);
+
+                if (!ticketActionsRes.ok || !jobActionsRes.ok) throw new Error('Failed to fetch available actions');
+
+                const ticketActionsData = await ticketActionsRes.json();
+                const jobActionsData = await jobActionsRes.json();
+
+                setTicketActions(ticketActionsData.data || []);
+                setJobActions((jobActionsData.data || []).map((action: { name: string }) => action.name));
             } catch (error) {
                 console.error(`Error fetching actions for ticket ${ticketId}:`, error);
-                setActions([]);
+                setTicketActions([]);
+                setJobActions([]);
             } finally {
                 setIsLoading(false);
             }
@@ -53,12 +65,14 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
 
     const uniqueActions = useMemo(() => {
         const seen = new Set<string>();
-        return actions.filter(action => {
+        return ticketActions.filter(action => {
             const duplicate = seen.has(action.action_name);
             seen.add(action.action_name);
             return !duplicate;
         });
-    }, [actions]);
+    }, [ticketActions]);
+
+    const canAssignPic = jobActions.includes('JOB_ASSIGN_PIC');
 
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
@@ -112,15 +126,17 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
     return (
         <div className="flex w-full flex-col items-center gap-4">
             <Can permission="JOB_ASSIGN_PIC">
-                <AssignPicModal
-                    jobId={ticketId}
-                    jobDescription={ticketDescription}
-                    onConfirm={handleAssignConfirm}
-                >
-                    <Button size={buttonSize} variant="blue-mtm-light" fullWidth>
-                        Assign PIC
-                    </Button>
-                </AssignPicModal>
+                {canAssignPic && (
+                    <AssignPicModal
+                        jobId={ticketId}
+                        jobDescription={ticketDescription}
+                        onConfirm={handleAssignConfirm}
+                    >
+                        <Button size={buttonSize} variant="blue-mtm-light" fullWidth>
+                            Assign PIC
+                        </Button>
+                    </AssignPicModal>
+                )}
             </Can>
             {uniqueActions.map((action) => {
                 if (action.action_name === 'Revisi') {
