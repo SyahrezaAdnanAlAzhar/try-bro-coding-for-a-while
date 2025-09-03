@@ -11,8 +11,11 @@ import { useNavigate } from 'react-router-dom';
 import { Can } from '../components/auth/Can';
 import { Button } from '../components/ui/Button';
 import { Plus } from 'lucide-react';
+import { useSyncDepartmentUrl } from '../hooks/useSyncDepartmentUrl';
 
 export default function TicketPage() {
+    useSyncDepartmentUrl();
+
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
     const tableFilters = useTicketTableFilters();
@@ -45,7 +48,7 @@ export default function TicketPage() {
                                 variant="blue-mtm-light"
                                 size="lg"
                                 fullWidth
-                                leftIcon={<Plus size={24} strokeWidth={3}/>}
+                                leftIcon={<Plus size={24} strokeWidth={3} />}
                                 onClick={() => navigate('/create-ticket')}
                                 className='shadow-s-400'
                             >

@@ -29,7 +29,7 @@ interface DepartmentState {
 }
 
 interface DepartmentActions {
-    fetchDepartments: () => Promise<void>;
+    fetchDepartments: (initialDepartmentId?: number) => Promise<void>;
     setSelectedDepartment: (id: number | null) => void;
 }
 
@@ -52,9 +52,7 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
     status: 'idle',
 
     actions: {
-        fetchDepartments: async () => {
-            const { status } = get();
-            if (status === 'loading' || status === 'success') return;
+        fetchDepartments: async (initialDepartmentId) => {
             set({ status: 'loading' });
 
             try {
@@ -69,9 +67,14 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
 
                 set({ departments: sortedData, status: 'success' });
 
-                if (sortedData.length > 0 && get().selectedDepartmentId === null) {
-                    set({ selectedDepartmentId: sortedData[0].id });
+                let defaultId: number | null = null;
+                if (initialDepartmentId && sortedData.some(d => d.id === initialDepartmentId)) {
+                    defaultId = initialDepartmentId;
+                } else if (sortedData.length > 0) {
+                    defaultId = sortedData[0].id;
                 }
+
+                set({ selectedDepartmentId: defaultId });
 
             } catch (error) {
                 console.error('Error fetching departments:', error);

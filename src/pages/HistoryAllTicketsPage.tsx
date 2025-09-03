@@ -5,8 +5,11 @@ import { useHistoryAllTicketActions, useHistoryAllTicketFilters, useHistoryAllTi
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { HistoryToolbar } from '../components/features/history/HistoryToolbar';
 import { HistoryTable } from '../components/features/history/table/HistoryTable';
+import { useSyncDepartmentUrl } from '../hooks/useSyncDepartmentUrl';
 
 export default function HistoryAllTicketsPage() {
+    useSyncDepartmentUrl();
+
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
     const historyFilters = useHistoryAllTicketFilters();
