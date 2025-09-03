@@ -7,6 +7,7 @@ import { TicketDetailView } from '../components/features/ticket/TicketDetailView
 import { Button } from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { RejectionInfoCard } from '../components/features/ticket/RejectionInfoCard';
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
@@ -52,6 +53,7 @@ export default function TicketDetailPage() {
                         Detail Tiket #{id}
                     </Text>
                 </div>
+                {id && <RejectionInfoCard ticketId={parseInt(id, 10)} />}
 
                 {status === 'loading' && <Text className="text-center">Loading details...</Text>}
                 {status === 'error' && <Text color="add-red" className="text-center">Gagal memuat detail tiket.</Text>}

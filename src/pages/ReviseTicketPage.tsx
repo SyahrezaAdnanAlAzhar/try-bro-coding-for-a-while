@@ -11,6 +11,7 @@ import { CreateTicketForm } from "../components/features/ticket/CreateTicketForm
 import type { UploadedFile } from "../components/ui/FileInput";
 import type { Ticket } from "../types/api";
 import { format } from "date-fns";
+import { RejectionInfoCard } from "../components/features/ticket/RejectionInfoCard";
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
@@ -179,6 +180,7 @@ export default function ReviseTicketPage() {
                         Revisi Tiket #{id}
                     </Text>
                 </div>
+                {id && <RejectionInfoCard ticketId={parseInt(id, 10)} />}
 
                 {status === 'loading' && <Text className="text-center">Memuat data form...</Text>}
                 {status === 'error' && <Text color="add-red" className="text-center">Gagal memuat data.</Text>}
