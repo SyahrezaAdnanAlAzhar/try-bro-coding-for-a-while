@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalFooter, ModalTitle, ModalTrigger } from '../../ui/Modal';
 import { Button, type ButtonProps } from '../../ui/Button';
 import { FormField } from '../../ui/FormField';
-import { FileInput } from '../../ui/FileInput';
+import { FileInput, type UploadedFile } from '../../ui/FileInput';
 import { CustomCurrencyInput } from '../../ui/CurrencyInput';
 import { PrebuiltActionButton } from './PrebuiltActionButton';
 import { Text } from '../../ui/Text';
@@ -27,7 +27,7 @@ interface ExecuteActionModalProps {
 export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoading, buttonSize, fullWidth, }: ExecuteActionModalProps) => {
     const [open, setOpen] = useState(false);
     const [reason, setReason] = useState('');
-    const [files, setFiles] = useState<File[]>([]);
+    const [files, setFiles] = useState<(File | UploadedFile)[]>([]);
     const [spendingAmount, setSpendingAmount] = useState<number | undefined>(0);
 
     const handleSubmit = () => {
@@ -37,7 +37,11 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
             body.append('Reason', reason);
         }
         if (action.require_file) {
-            files.forEach(file => body.append('Files', file));
+            files.forEach(file => {
+                if (file instanceof File) {
+                    body.append('Files', file);
+                }
+            });
         }
         if (action.action_name === 'Selesaikan Job' && spendingAmount && spendingAmount > 0) {
             body.append('spending_amount', String(spendingAmount));
@@ -92,6 +96,7 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
                     {action.require_file && (
                         <FileInput
                             label="Unggah berkas pendukung"
+                            files={files}
                             onFilesChange={(uploadedFiles) => setFiles(uploadedFiles as File[])}
                             multiple
                         />

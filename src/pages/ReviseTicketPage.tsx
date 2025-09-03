@@ -2,15 +2,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCreateTicket, useCreateTicketActions } from "../store/createTicketStore";
 import { useAuthStore } from "../store/authStore";
 import { useToast } from "../hooks/useToast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Panel } from "../components/ui/Panel";
 import { Button } from "../components/ui/Button";
 import { Text } from "../components/ui/Text";
 import { ArrowLeft } from "lucide-react";
 import { CreateTicketForm } from "../components/features/ticket/CreateTicketForm";
 import type { UploadedFile } from "../components/ui/FileInput";
+import type { Ticket } from "../types/api";
+import { format } from "date-fns";
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
+
+interface ApiFile {
+    file_name: string;
+    file_path: string;
+    file_size: number;
+    file_type: string;
+    uploaded_at: string;
+}
 
 export default function ReviseTicketPage() {
     const { id } = useParams<{ id: string }>();
@@ -19,6 +29,11 @@ export default function ReviseTicketPage() {
     const accessToken = useAuthStore((state) => state.accessToken);
     const navigate = useNavigate();
     const toast = useToast();
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [originalTicket, setOriginalTicket] = useState<Ticket | null>(null);
+    const [originalFiles, setOriginalFiles] = useState<UploadedFile[]>([]);
+
 
     useEffect(() => {
         const loadData = async () => {
@@ -39,6 +54,8 @@ export default function ReviseTicketPage() {
                 const ticketData = await ticketRes.json();
                 const filesData = await filesRes.json();
 
+                setOriginalTicket(ticketData.data);
+
                 setFormField('department_target_id', ticketData.data.department_target_id);
                 setFormField('description', ticketData.data.description);
                 setFormField('physical_location_id', ticketData.data.physical_location_id?.Int64);
@@ -49,12 +66,13 @@ export default function ReviseTicketPage() {
                 const existingFiles: UploadedFile[] = [
                     ...(filesData.data.support_files || []),
                     ...(filesData.data.report_files || []),
-                ].map(file => ({
+                ].map((file: ApiFile) => ({
                     name: file.file_name,
                     size: file.file_size,
                     url: `${API_BASE_URL}/files/view?path=${encodeURIComponent(file.file_path)}`,
                 }));
 
+                setOriginalFiles(existingFiles);
                 setFormField('support_files', existingFiles);
             } catch (error) {
                 toast.error('Gagal memuat data tiket untuk revisi.');
@@ -65,8 +83,89 @@ export default function ReviseTicketPage() {
     }, [id, fetchInitialData, setFormField, reset, accessToken, toast]);
 
     const handleRevise = async () => {
-        console.log('Revising ticket with data:', formData);
-        toast.info('Fungsi revisi belum diimplementasikan.');
+        if (!id || !originalTicket) return;
+        setIsSubmitting(true);
+
+        try {
+            const currentFiles = formData.support_files;
+            const currentUploadedFileUrls = currentFiles
+                .filter((f): f is UploadedFile => 'url' in f)
+                .map(f => f.url);
+
+            const filePathsToDelete = originalFiles
+                .filter(f => !currentUploadedFileUrls.includes(f.url))
+                .map(f => {
+                    const urlParams = new URLSearchParams(new URL(f.url, window.location.origin).search);
+                    return urlParams.get('path') || '';
+                }).filter(Boolean);
+
+            const filesToAdd = currentFiles.filter((f): f is File => f instanceof File);
+
+            const filePromises = [];
+
+            if (filePathsToDelete.length > 0) {
+                const deletePromise = fetch(`${API_BASE_URL}/tickets/${id}/files`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ file_paths_to_delete: filePathsToDelete }),
+                });
+                filePromises.push(deletePromise);
+            }
+            if (filesToAdd.length > 0) {
+                const addBody = new FormData();
+                filesToAdd.forEach(file => addBody.append('files', file));
+                const addPromise = fetch(`${API_BASE_URL}/tickets/${id}/files`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                    body: addBody,
+                });
+                filePromises.push(addPromise);
+            }
+
+            if (filePromises.length > 0) {
+                const fileResponses = await Promise.all(filePromises);
+                for (const res of fileResponses) {
+                    if (!res.ok) throw new Error('Gagal memperbarui file lampiran.');
+                }
+            }
+
+            const updatePayload = {
+                department_target_id: formData.department_target_id,
+                description: formData.description,
+                physical_location_id: formData.physical_location_id,
+                specified_location_id: formData.specified_location_id,
+                deadline: formData.deadline ? format(formData.deadline, 'yyyy-MM-dd') : null,
+                version: originalTicket.version,
+            };
+
+            const updateRes = await fetch(`${API_BASE_URL}/tickets/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                body: JSON.stringify(updatePayload),
+            });
+            if (!updateRes.ok) throw new Error('Gagal memperbarui data tiket.');
+
+            const resubmitBody = new FormData();
+            resubmitBody.append('ActionName', 'Revisi');
+
+            const resubmitRes = await fetch(`${API_BASE_URL}/tickets/${id}/action`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${accessToken}` },
+                body: resubmitBody,
+            });
+            if (!resubmitRes.ok) throw new Error('Gagal mengirim ulang tiket untuk approval.');
+
+            toast.success('Tiket berhasil direvisi dan dikirim ulang.');
+            navigate(`/ticket/${id}`);
+
+        } catch (error: any) {
+            toast.error(error.message || 'Terjadi kesalahan saat merevisi tiket.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -87,10 +186,10 @@ export default function ReviseTicketPage() {
                 {status !== 'loading' && <CreateTicketForm />}
 
                 <div className="flex justify-end gap-4 border-t pt-4">
-                    <Button variant="secondary" onClick={() => navigate(-1)}>
+                    <Button variant="secondary" onClick={() => navigate(-1)} disabled={isSubmitting}>
                         Batal
                     </Button>
-                    <Button variant="primary-blue" onClick={handleRevise}>
+                    <Button variant="primary-blue" onClick={handleRevise} isLoading={isSubmitting}>
                         Revisi
                     </Button>
                 </div>
