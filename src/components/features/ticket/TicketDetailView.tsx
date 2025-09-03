@@ -6,6 +6,7 @@ import { FormField } from '../../ui/FormField';
 import { Text } from '../../ui/Text';
 import { DeadlineCell } from './table/DeadlineCell';
 import { FileSection } from '../files/FileSection';
+import { TicketActionHandler } from '../actions/TicketActionHandler';
 
 interface FileData {
     file_name: string;
@@ -22,11 +23,12 @@ interface AttachedFilesData {
 
 interface TicketDetailViewProps {
     ticket: Ticket;
+    onActionSuccess: () => void;
 }
 
 const API_BASE_URL = '/api/e-memo-job-reservation';
 
-export const TicketDetailView = ({ ticket }: TicketDetailViewProps) => {
+export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewProps) => {
     const authStatus = useAuthStatus();
     const isLoggedIn = authStatus === 'authenticated';
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -172,6 +174,21 @@ export const TicketDetailView = ({ ticket }: TicketDetailViewProps) => {
                             <FileSection title="File Laporan" files={attachedFiles?.report_files || []} onFileAction={handleFileAction} />
                         </div>
                     )}
+                </>
+            )}
+            {isLoggedIn && (
+                <>
+                    <div className="md:col-span-2 mt-4 pt-6 border-t flex justify-center">
+                        <div className="w-full md:w-1/2">
+                            <TicketActionHandler
+                                ticketId={ticket.ticket_id}
+                                ticketDescription={ticket.description}
+                                onSuccess={onActionSuccess}
+                                buttonSize="lg"
+                                fullWidth={true}
+                            />
+                        </div>
+                    </div>
                 </>
             )}
         </div>

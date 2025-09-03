@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalFooter, ModalTitle, ModalTrigger } from '../../ui/Modal';
-import { Button } from '../../ui/Button';
+import { Button, type ButtonProps } from '../../ui/Button';
 import { FormField } from '../../ui/FormField';
 import { FileInput } from '../../ui/FileInput';
 import { CustomCurrencyInput } from '../../ui/CurrencyInput';
@@ -20,9 +20,11 @@ interface ExecuteActionModalProps {
     action: AvailableAction;
     onConfirm: (formData: FormData) => void;
     isLoading: boolean;
+    buttonSize?: ButtonProps['size'];
+    fullWidth?: boolean;
 }
 
-export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoading }: ExecuteActionModalProps) => {
+export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoading, buttonSize, fullWidth, }: ExecuteActionModalProps) => {
     const [open, setOpen] = useState(false);
     const [reason, setReason] = useState('');
     const [files, setFiles] = useState<File[]>([]);
@@ -52,7 +54,12 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
     return (
         <Modal open={open} onOpenChange={setOpen}>
             <ModalTrigger asChild>
-                <PrebuiltActionButton actionName={action.action_name} size="sm" />
+                <PrebuiltActionButton
+                    actionName={action.action_name}
+                    size={buttonSize}
+                    fullWidth={fullWidth}
+                    className="flex-1"
+                />
             </ModalTrigger>
             <ModalContent>
                 <ModalHeader>
@@ -97,6 +104,7 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
                     </Button>
                     <PrebuiltActionButton
                         actionName={action.action_name}
+                        size={buttonSize}
                         onClick={handleSubmit}
                         disabled={isSubmitDisabled}
                         isLoading={isLoading}
