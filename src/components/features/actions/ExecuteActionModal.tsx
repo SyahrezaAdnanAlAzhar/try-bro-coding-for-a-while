@@ -58,7 +58,6 @@ export const ExecuteActionModal = ({ jobDescription, action, onConfirm, isLoadin
                     actionName={action.action_name}
                     size={buttonSize}
                     fullWidth={fullWidth}
-                    className="flex-1"
                 />
             </ModalTrigger>
             <ModalContent>

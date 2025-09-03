@@ -178,13 +178,13 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
             )}
             {isLoggedIn && (
                 <>
-                    <div className="md:col-span-2 mt-4 pt-6 border-t flex justify-center">
+                    <div className="md:col-span-2 mt-4 pt-0.5 flex justify-center">
                         <div className="w-full md:w-1/2">
                             <TicketActionHandler
                                 ticketId={ticket.ticket_id}
                                 ticketDescription={ticket.description}
                                 onSuccess={onActionSuccess}
-                                buttonSize="lg"
+                                buttonSize="base"
                                 fullWidth={true}
                             />
                         </div>
