@@ -6,6 +6,7 @@ import { ExecuteActionModal, type AvailableAction } from './ExecuteActionModal';
 import { Button, type ButtonProps } from '../../ui/Button';
 import { Can } from '../../auth/Can';
 import { AssignPicModal } from '../job/AssignPicModal';
+import { useNavigate } from 'react-router-dom';
 
 interface TicketActionHandlerProps {
     ticketId: number;
@@ -21,6 +22,7 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
     const [actions, setActions] = useState<AvailableAction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     const accessToken = useAuthStore((state) => state.accessToken);
     const toast = useToast();
@@ -121,6 +123,17 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
                 </AssignPicModal>
             </Can>
             {uniqueActions.map((action) => {
+                if (action.action_name === 'Revisi') {
+                    return (
+                        <PrebuiltActionButton
+                            key={action.action_name}
+                            actionName={action.action_name}
+                            size={buttonSize}
+                            fullWidth={fullWidth}
+                            onClick={() => navigate(`/ticket/${ticketId}/revise`)}
+                        />
+                    );
+                }
                 const needsModal = action.require_reason || action.require_file || action.action_name === 'Selesaikan Job';
                 if (needsModal) {
                     return (

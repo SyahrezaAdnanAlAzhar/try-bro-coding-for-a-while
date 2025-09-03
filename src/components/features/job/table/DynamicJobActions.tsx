@@ -95,7 +95,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
     return (
         <div className="flex items-center justify-end gap-2">
             {uniqueActions.map((action) => {
-                const needsModal = action.require_file || action.require_reason;
+                const needsModal = action.require_reason || action.require_file || action.action_name === 'Selesaikan Job';
                 if (needsModal) {
                     return (
                         <ExecuteActionModal

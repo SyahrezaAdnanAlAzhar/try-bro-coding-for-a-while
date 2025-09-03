@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useCreateTicket, useCreateTicketActions } from '../../../store/createTicketStore';
 import { FormField } from '../../ui/FormField';
 import { Combobox, type ComboboxOption } from '../../ui/Combobox';
@@ -6,10 +6,39 @@ import { FileInput, type UploadedFile } from '../../ui/FileInput';
 import { DatePicker } from '../../ui/DatePicker';
 import 'react-day-picker/dist/style.css';
 import { Text } from '../../ui/Text';
+import { useAuthStore } from '../../../store/authStore';
+import { useToast } from '../../../hooks/useToast';
 
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
     const { setFormField, fetchSpecifiedLocations } = useCreateTicketActions();
+    const accessToken = useAuthStore((state) => state.accessToken); 
+    const toast = useToast();
+
+    const handleFileAction = async (file: UploadedFile, action: 'view' | 'download') => {
+        if (!accessToken) return toast.error('Otentikasi dibutuhkan.');
+        try {
+            const response = await fetch(file.url, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (!response.ok) throw new Error(`Gagal untuk ${action} file.`);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            if (action === 'view') {
+                window.open(blobUrl, '_blank');
+            } else {
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            }
+            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
 
     const departmentOptions: ComboboxOption[] = useMemo(
         () => options.departments.map((d) => ({ value: d.id, label: d.name })),
@@ -26,12 +55,12 @@ export const CreateTicketForm = () => {
         [options.specifiedLocations]
     );
 
-    const handleFilesChange = useCallback(
-        (files: (File | UploadedFile)[]) => {
-            setFormField('support_files', files as File[]);
-        },
-        [setFormField]
-    );
+    // const handleFilesChange = useCallback(
+    //     (files: (File | UploadedFile)[]) => {
+    //         setFormField('support_files', files);
+    //     },
+    //     [setFormField]
+    // );
 
     const selectedDepartment = departmentOptions.find(d => d.value === formData.department_target_id) || null;
     const selectedPhysicalLocation = physicalLocationOptions.find(l => l.value === formData.physical_location_id) || null;
@@ -95,7 +124,10 @@ export const CreateTicketForm = () => {
             <div className="md:col-span-2">
                 <FileInput
                     label="File Pendukung (Opsional)"
-                    onFilesChange={handleFilesChange}
+                    files={formData.support_files}
+                    onFilesChange={(files) => setFormField('support_files', files)}
+                    onViewFile={(file) => handleFileAction(file, 'view')}
+                    onDownloadFile={(file) => handleFileAction(file, 'download')}
                     helpText="Anda bisa upload lebih dari satu file"
                     multiple
                 />

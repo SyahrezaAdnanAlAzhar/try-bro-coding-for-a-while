@@ -13,6 +13,7 @@ import ApprovalPage from './pages/ApprovalPage';
 import TicketDetailPage from './pages/TicketDetailPage'
 import HistoryAllTicketsPage from './pages/HistoryAllTicketsPage'
 import HistoryMyTicketsPage from './pages/HistoryMyTicketsPage'
+import ReviseTicketPage from './pages/ReviseTicketPage'
 
 function App() {
   return (
@@ -81,6 +82,16 @@ function App() {
               }
             />
 
+            <Route
+              path="/ticket/:id/revise"
+              element={
+                <ProtectedRoute>
+                  <Can permission="CREATE_TICKET">
+                    <ReviseTicketPage />
+                  </Can>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </MainLayout>
       </BrowserRouter>

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { useAuthStore } from './authStore';
 import type { Department, PhysicalLocation, SpecifiedLocation } from '../types/api';
 import { format } from 'date-fns';
+import type { UploadedFile } from '../components/ui/FileInput';
 
 interface CreateTicketFormData {
     department_target_id: number | null;
@@ -9,7 +10,7 @@ interface CreateTicketFormData {
     physical_location_id: number | null;
     specified_location_id: number | null;
     deadline: Date | null;
-    support_files: File[];
+    support_files: (File | UploadedFile)[];
 }
 
 interface FormOptions {
@@ -148,7 +149,11 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             if (formData.physical_location_id) body.append('physical_location_id', String(formData.physical_location_id));
             if (formData.specified_location_id) body.append('specified_location_id', String(formData.specified_location_id));
             if (formData.deadline) body.append('deadline', format(formData.deadline, 'yyyy-MM-dd'));
-            formData.support_files.forEach(file => body.append('support_files', file));
+            formData.support_files.forEach(file => {
+                if (file instanceof File) {
+                    body.append('support_files', file);
+                }
+            });
 
             try {
                 const response = await fetch(`${API_BASE_URL}/tickets`, {

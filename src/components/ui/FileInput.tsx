@@ -3,6 +3,7 @@ import { useDropzone, type Accept } from 'react-dropzone';
 import { UploadCloud, File as FileIcon, Trash2, Eye } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
+import { Icon } from './Icon';
 
 export interface UploadedFile {
     name: string;
@@ -25,8 +26,10 @@ const isUploadedFile = (file: FileState): file is UploadedFile => 'url' in file;
 
 export interface FileInputProps {
     label: string;
+    files: (File | UploadedFile)[];
     onFilesChange: (files: FileState[]) => void;
-    initialFiles?: UploadedFile[];
+    onViewFile?: (file: UploadedFile) => void;
+    onDownloadFile?: (file: UploadedFile) => void;
     accept?: Accept;
     multiple?: boolean;
     maxSize?: number;
@@ -37,8 +40,10 @@ export interface FileInputProps {
 
 export const FileInput = ({
     label,
+    files,
     onFilesChange,
-    initialFiles = [],
+    onViewFile,
+    onDownloadFile,
     accept,
     multiple = true,
     maxSize,
@@ -46,14 +51,12 @@ export const FileInput = ({
     error,
     helpText,
 }: FileInputProps) => {
-    const [files, setFiles] = useState<FileState[]>(initialFiles);
-
     const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const newUrls: Record<string, string> = {};
         files.forEach(file => {
-            if (file instanceof File) {
+            if (file instanceof File && !isUploadedFile(file)) {
                 newUrls[file.name] = URL.createObjectURL(file);
             }
         });
@@ -68,7 +71,6 @@ export const FileInput = ({
         (acceptedFiles: File[]) => {
             if (acceptedFiles?.length) {
                 const newFiles = multiple ? [...files, ...acceptedFiles] : [...acceptedFiles];
-                setFiles(newFiles);
                 onFilesChange(newFiles);
             }
         },
@@ -85,7 +87,6 @@ export const FileInput = ({
 
     const removeFile = (indexToRemove: number) => {
         const newFiles = files.filter((_, index) => index !== indexToRemove);
-        setFiles(newFiles);
         onFilesChange(newFiles);
     };
 
@@ -124,8 +125,8 @@ export const FileInput = ({
             {files.length > 0 && (
                 <div className="mt-4 space-y-2">
                     {files.map((file, index) => {
-                        const fileUrl = isUploadedFile(file) ? file.url : previewUrls[file.name];
-
+                        const isExistingFile = isUploadedFile(file);
+                        const fileUrl = isExistingFile ? file.url : previewUrls[file.name];
                         return (
                             <div
                                 key={index}
@@ -140,11 +141,21 @@ export const FileInput = ({
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {fileUrl && (
-                                        <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                                            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                <Eye className="h-5 w-5" />
-                                            </Button>
-                                        </a>
+                                        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0"
+                                            onClick={() => {
+                                                if (isExistingFile && onViewFile) {
+                                                    onViewFile(file);
+                                                } else if (!isExistingFile) {
+                                                    window.open(fileUrl, '_blank');
+                                                }
+                                            }}>
+                                            <Eye className="h-5 w-5" />
+                                        </Button>
+                                    )}
+                                    {isExistingFile && onDownloadFile && (
+                                        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onDownloadFile(file)}>
+                                            <Icon name="download" size={20} />
+                                        </Button>
                                     )}
                                     <Button
                                         type="button"
