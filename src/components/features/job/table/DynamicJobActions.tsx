@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '../../../../store/authStore';
 import { PrebuiltActionButton } from '../../actions/PrebuiltActionButton';
 import { Text } from '../../../ui/Text';
@@ -51,6 +51,15 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
         fetchAvailableActions();
     }, [jobId, accessToken]);
 
+    const uniqueActions = useMemo(() => {
+        const seen = new Set<string>();
+        return actions.filter(action => {
+            const duplicate = seen.has(action.action_name);
+            seen.add(action.action_name);
+            return !duplicate;
+        });
+    }, [actions]);
+
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
@@ -79,13 +88,13 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
         return <div className="h-8 w-24 rounded-lg bg-gray-200 animate-pulse" />;
     }
 
-    if (actions.length === 0) {
+    if (uniqueActions.length === 0) {
         return <Text variant="body-sm" color="mono-grey"></Text>;
     }
 
     return (
         <div className="flex items-center justify-end gap-2">
-            {actions.map((action) => {
+            {uniqueActions.map((action) => {
                 const needsModal = action.require_file || action.require_reason;
                 if (needsModal) {
                     return (

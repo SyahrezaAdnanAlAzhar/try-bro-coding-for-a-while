@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '../../../store/authStore';
 import { useToast } from '../../../hooks/useToast';
 import { PrebuiltActionButton } from './PrebuiltActionButton';
@@ -49,6 +49,15 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
         }
     }, [ticketId, accessToken]);
 
+    const uniqueActions = useMemo(() => {
+        const seen = new Set<string>();
+        return actions.filter(action => {
+            const duplicate = seen.has(action.action_name);
+            seen.add(action.action_name);
+            return !duplicate;
+        });
+    }, [actions]);
+
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
@@ -94,7 +103,7 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
         return <div className="h-10 w-full rounded-lg bg-gray-200 animate-pulse" />;
     }
 
-    if (actions.length === 0) {
+    if (uniqueActions.length === 0) {
         return null;
     }
 
@@ -111,7 +120,7 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
                     </Button>
                 </AssignPicModal>
             </Can>
-            {actions.map((action) => {
+            {uniqueActions.map((action) => {
                 const needsModal = action.require_reason || action.require_file || action.action_name === 'Selesaikan Job';
                 if (needsModal) {
                     return (
