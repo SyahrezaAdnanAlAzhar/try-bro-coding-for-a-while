@@ -17,6 +17,7 @@ interface JobActions {
     reset: () => void;
     reorderJobs: (sourceIndex: number, destinationIndex: number) => void;
     saveJobOrder: () => Promise<boolean>;
+    addOrUpdateJob: (updatedJob: Ticket) => void;
 }
 
 type JobStore = JobState & {
@@ -147,6 +148,18 @@ export const useJobStore = create<JobStore>((set, get) => ({
                 set({ jobs: originalJobs });
                 return false;
             }
+        },
+        addOrUpdateJob: (updatedJob) => {
+            set((state) => {
+                const jobs = [...state.jobs];
+                const existingIndex = jobs.findIndex((j) => j.ticket_id === updatedJob.ticket_id);
+                if (existingIndex !== -1) {
+                    jobs[existingIndex] = updatedJob;
+                } else {
+                    jobs.push(updatedJob);
+                }
+                return { jobs: jobs.sort((a, b) => (a.job_priority || 0) - (b.job_priority || 0)) };
+            });
         },
     },
 }));

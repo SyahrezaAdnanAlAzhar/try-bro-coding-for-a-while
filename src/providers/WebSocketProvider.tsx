@@ -7,6 +7,10 @@ import { useToast } from '../hooks/useToast';
 import { useTicketTableStore } from '../store/ticketTableStore';
 import { useDepartmentStore } from '../store/departmentStore';
 import { WEBSOCKET_URL } from '../config/api';
+import { useJobStore } from '../store/jobStore';
+import { useApprovalStore } from '../store/approvalStore';
+import { useHistoryAllTicketStore } from '../store/historyAllTicketsStore';
+import { useHistoryMyTicketStore } from '../store/historyMyTicketStore';
 
 const WebSocketContext = createContext<{ readyState: ReadyState } | null>(null);
 
@@ -19,6 +23,10 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     const toast = useToast();
     const ticketTableActions = useTicketTableStore((state) => state.actions);
     const selectedDepartmentId = useDepartmentStore((state) => state.selectedDepartmentId);
+    const jobActions = useJobStore((state) => state.actions);
+    const approvalActions = useApprovalStore((state) => state.actions);
+    const historyAllActions = useHistoryAllTicketStore((state) => state.actions);
+    const historyMyActions = useHistoryMyTicketStore((state) => state.actions);
 
     useEffect(() => {
         if (hasAttemptedConnection.current || socketUrl) return;
@@ -74,6 +82,10 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                 case 'TICKET_STATUS_CHANGED': {
                     const updatedTicket = message.payload as Ticket;
                     ticketTableActions.addOrUpdateTicket(updatedTicket);
+                    jobActions.addOrUpdateJob(updatedTicket);
+                    approvalActions.addOrUpdateApprovalTicket(updatedTicket);
+                    historyAllActions.addOrUpdateHistoryTicket(updatedTicket);
+                    historyMyActions.addOrUpdateMyHistoryTicket(updatedTicket);
                     break;
                 }
 

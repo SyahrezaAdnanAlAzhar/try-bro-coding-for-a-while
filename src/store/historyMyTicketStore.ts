@@ -17,6 +17,7 @@ interface HistoryMyTicketActions {
     fetchMyHistoryTickets: () => Promise<void>;
     setFilters: (newFilters: Partial<HistoryFilters>) => void;
     reset: () => void;
+    addOrUpdateMyHistoryTicket: (updatedTicket: Ticket) => void;
 }
 
 type HistoryMyTicketStore = HistoryMyTicketState & {
@@ -74,6 +75,19 @@ export const useHistoryMyTicketStore = create<HistoryMyTicketStore>((set, get) =
 
         reset: () => {
             set(initialState);
+        },
+
+        addOrUpdateMyHistoryTicket: (updatedTicket) => {
+            set((state) => {
+                const tickets = [...state.tickets];
+                const existingIndex = tickets.findIndex((t) => t.ticket_id === updatedTicket.ticket_id);
+                if (existingIndex !== -1) {
+                    tickets[existingIndex] = updatedTicket;
+                } else {
+                    tickets.push(updatedTicket);
+                }
+                return { tickets };
+            });
         },
     },
 }));
