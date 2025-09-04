@@ -11,6 +11,7 @@ import { useJobStore } from '../store/jobStore';
 import { useApprovalStore } from '../store/approvalStore';
 import { useHistoryAllTicketStore } from '../store/historyAllTicketsStore';
 import { useHistoryMyTicketStore } from '../store/historyMyTicketStore';
+import { Text } from '../components/ui/Text';
 
 const WebSocketContext = createContext<{ readyState: ReadyState } | null>(null);
 
@@ -77,7 +78,21 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             console.log('Received WebSocket message:', message);
 
             switch (message.event) {
-                case 'TICKET_CREATED':
+                case 'TICKET_CREATED': {
+                    const newTicket = message.payload as Ticket;
+                    ticketTableActions.addOrUpdateTicket(newTicket);
+                    jobActions.addOrUpdateJob(newTicket);
+                    approvalActions.addOrUpdateApprovalTicket(newTicket);
+                    historyAllActions.addOrUpdateHistoryTicket(newTicket);
+                    historyMyActions.addOrUpdateMyHistoryTicket(newTicket);
+                    toast.info(
+                        <Text variant="body-sm">
+                            Tiket baru <strong>#{newTicket.ticket_id}</strong> telah dibuat untuk departemen <strong>{newTicket.department_target_name}</strong>.
+                        </Text>
+                    );
+                    break;
+                }
+
                 case 'TICKET_UPDATED':
                 case 'TICKET_STATUS_CHANGED': {
                     const updatedTicket = message.payload as Ticket;
@@ -86,6 +101,11 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                     approvalActions.addOrUpdateApprovalTicket(updatedTicket);
                     historyAllActions.addOrUpdateHistoryTicket(updatedTicket);
                     historyMyActions.addOrUpdateMyHistoryTicket(updatedTicket);
+                    toast.info(
+                        <Text variant="body-sm">
+                            Status untuk tiket <strong>#{updatedTicket.ticket_id}</strong> telah diperbarui menjadi <strong>{updatedTicket.current_status}</strong>.
+                        </Text>
+                    );
                     break;
                 }
 
