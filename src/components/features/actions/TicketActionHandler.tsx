@@ -7,6 +7,7 @@ import { Button, type ButtonProps } from '../../ui/Button';
 import { Can } from '../../auth/Can';
 import { AssignPicModal } from '../job/AssignPicModal';
 import { useNavigate } from 'react-router-dom';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface TicketActionHandlerProps {
     ticketId: number;
@@ -15,8 +16,6 @@ interface TicketActionHandlerProps {
     buttonSize?: ButtonProps['size'];
     fullWidth?: boolean;
 }
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, buttonSize = 'lg', fullWidth }: TicketActionHandlerProps) => {
     const [ticketActions, setTicketActions] = useState<AvailableAction[]>([]);
@@ -33,10 +32,10 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
             setIsLoading(true);
             try {
                 const [ticketActionsRes, jobActionsRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/tickets/${ticketId}/available-actions`, {
+                    fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/available-actions`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     }),
-                    fetch(`${API_BASE_URL}/jobs/${ticketId}/available-actions`, {
+                    fetch(`${HTTP_BASE_URL}/jobs/${ticketId}/available-actions`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     }),
                 ]);
@@ -77,7 +76,7 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/action`, {
+            const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${accessToken}` },
                 body: formData,
@@ -99,7 +98,7 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
 
     const handleAssignConfirm = async (picNpk: string) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/jobs/${ticketId}/assign`, {
+            const response = await fetch(`${HTTP_BASE_URL}/jobs/${ticketId}/assign`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

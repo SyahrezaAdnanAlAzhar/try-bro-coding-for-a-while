@@ -3,6 +3,7 @@ import { useAuthStore } from './authStore';
 import type { Department, PhysicalLocation, SpecifiedLocation } from '../types/api';
 import { format } from 'date-fns';
 import type { UploadedFile } from '../components/ui/FileInput';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface CreateTicketFormData {
     department_target_id: number | null;
@@ -43,8 +44,6 @@ type CreateTicketStore = CreateTicketState & {
     actions: CreateTicketActions;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 const initialState: CreateTicketState = {
     formData: {
         department_target_id: null,
@@ -72,8 +71,8 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             const accessToken = useAuthStore.getState().accessToken;
             try {
                 const [deptRes, locRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/departments?receive_job=true&is_active=true`),
-                    fetch(`${API_BASE_URL}/physical-location?is_active=true`, {
+                    fetch(`${HTTP_BASE_URL}/departments?receive_job=true&is_active=true`),
+                    fetch(`${HTTP_BASE_URL}/physical-location?is_active=true`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     }),
                 ]);
@@ -101,7 +100,7 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             set({ status: 'loading' });
             const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${API_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch specified locations');
@@ -156,7 +155,7 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${accessToken}` },
                     body,

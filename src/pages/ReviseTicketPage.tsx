@@ -12,8 +12,7 @@ import type { UploadedFile } from "../components/ui/FileInput";
 import type { Ticket } from "../types/api";
 import { format } from "date-fns";
 import { RejectionInfoCard } from "../components/features/ticket/RejectionInfoCard";
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
+import { HTTP_BASE_URL } from "../config/api";
 
 interface ApiFile {
     file_name: string;
@@ -42,10 +41,10 @@ export default function ReviseTicketPage() {
             if (!id) return;
             try {
                 const [ticketRes, filesRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/tickets/${id}`, {
+                    fetch(`${HTTP_BASE_URL}/tickets/${id}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     }),
-                    fetch(`${API_BASE_URL}/tickets/${id}/files`, {
+                    fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     }),
                 ]);
@@ -70,7 +69,7 @@ export default function ReviseTicketPage() {
                 ].map((file: ApiFile) => ({
                     name: file.file_name,
                     size: file.file_size,
-                    url: `${API_BASE_URL}/files/view?path=${encodeURIComponent(file.file_path)}`,
+                    url: `${HTTP_BASE_URL}/files/view?path=${encodeURIComponent(file.file_path)}`,
                 }));
 
                 setOriginalFiles(existingFiles);
@@ -105,7 +104,7 @@ export default function ReviseTicketPage() {
             const filePromises = [];
 
             if (filePathsToDelete.length > 0) {
-                const deletePromise = fetch(`${API_BASE_URL}/tickets/${id}/files`, {
+                const deletePromise = fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -118,7 +117,7 @@ export default function ReviseTicketPage() {
             if (filesToAdd.length > 0) {
                 const addBody = new FormData();
                 filesToAdd.forEach(file => addBody.append('files', file));
-                const addPromise = fetch(`${API_BASE_URL}/tickets/${id}/files`, {
+                const addPromise = fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${accessToken}` },
                     body: addBody,
@@ -142,7 +141,7 @@ export default function ReviseTicketPage() {
                 version: originalTicket.version,
             };
 
-            const updateRes = await fetch(`${API_BASE_URL}/tickets/${id}`, {
+            const updateRes = await fetch(`${HTTP_BASE_URL}/tickets/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
                 body: JSON.stringify(updatePayload),
@@ -152,7 +151,7 @@ export default function ReviseTicketPage() {
             const resubmitBody = new FormData();
             resubmitBody.append('ActionName', 'Revisi');
 
-            const resubmitRes = await fetch(`${API_BASE_URL}/tickets/${id}/action`, {
+            const resubmitRes = await fetch(`${HTTP_BASE_URL}/tickets/${id}/action`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${accessToken}` },
                 body: resubmitBody,

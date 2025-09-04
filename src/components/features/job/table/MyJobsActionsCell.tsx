@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { useAuthStore } from '../../../../store/authStore';
 import { useJobActions } from '../../../../store/jobStore';
 import { useToast } from '../../../../hooks/useToast';
+import { HTTP_BASE_URL } from '../../../../config/api';
 
 interface MyJobsActionsCellProps {
     jobId: number | null;
 }
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const MyJobsActionsCell = ({ jobId }: MyJobsActionsCellProps) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +26,7 @@ export const MyJobsActionsCell = ({ jobId }: MyJobsActionsCellProps) => {
         body.append('ActionName', 'Mulai Mengerjakan');
 
         try {
-            const response = await fetch(`${API_BASE_URL}/tickets/${jobId}/action`, {
+            const response = await fetch(`${HTTP_BASE_URL}/tickets/${jobId}/action`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

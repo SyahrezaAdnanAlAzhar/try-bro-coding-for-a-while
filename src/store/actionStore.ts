@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { HTTP_BASE_URL } from '../config/api';
 
 export interface Action {
     id: number;
@@ -26,8 +27,6 @@ type ActionStore = ActionState & {
     selectors: ActionSelectors;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const useActionStore = create<ActionStore>((set, get) => ({
     actionList: [],
     actionMap: new Map(),
@@ -39,7 +38,7 @@ export const useActionStore = create<ActionStore>((set, get) => ({
             set({ status: 'loading' });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/actions`);
+                const response = await fetch(`${HTTP_BASE_URL}/actions`);
                 if (!response.ok) throw new Error('Failed to fetch actions');
 
                 const { data }: { data: Action[] } = await response.json();

@@ -5,6 +5,7 @@ import { Modal, ModalContent, ModalHeader, ModalFooter, ModalTitle, ModalTrigger
 import { Button } from '../../ui/Button';
 import { Combobox, type ComboboxOption } from '../../ui/Combobox';
 import { Text } from '../../ui/Text';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface Employee {
     npk: string;
@@ -17,8 +18,6 @@ interface AssignPicModalProps {
     onConfirm: (picNpk: string) => void;
     children: React.ReactNode;
 }
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const AssignPicModal = ({ jobDescription, onConfirm, children }: AssignPicModalProps) => {
     const [open, setOpen] = useState(false);
@@ -45,7 +44,7 @@ export const AssignPicModal = ({ jobDescription, onConfirm, children }: AssignPi
 
                 try {
                     const response = await fetch(
-                        `${API_BASE_URL}/employee?department_id=${userDepartment.id}&is_active=true`,
+                        `${HTTP_BASE_URL}/employee?department_id=${userDepartment.id}&is_active=true`,
                         {
                             headers: { Authorization: `Bearer ${accessToken}` },
                         }

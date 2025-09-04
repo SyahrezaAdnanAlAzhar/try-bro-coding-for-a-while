@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../../store/authStore';
 import { useToast } from '../../../hooks/useToast';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface FileData {
     file_name: string;
@@ -20,8 +21,6 @@ interface AttachedFilesProps {
     onDataLoaded: (data: AttachedFilesData) => void;
 }
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const AttachedFiles = ({ ticketId, onDataLoaded }: AttachedFilesProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -31,7 +30,7 @@ export const AttachedFiles = ({ ticketId, onDataLoaded }: AttachedFilesProps) =>
         const fetchFiles = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/files`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/files`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch attached files');

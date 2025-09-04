@@ -71,7 +71,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/ws': {
-        target: 'ws://api:3000', 
+        target: 'ws://api:3000',
         ws: true
       },
     }

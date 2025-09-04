@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { TicketStatus } from '../types/api';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface StatusState {
     statuses: TicketStatus[];
@@ -22,8 +23,6 @@ type StatusStore = StatusState & {
     selectors: StatusSelectors;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const useStatusStore = create<StatusStore>((set, get) => ({
     statuses: [],
     statusMap: new Map(),
@@ -37,7 +36,7 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
             set({ status: 'loading' });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/status-ticket`);
+                const response = await fetch(`${HTTP_BASE_URL}/status-ticket`);
                 if (!response.ok) throw new Error('Failed to fetch statuses');
 
                 const { data }: { data: TicketStatus[] } = await response.json();

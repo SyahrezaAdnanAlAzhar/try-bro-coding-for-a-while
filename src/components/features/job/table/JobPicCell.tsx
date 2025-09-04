@@ -1,3 +1,4 @@
+import { HTTP_BASE_URL } from '../../../../config/api';
 import { useToast } from '../../../../hooks/useToast';
 import { useAuthStore } from '../../../../store/authStore';
 import { useJobActions } from '../../../../store/jobStore';
@@ -12,8 +13,6 @@ interface JobPicCellProps {
     jobDescription: string;
 }
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const JobPicCell = ({ picName, jobId, jobDescription }: JobPicCellProps) => {
     const accessToken = useAuthStore((state) => state.accessToken);
     const { fetchJobs } = useJobActions();
@@ -21,7 +20,7 @@ export const JobPicCell = ({ picName, jobId, jobDescription }: JobPicCellProps) 
 
     const handleAssignConfirm = async (picNpk: string) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/jobs/${jobId}/assign`, {
+            const response = await fetch(`${HTTP_BASE_URL}/jobs/${jobId}/assign`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

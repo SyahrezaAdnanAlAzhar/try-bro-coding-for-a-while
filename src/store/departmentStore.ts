@@ -3,6 +3,7 @@ import type { Department } from '../types/api';
 import { useLocation } from 'react-router-dom';
 import { useAuthUser } from './authStore';
 import { useMemo } from 'react';
+import { HTTP_BASE_URL } from '../config/api';
 
 const NAVBAR_COLORS = [
     'bg-basic-red-light',
@@ -44,8 +45,6 @@ type DepartmentStore = DepartmentState & {
     selectors: DepartmentSelectors;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
     departments: [],
     selectedDepartmentId: null,
@@ -57,7 +56,7 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
 
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/departments?receive_job=true&is_active=true`,
+                    `${HTTP_BASE_URL}/departments?receive_job=true&is_active=true`,
                 );
 
                 if (!response.ok) throw new Error('Failed to fetch departments');

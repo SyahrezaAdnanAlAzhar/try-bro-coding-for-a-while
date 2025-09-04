@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface JobState {
     jobs: Ticket[];
@@ -21,8 +22,6 @@ interface JobActions {
 type JobStore = JobState & {
     actions: JobActions;
 };
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 const initialState: JobState = {
     jobs: [],
@@ -51,7 +50,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/jobs?${params.toString()}`, {
+                const response = await fetch(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -81,7 +80,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/jobs?${params.toString()}`, {
+                const response = await fetch(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -128,7 +127,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/jobs/reorder`, {
+                const response = await fetch(`${HTTP_BASE_URL}/jobs/reorder`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

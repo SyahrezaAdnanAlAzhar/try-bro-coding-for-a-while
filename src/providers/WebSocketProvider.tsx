@@ -6,10 +6,9 @@ import type { WebSocketMessage, Ticket, PriorityUpdatePayload } from '../types/a
 import { useToast } from '../hooks/useToast';
 import { useTicketTableStore } from '../store/ticketTableStore';
 import { useDepartmentStore } from '../store/departmentStore';
+import { WEBSOCKET_URL } from '../config/api';
 
 const WebSocketContext = createContext<{ readyState: ReadyState } | null>(null);
-
-const WEBSOCKET_URL = 'ws://localhost:8080/api/e-memo-job-reservation/ws';
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     const { accessToken, actions: authActions } = useAuthStore();

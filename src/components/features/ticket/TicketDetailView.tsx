@@ -7,6 +7,7 @@ import { Text } from '../../ui/Text';
 import { DeadlineCell } from './table/DeadlineCell';
 import { FileSection } from '../files/FileSection';
 import { TicketActionHandler } from '../actions/TicketActionHandler';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface FileData {
     file_name: string;
@@ -26,8 +27,6 @@ interface TicketDetailViewProps {
     onActionSuccess: () => void;
 }
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewProps) => {
     const authStatus = useAuthStatus();
     const isLoggedIn = authStatus === 'authenticated';
@@ -43,7 +42,7 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
         const fetchFiles = async () => {
             setIsLoadingFiles(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/${ticket.ticket_id}/files`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticket.ticket_id}/files`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch attached files');
@@ -67,7 +66,7 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
         }
         try {
             const encodedPath = encodeURIComponent(filePath);
-            const response = await fetch(`${API_BASE_URL}/files/${action}?path=${encodedPath}`, {
+            const response = await fetch(`${HTTP_BASE_URL}/files/${action}?path=${encodedPath}`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
             if (!response.ok) throw new Error(`Gagal untuk ${action} file.`);

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Ticket } from '../types/api';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface HistoryFilters {
     search?: string;
@@ -20,8 +21,6 @@ interface HistoryAllTicketActions {
 type HistoryAllTicketStore = HistoryAllTicketState & {
     actions: HistoryAllTicketActions;
 };
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 const initialState: HistoryAllTicketState = {
     tickets: [],
@@ -49,7 +48,7 @@ export const useHistoryAllTicketStore = create<HistoryAllTicketStore>((set, get)
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets?${params.toString()}`);
+                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
                 if (!response.ok) throw new Error('Failed to fetch history tickets');
 
                 const { data } = await response.json();

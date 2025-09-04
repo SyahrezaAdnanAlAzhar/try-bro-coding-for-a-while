@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface ApprovalState {
     tickets: Ticket[];
@@ -16,8 +17,6 @@ type ApprovalStore = ApprovalState & {
     actions: ApprovalActions;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 const initialState: ApprovalState = {
     tickets: [],
     status: 'idle',
@@ -25,7 +24,7 @@ const initialState: ApprovalState = {
 
 const getDepartmentIdByName = async (name: string): Promise<number | null> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/departments?name=${encodeURIComponent(name)}`);
+        const response = await fetch(`${HTTP_BASE_URL}/departments?name=${encodeURIComponent(name)}`);
         if (!response.ok) return null;
         const { data } = await response.json();
         return data?.[0]?.id || null;
@@ -65,7 +64,7 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
             });
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets?${params.toString()}`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },

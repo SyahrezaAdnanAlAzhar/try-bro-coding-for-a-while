@@ -4,12 +4,11 @@ import { useAuthStore } from '../../../store/authStore';
 import { useApprovalActions } from '../../../store/approvalStore';
 import { useToast } from '../../../hooks/useToast';
 import { PrebuiltActionButton } from '../actions/PrebuiltActionButton';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface ApprovalActionsCellProps {
     ticketId: number;
 }
-
-const API_BASE_URL = '/api/e-memo-job-reservation';
 
 export const ApprovalActionsCell = ({ ticketId }: ApprovalActionsCellProps) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -26,13 +25,13 @@ export const ApprovalActionsCell = ({ ticketId }: ApprovalActionsCellProps) => {
         setIsLoading(true);
 
         const body = new FormData();
-        body.append('ActionName', actionName); 
+        body.append('ActionName', actionName);
         if (reason) {
             body.append('Reason', reason);
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/action`, {
+            const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

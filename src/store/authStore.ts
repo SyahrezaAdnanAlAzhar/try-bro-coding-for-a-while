@@ -9,6 +9,7 @@ import { useTicketSummaryStore } from "./ticketSummaryStore";
 import { useTicketTableStore } from "./ticketTableStore";
 import { useHistoryAllTicketStore } from "./historyAllTicketsStore";
 import { useHistoryMyTicketStore } from "./historyMyTicketStore";
+import { HTTP_BASE_URL } from "../config/api";
 
 export interface AuthState {
     accessToken: string | null;
@@ -29,8 +30,6 @@ export type AuthStore = AuthState & {
     actions: AuthActions;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const useAuthStore = create<AuthStore>()(
     persist(
         (set, get) => ({
@@ -42,7 +41,7 @@ export const useAuthStore = create<AuthStore>()(
                 login: async (username, password) => {
                     set({ status: 'loading' });
                     try {
-                        const response = await fetch(`${API_BASE_URL}/login`, {
+                        const response = await fetch(`${HTTP_BASE_URL}/login`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ username, password }),
@@ -75,7 +74,7 @@ export const useAuthStore = create<AuthStore>()(
                     const { accessToken } = get();
                     if (accessToken) {
                         try {
-                            await fetch(`${API_BASE_URL}/logout`, {
+                            await fetch(`${HTTP_BASE_URL}/logout`, {
                                 method: 'POST',
                                 headers: { Authorization: `Bearer ${accessToken}` },
                             });
@@ -104,7 +103,7 @@ export const useAuthStore = create<AuthStore>()(
                     }
 
                     try {
-                        const response = await fetch(`${API_BASE_URL}/refresh`, {
+                        const response = await fetch(`${HTTP_BASE_URL}/refresh`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ refresh_token: refreshToken }),
@@ -138,7 +137,7 @@ export const useAuthStore = create<AuthStore>()(
                     }
 
                     try {
-                        const response = await fetch(`${API_BASE_URL}/auth/ws-ticket`, {
+                        const response = await fetch(`${HTTP_BASE_URL}/auth/ws-ticket`, {
                             method: 'POST',
                             headers: { Authorization: `Bearer ${accessToken}` },
                         });

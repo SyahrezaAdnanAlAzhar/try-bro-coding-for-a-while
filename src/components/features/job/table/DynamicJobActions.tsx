@@ -5,6 +5,7 @@ import { Text } from '../../../ui/Text';
 import { useJobActions } from '../../../../store/jobStore';
 import { useToast } from '../../../../hooks/useToast';
 import { ExecuteActionModal } from '../../actions/ExecuteActionModal';
+import { HTTP_BASE_URL } from '../../../../config/api';
 
 interface AvailableAction {
     action_name: string;
@@ -19,8 +20,6 @@ interface DynamicJobActionsProps {
     jobDescription: string;
 }
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsProps) => {
     const [actions, setActions] = useState<AvailableAction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +33,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
         const fetchAvailableActions = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/${jobId}/available-actions`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets/${jobId}/available-actions`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch actions');
@@ -63,7 +62,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/tickets/${jobId}/action`, {
+            const response = await fetch(`${HTTP_BASE_URL}/tickets/${jobId}/action`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${accessToken}` },
                 body: formData,

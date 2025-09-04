@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { HTTP_BASE_URL } from '../config/api';
 
 export interface TicketSummaryItem {
     status_id: number;
@@ -30,8 +31,6 @@ type TicketSummaryStore = TicketSummaryState & {
     actions: TicketSummaryActions;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 const initialState: TicketSummaryState = {
     summaryData: [],
     oldestYear: null,
@@ -48,7 +47,7 @@ export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
     actions: {
         fetchOldestYear: async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/reports/oldest-ticket`);
+                const response = await fetch(`${HTTP_BASE_URL}/reports/oldest-ticket`);
                 if (!response.ok) throw new Error('Failed to fetch oldest ticket year');
                 const { data } = await response.json();
                 const year = new Date(data.created_at).getFullYear();
@@ -81,7 +80,7 @@ export const useTicketSummaryStore = create<TicketSummaryStore>((set, get) => ({
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/reports/ticket-summary?${params.toString()}`);
+                const response = await fetch(`${HTTP_BASE_URL}/reports/ticket-summary?${params.toString()}`);
 
                 if (!response.ok) throw new Error('Failed to fetch ticket summary');
 

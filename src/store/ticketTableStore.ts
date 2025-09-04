@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
+import { HTTP_BASE_URL } from '../config/api';
 
 interface TicketTableFilters {
     search?: string;
@@ -34,8 +35,6 @@ type TicketTableStore = TicketTableState & {
     actions: TicketTableActions;
 };
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 const initialState: TicketTableState = {
     tickets: [],
     status: 'idle',
@@ -67,7 +66,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets?${params.toString()}`);
+                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
                 if (!response.ok) throw new Error('Failed to fetch tickets');
 
                 const { data } = await response.json();
@@ -114,7 +113,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
             };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/reorder`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets/reorder`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

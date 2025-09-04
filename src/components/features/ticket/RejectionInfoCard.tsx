@@ -4,6 +4,7 @@ import { Panel } from '../../ui/Panel';
 import { Text } from '../../ui/Text';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { HTTP_BASE_URL } from '../../../config/api';
 
 interface RejectionData {
     reason: string;
@@ -18,8 +19,6 @@ interface RejectionInfoCardProps {
     ticketId: number;
 }
 
-const API_BASE_URL = '/api/e-memo-job-reservation';
-
 export const RejectionInfoCard = ({ ticketId }: RejectionInfoCardProps) => {
     const [rejectionData, setRejectionData] = useState<RejectionData | null>(null);
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -27,7 +26,7 @@ export const RejectionInfoCard = ({ ticketId }: RejectionInfoCardProps) => {
     useEffect(() => {
         const fetchRejectionInfo = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/last-rejection`, {
+                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/last-rejection`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) return;
