@@ -12,6 +12,8 @@ import { Can } from '../components/auth/Can';
 import { Button } from '../components/ui/Button';
 import { Plus } from 'lucide-react';
 import { useSyncDepartmentUrl } from '../hooks/useSyncDepartmentUrl';
+import { useActiveEditor } from '../store/realtimeStore';
+import { MessageBar } from '../components/ui/MessageBar';
 
 export default function TicketPage() {
     useSyncDepartmentUrl();
@@ -21,12 +23,16 @@ export default function TicketPage() {
     const tableFilters = useTicketTableFilters();
     const { fetchTickets } = useTicketTableActions();
     const navigate = useNavigate();
+    const activeEditor = useActiveEditor();
 
     useEffect(() => {
         if (selectedDepartmentId) {
             fetchTickets({ departmentId: selectedDepartmentId });
         }
     }, [selectedDepartmentId, tableFilters, fetchTickets]);
+
+    const isSomeoneEditing =
+        activeEditor && activeEditor.context_id === selectedDepartmentId;
 
     return (
         <div className="space-y-6">
@@ -57,6 +63,11 @@ export default function TicketPage() {
                             <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
                         </Can>
                         <div className="space-y-8">
+                            {isSomeoneEditing && (
+                                <MessageBar variant="warning">
+                                    Pengguna lain sedang mengatur prioritas untuk departemen ini.
+                                </MessageBar>
+                            )}
                             <TicketToolbar />
                             <TicketTable />
                         </div>
