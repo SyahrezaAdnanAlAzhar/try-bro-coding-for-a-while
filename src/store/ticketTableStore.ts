@@ -26,6 +26,8 @@ interface TicketTableActions {
     reset: () => void;
     reorderTickets: (sourceIndex: number, destinationIndex: number) => void;
     saveTicketOrder: () => Promise<boolean>;
+    addOrUpdateTicket: (updatedTicket: Ticket) => void;
+    removeTicket: (ticketId: number) => void;
 }
 
 type TicketTableStore = TicketTableState & {
@@ -132,6 +134,32 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 set({ tickets: originalTickets });
                 return false;
             }
+        },
+        addOrUpdateTicket: (updatedTicket) => {
+            set((state) => {
+                const tickets = [...state.tickets];
+                const existingIndex = tickets.findIndex(
+                    (t) => t.ticket_id === updatedTicket.ticket_id
+                );
+
+                if (existingIndex !== -1) {
+                    tickets[existingIndex] = updatedTicket;
+                } else {
+                    tickets.push(updatedTicket);
+                }
+
+                const sortedTickets = tickets.sort(
+                    (a, b) => a.ticket_priority - b.ticket_priority
+                );
+
+                return { tickets: sortedTickets };
+            });
+        },
+
+        removeTicket: (ticketId) => {
+            set((state) => ({
+                tickets: state.tickets.filter((t) => t.ticket_id !== ticketId),
+            }));
         },
     },
 }));
