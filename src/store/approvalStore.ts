@@ -83,6 +83,13 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
             set(initialState);
         },
         addOrUpdateApprovalTicket: (updatedTicket) => {
+            if (updatedTicket.current_section_name !== 'Approval') {
+                set((state) => ({
+                    tickets: state.tickets.filter((t) => t.ticket_id !== updatedTicket.ticket_id),
+                }));
+                return;
+            }
+
             set((state) => {
                 const tickets = [...state.tickets];
                 const existingIndex = tickets.findIndex((t) => t.ticket_id === updatedTicket.ticket_id);

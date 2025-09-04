@@ -135,6 +135,11 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
             }
         },
         addOrUpdateTicket: (updatedTicket) => {
+            if (updatedTicket.current_section_name !== 'In Progress') {
+                get().actions.removeTicket(updatedTicket.ticket_id);
+                return;
+            }
+            
             set((state) => {
                 const tickets = [...state.tickets];
                 const existingIndex = tickets.findIndex(

@@ -71,6 +71,13 @@ export const useHistoryAllTicketStore = create<HistoryAllTicketStore>((set, get)
         },
 
         addOrUpdateHistoryTicket: (updatedTicket) => {
+            if (updatedTicket.current_section_name !== 'Closed') {
+                set((state) => ({
+                    tickets: state.tickets.filter((t) => t.ticket_id !== updatedTicket.ticket_id),
+                }));
+                return;
+            }
+
             set((state) => {
                 const tickets = [...state.tickets];
                 const existingIndex = tickets.findIndex((t) => t.ticket_id === updatedTicket.ticket_id);

@@ -150,6 +150,13 @@ export const useJobStore = create<JobStore>((set, get) => ({
             }
         },
         addOrUpdateJob: (updatedJob) => {
+            if (updatedJob.current_section_name !== 'In Progress') {
+                set((state) => ({
+                    jobs: state.jobs.filter((j) => j.ticket_id !== updatedJob.ticket_id),
+                }));
+                return;
+            }
+
             set((state) => {
                 const jobs = [...state.jobs];
                 const existingIndex = jobs.findIndex((j) => j.ticket_id === updatedJob.ticket_id);
