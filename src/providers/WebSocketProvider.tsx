@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from 'react';
+import { useEffect, useState, createContext, useContext, useRef } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useAuthStore } from '../store/authStore';
 import { useRealtimeStore } from '../store/realtimeStore';
@@ -14,15 +14,17 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     const { accessToken, actions: authActions } = useAuthStore();
     const { actions: realtimeActions } = useRealtimeStore();
     const [socketUrl, setSocketUrl] = useState<string | null>(null);
+    const hasAttemptedConnection = useRef(false);
 
     const toast = useToast();
     const ticketTableActions = useTicketTableStore((state) => state.actions);
     const selectedDepartmentId = useDepartmentStore((state) => state.selectedDepartmentId);
 
     useEffect(() => {
-        if (socketUrl) return;
+        if (hasAttemptedConnection.current || socketUrl) return;
 
         const getTicket = async () => {
+            hasAttemptedConnection.current = true;
             let ticket: string | null = null;
             if (accessToken) {
                 ticket = await authActions.requestWsTicket();
@@ -32,6 +34,8 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
             if (ticket) {
                 setSocketUrl(`${WEBSOCKET_URL}?ticket=${ticket}`);
+            } else {
+                hasAttemptedConnection.current = false;
             }
         };
 
@@ -48,7 +52,6 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             onClose: () => {
                 console.log('WebSocket connection closed.');
                 realtimeActions.setConnectionStatus('disconnected');
-                setSocketUrl(null);
             },
             onError: (event) => {
                 console.error('WebSocket error:', event);
