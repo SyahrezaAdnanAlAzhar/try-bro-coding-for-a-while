@@ -23,6 +23,7 @@ export interface AuthActions {
     logout: () => Promise<void>;
     refreshToken: () => Promise<string | null>;
     requestWsTicket: () => Promise<string | null>;
+    requestPublicWsTicket: () => Promise<string | null>;
     _setTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
 }
 
@@ -156,6 +157,20 @@ export const useAuthStore = create<AuthStore>()(
                         return data.ticket;
                     } catch (error) {
                         console.error('Error requesting WebSocket ticket:', error);
+                        return null;
+                    }
+                },
+
+                requestPublicWsTicket: async () => {
+                    try {
+                        const response = await fetch(`${HTTP_BASE_URL}/auth/ws-public-ticket`, {
+                            method: 'POST',
+                        });
+                        if (!response.ok) throw new Error('Failed to get public WebSocket ticket');
+                        const { data } = await response.json();
+                        return data.ticket;
+                    } catch (error) {
+                        console.error('Error requesting public WebSocket ticket:', error);
                         return null;
                     }
                 },

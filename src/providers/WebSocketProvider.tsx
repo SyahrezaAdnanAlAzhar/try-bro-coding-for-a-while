@@ -20,16 +20,22 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     const selectedDepartmentId = useDepartmentStore((state) => state.selectedDepartmentId);
 
     useEffect(() => {
-        if (accessToken && !socketUrl) {
-            authActions.requestWsTicket().then(ticket => {
-                if (ticket) {
-                    setSocketUrl(`${WEBSOCKET_URL}?ticket=${ticket}`);
-                }
-            });
-        }
-        else if (!accessToken && socketUrl) {
-            setSocketUrl(null);
-        }
+        if (socketUrl) return;
+
+        const getTicket = async () => {
+            let ticket: string | null = null;
+            if (accessToken) {
+                ticket = await authActions.requestWsTicket();
+            } else {
+                ticket = await authActions.requestPublicWsTicket();
+            }
+
+            if (ticket) {
+                setSocketUrl(`${WEBSOCKET_URL}?ticket=${ticket}`);
+            }
+        };
+
+        getTicket();
     }, [accessToken, socketUrl, authActions]);
 
     const { lastJsonMessage, readyState } = useWebSocket(
@@ -42,6 +48,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             onClose: () => {
                 console.log('WebSocket connection closed.');
                 realtimeActions.setConnectionStatus('disconnected');
+                setSocketUrl(null);
             },
             onError: (event) => {
                 console.error('WebSocket error:', event);
