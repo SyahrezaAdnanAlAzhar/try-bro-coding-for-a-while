@@ -64,15 +64,29 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+    // proxy: {
+    //   // Proxy API & WebSocket ke backend
+    //   '/api/e-memo-job-reservation': {
+    //     target: 'http://api:8080',
+    //     changeOrigin: true,
+    //     ws: true
+    //   },
+    //   '/ws': {
+    //     target: 'ws://api:3000',
+    //     ws: true
+    //   },
+    // }
     proxy: {
-      // Proxy API & WebSocket ke backend
-      '/api': {
+      // 1. Proxy untuk semua request HTTP API
+      '/api/e-memo-job-reservation': {
         target: 'http://api:8080',
-        changeOrigin: true
+        changeOrigin: true,
+        // Jangan tambahkan 'ws: true' di sini
       },
-      '/ws': {
-        target: 'ws://api:3000',
-        ws: true
+      // 2. Proxy SPESIFIK untuk path WebSocket
+      '/api/e-memo-job-reservation/ws': {
+        target: 'ws://api:8080', // Target harus ws://
+        ws: true, // Wajib
       },
     }
   }

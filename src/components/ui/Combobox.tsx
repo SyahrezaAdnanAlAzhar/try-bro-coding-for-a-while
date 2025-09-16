@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useId, forwardRef } from 'react';
-import { ChevronDown, Trash2 } from 'lucide-react';
+import { ChevronDown, Search, Trash2 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
+import { Button } from './Button';
 
 export interface ComboboxOption {
     value: string | number;
@@ -27,10 +28,8 @@ const useClickOutside = (
             }
             handler(event);
         };
-
         document.addEventListener('mousedown', listener);
         document.addEventListener('touchstart', listener);
-
         return () => {
             document.removeEventListener('mousedown', listener);
             document.removeEventListener('touchstart', listener);
@@ -38,38 +37,40 @@ const useClickOutside = (
     }, [ref, handler]);
 };
 
-
-export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
-    ({ options, value, onChange, placeholder = 'Select an option...', disabled, className }, ref) => {
+export const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
+    ({ options, value, onChange, placeholder = 'Select an option...', disabled, className }) => {
         const [isOpen, setIsOpen] = useState(false);
-        const [inputValue, setInputValue] = useState(value?.label || '');
+        const [searchTerm, setSearchTerm] = useState('');
         const [activeIndex, setActiveIndex] = useState(-1);
 
         const comboboxRef = useRef<HTMLDivElement>(null);
+        const searchInputRef = useRef<HTMLInputElement>(null);
         const listboxId = useId();
 
         useClickOutside(comboboxRef, () => setIsOpen(false));
 
         useEffect(() => {
-            setInputValue(value?.label || '');
-        }, [value]);
+            if (isOpen) {
+                setSearchTerm('');
+                setActiveIndex(-1);
+                setTimeout(() => searchInputRef.current?.focus(), 100);
+            }
+        }, [isOpen]);
 
-        const filteredOptions = inputValue
+        const filteredOptions = searchTerm
             ? options.filter((option) =>
-                option.label.toLowerCase().includes(inputValue.toLowerCase())
+                option.label.toLowerCase().includes(searchTerm.toLowerCase())
             )
             : options;
 
         const handleSelectOption = (option: ComboboxOption) => {
             onChange(option);
-            setInputValue(option.label);
             setIsOpen(false);
         };
 
         const handleClear = (e: React.MouseEvent) => {
             e.stopPropagation();
             onChange(null);
-            setInputValue('');
         };
 
         const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -91,84 +92,80 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                 case 'Escape':
                     setIsOpen(false);
                     break;
-                case 'Tab':
-                    setIsOpen(false);
-                    break;
             }
         };
 
         return (
             <div ref={comboboxRef} className={twMerge('relative w-full', className)}>
-                <div className="relative">
-                    <input
-                        ref={ref}
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => {
-                            setInputValue(e.target.value);
-                            setIsOpen(true);
-                            setActiveIndex(-1);
-                        }}
-                        onClick={() => setIsOpen(!isOpen)}
-                        onKeyDown={handleKeyDown}
-                        placeholder={placeholder}
-                        disabled={disabled}
-                        className="h-[40px] w-full rounded-[16px] border border-mono-grey bg-mono-white px-6 py-2 pr-20 text-base text-mono-black transition-colors placeholder:text-mono-grey focus:border-blue-mtm-400 focus:outline-none focus:ring-2 focus:ring-blue-mtm-400 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
-                        role="combobox"
-                        aria-expanded={isOpen}
-                        aria-controls={listboxId}
-                        aria-activedescendant={activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                <Button
+                    variant="secondary"
+                    onClick={() => setIsOpen(!isOpen)}
+                    disabled={disabled}
+                    className="h-[40px] w-full justify-between rounded-[16px] px-4"
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                >
+                    <span className={value ? 'text-mono-black' : 'text-mono-grey'}>
+                        {value?.label || placeholder}
+                    </span>
+                    <div className="flex items-center">
                         {value && (
                             <button
                                 type="button"
                                 onClick={handleClear}
-                                className="rounded-full p-1.5 text-add-red transition-colors hover:bg-add-red/15 focus:outline-none focus:ring-1 focus:ring-add-red"
+                                className="mr-2 rounded-full p-1 text-add-red transition-colors hover:bg-add-red/15"
                                 aria-label="Clear selection"
                             >
-                                <Trash2 size={18} strokeWidth={2} />
+                                <Trash2 size={16} />
                             </button>
                         )}
-                        <button
-                            type="button"
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="rounded-full p-1.5 text-blue-mtm-500 transition-colors hover:bg-blue-mtm-300/15 focus:outline-none focus:ring-1 focus:ring-blue-mtm-300/50"
-                            aria-label="Toggle options"
-                        >
-                            <ChevronDown size={18} strokeWidth={3.5} />
-                        </button>
+                        <ChevronDown size={18} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </div>
-                </div>
+                </Button>
 
                 {isOpen && (
-                    <ul
-                        className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-mono-white py-0 text-base shadow-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        id={listboxId}
-                        role="listbox"
-                    >
-                        {filteredOptions.length > 0 ? (
-                            filteredOptions.map((option, index) => (
-                                <li
-                                    key={option.value}
-                                    onClick={() => handleSelectOption(option)}
-                                    className={twMerge(
-                                        'relative cursor-pointer select-none py-2 px-6 text-mono-grey transition-colors hover:bg-blue-mtm-200/25 hover:text-mono-black',
-                                        activeIndex === index && 'bg-blue-mtm-200/25 text-mono-black'
-                                    )}
-                                    id={`${listboxId}-option-${index}`}
-                                    role="option"
-                                    aria-selected={value?.value === option.value}
-                                >
-                                    {option.label}
+                    <div className="absolute z-10 mt-1 w-full rounded-[20px] bg-mono-white p-2 text-base shadow-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="relative p-2">
+                            <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-mono-grey" />
+                            <input
+                                ref={searchInputRef}
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Type a category"
+                                className="h-10 w-full rounded-lg border border-mono-grey bg-mono-white pl-10 pr-4 text-base text-mono-black focus:border-blue-mtm-400 focus:outline-none focus:ring-1 focus:ring-blue-mtm-400"
+                            />
+                        </div>
+
+                        <ul
+                            className="mt-1 max-h-60 overflow-auto py-1"
+                            id={listboxId}
+                            role="listbox"
+                        >
+                            {filteredOptions.length > 0 ? (
+                                filteredOptions.map((option, index) => (
+                                    <li
+                                        key={option.value}
+                                        onClick={() => handleSelectOption(option)}
+                                        className={twMerge(
+                                            'relative cursor-pointer select-none rounded-md py-2 px-4 text-mono-grey transition-colors hover:bg-blue-mtm-100/50 hover:text-mono-black',
+                                            activeIndex === index && 'bg-blue-mtm-100/50 text-mono-black'
+                                        )}
+                                        id={`${listboxId}-option-${index}`}
+                                        role="option"
+                                        aria-selected={value?.value === option.value}
+                                    >
+                                        {option.label}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="relative cursor-default select-none py-2 px-4 text-mono-dark-grey">
+                                    Tidak ditemukan.
                                 </li>
-                            ))
-                        ) : (
-                            <li className="relative cursor-default select-none py-2 px-4 text-mono-dark-grey">
-                                Tidak ditemukan.
-                            </li>
-                        )}
-                    </ul>
+                            )}
+                        </ul>
+                    </div>
                 )}
             </div>
         );

@@ -61,7 +61,7 @@ export const Navbar = () => {
     return (
         <header className={twMerge("sticky top-0 z-50 transition-colors duration-300", navbarColorClass)}>
             <div>
-                <nav className={twMerge("container mx-auto flex h-16 items-center justify-between rounded-t-2xl px-16")}>
+                <nav className={twMerge("container mx-auto flex h-16 items-center justify-between rounded-t-2xl px-4")}>
                     {/* LOGO AND NAVIGATION */}
                     <div className="flex-shrink-0">
                         <Link
