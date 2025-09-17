@@ -4,7 +4,7 @@ import { useDepartmentStatus, useSelectedDepartmentId } from '../store/departmen
 import { DepartmentSelector } from '../components/features/ticket/DepartmentSelector';
 import { TicketSummary } from '../components/features/ticket/TicketSummary';
 import { useEffect } from 'react';
-import { useTicketTableActions, useTicketTableFilters } from '../store/ticketTableStore';
+import { useTicketTableActions } from '../store/ticketTableStore';
 import { TicketTable } from '../components/features/ticket/table/TicketTable';
 import { TicketToolbar } from '../components/features/ticket/TicketToolbar';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,6 @@ export default function TicketPage() {
 
     const departmentStatus = useDepartmentStatus();
     const selectedDepartmentId = useSelectedDepartmentId();
-    const tableFilters = useTicketTableFilters();
     const { fetchTickets } = useTicketTableActions();
     const navigate = useNavigate();
     const activeEditor = useActiveEditor();
@@ -29,7 +28,7 @@ export default function TicketPage() {
         if (selectedDepartmentId) {
             fetchTickets({ departmentId: selectedDepartmentId });
         }
-    }, [selectedDepartmentId, tableFilters, fetchTickets]);
+    }, [selectedDepartmentId, fetchTickets]);
 
     const isSomeoneEditing =
         activeEditor && activeEditor.context_id === selectedDepartmentId;

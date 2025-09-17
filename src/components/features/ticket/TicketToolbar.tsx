@@ -1,14 +1,16 @@
-import { useTicketTableActions, useTicketTableFilters } from '../../../store/ticketTableStore';
+import { useTicketTableActions, useTicketTableFilters, useTicketTableStore } from '../../../store/ticketTableStore';
 import { SearchBar } from '../../ui/SearchBar';
-import { Button } from '../../ui/Button';
-import { Filter } from 'lucide-react';
+import { useSelectedDepartmentId } from '../../../store/departmentStore';
+import { FilterTrigger } from '../filter/FilterTrigger';
 
 export const TicketToolbar = () => {
     const filters = useTicketTableFilters();
-    const { setFilters } = useTicketTableActions();
+    const { setFilters, applyFilters } = useTicketTableActions();
+    const selectedDepartmentId = useSelectedDepartmentId();
 
     const handleSearch = (query: string) => {
         setFilters({ search: query });
+        applyFilters();
     };
 
     return (
@@ -20,9 +22,10 @@ export const TicketToolbar = () => {
                     placeholder="Cari berdasarkan deskripsi tiket..."
                 />
             </div>
-            <Button variant="blue-mtm-dark" leftIcon={<Filter size={16} />}>
-                Filter
-            </Button>
+            <FilterTrigger
+                storeHook={useTicketTableStore}
+                fetchParams={{ sectionId: 2, departmentTargetId: selectedDepartmentId }}
+            />
         </div>
     );
 };
