@@ -3,6 +3,7 @@ import type { StoreApi, UseBoundStore } from "zustand";
 import { Button } from "../../ui/Button";
 import { FilterModal } from "./FilterModal";
 import { Filter } from "lucide-react";
+import { useAuthStatus } from "../../../store/authStore";
 
 type FilterableStore = {
     filterOptions: any;
@@ -23,6 +24,11 @@ interface FilterTriggerProps {
 export const FilterTrigger = ({ storeHook, fetchParams }: FilterTriggerProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const { filterOptions, selectedFilters, actions } = storeHook();
+    const authStatus = useAuthStatus();
+
+    if (authStatus !== 'authenticated') {
+        return null;
+    }
 
     const handleOpen = () => {
         actions.fetchFilterOptions(fetchParams);

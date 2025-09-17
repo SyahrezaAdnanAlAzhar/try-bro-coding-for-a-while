@@ -74,7 +74,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
     actions: {
         fetchTickets: async ({ departmentId }) => {
             set({ status: 'loading' });
-            const { filters, sort } = get();
+            const { filters, sort, selectedFilters } = get();
 
             const params = new URLSearchParams({
                 section_id: '2',
@@ -82,9 +82,12 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 sort_by: `${sort.by}_${sort.direction}`,
             });
 
-            if (filters.search) {
-                params.append('search', filters.search);
-            }
+            if (filters.search) params.append('search', filters.search);
+            selectedFilters.statusIds.forEach(id => params.append('status_id', String(id)));
+            selectedFilters.requestorDepartmentIds.forEach(id => params.append('requestor_department_id', String(id)));
+            selectedFilters.requestorNpks.forEach(npk => params.append('requestor_npk', npk));
+            selectedFilters.picNpks.forEach(npk => params.append('pic_npk', npk));
+
 
             try {
                 const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
@@ -160,7 +163,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 get().actions.removeTicket(updatedTicket.ticket_id);
                 return;
             }
-            
+
             set((state) => {
                 const tickets = [...state.tickets];
                 const existingIndex = tickets.findIndex(
@@ -193,9 +196,9 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
             try {
                 const [statusRes, reqDeptRes, reqRes, picRes] = await Promise.all([
                     fetch(`${HTTP_BASE_URL}/status-ticket?section_id=${sectionId}`),
-                    fetch(`${HTTP_BASE_URL}/departments/options?section_id=${sectionId}&department_target_id=${departmentTargetId}`),
-                    fetch(`${HTTP_BASE_URL}/employees/options?role=requestor&section_id=${sectionId}&department_target_id=${departmentTargetId}`, { headers }),
-                    fetch(`${HTTP_BASE_URL}/employees/options?role=pic&section_id=${sectionId}&department_target_id=${departmentTargetId}`, { headers }),
+                    fetch(`${HTTP_BASE_URL}/department/options?department_target_id=${departmentTargetId}`, { headers }),
+                    fetch(`${HTTP_BASE_URL}/employee/options?role=requestor&department_target_id=${departmentTargetId}`, { headers }),
+                    fetch(`${HTTP_BASE_URL}/employee/options?role=pic&department_target_id=${departmentTargetId}`, { headers }),
                 ]);
 
                 const statuses = (await statusRes.json()).data;
@@ -206,9 +209,9 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 set({
                     filterOptions: {
                         statuses,
-                        requestorDepartments: requestorDepartments.map((d: any) => ({ value: d.id, label: d.name })),
-                        requestors: requestors.map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
-                        pics: pics.map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
+                        requestorDepartments: (requestorDepartments || []).map((d: any) => ({ value: d.id, label: d.name })),
+                        requestors: (requestors || []).map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
+                        pics: (pics || []).map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
                     },
                 });
             } catch (error) {
