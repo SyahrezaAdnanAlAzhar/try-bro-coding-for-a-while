@@ -8,6 +8,7 @@ import 'react-day-picker/dist/style.css';
 import { Text } from '../../ui/Text';
 import { useAuthStore } from '../../../store/authStore';
 import { useToast } from '../../../hooks/useToast';
+import { CreatableCombobox } from '../../ui/CreatableCombobox';
 
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
@@ -55,6 +56,18 @@ export const CreateTicketForm = () => {
         [options.specifiedLocations]
     );
 
+    const selectedSpecifiedLocation = useMemo(() => {
+        // Cari opsi yang cocok, atau buat opsi "sementara" jika tidak ada
+        const foundOption = options.specifiedLocations.find(l => l.name === formData.specified_location_name);
+        if (foundOption) {
+            return { value: foundOption.id, label: foundOption.name };
+        }
+        if (formData.specified_location_name) {
+            return { value: formData.specified_location_name, label: formData.specified_location_name };
+        }
+        return null;
+    }, [formData.specified_location_name, options.specifiedLocations]);
+
     // const handleFilesChange = useCallback(
     //     (files: (File | UploadedFile)[]) => {
     //         setFormField('support_files', files);
@@ -64,7 +77,6 @@ export const CreateTicketForm = () => {
 
     const selectedDepartment = departmentOptions.find(d => d.value === formData.department_target_id) || null;
     const selectedPhysicalLocation = physicalLocationOptions.find(l => l.value === formData.physical_location_id) || null;
-    const selectedSpecifiedLocation = specifiedLocationOptions.find(l => l.value === formData.specified_location_id) || null;
 
     return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -111,12 +123,13 @@ export const CreateTicketForm = () => {
             {/* Lokasi Daerah */}
             <div>
                 <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Lokasi Daerah (Opsional)</label>
-                <Combobox
+                <CreatableCombobox
                     options={specifiedLocationOptions}
                     value={selectedSpecifiedLocation}
-                    onChange={(option) => setFormField('specified_location_id', option ? (option.value as number) : null)}
-                    placeholder="Pilih Daerah"
-                    disabled={!formData.physical_location_id || options.specifiedLocations.length === 0}
+                    onChange={(option) => setFormField('specified_location_name', option ? option.label : '')}
+                    onCreate={(newName) => setFormField('specified_location_name', newName)}
+                    placeholder="Pilih atau buat baru..."
+                    disabled={!formData.physical_location_id}
                 />
             </div>
 

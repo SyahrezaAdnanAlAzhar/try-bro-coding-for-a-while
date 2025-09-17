@@ -9,7 +9,7 @@ interface CreateTicketFormData {
     department_target_id: number | null;
     description: string;
     physical_location_id: number | null;
-    specified_location_id: number | null;
+    specified_location_name: string;
     deadline: Date | null;
     support_files: (File | UploadedFile)[];
 }
@@ -49,7 +49,7 @@ const initialState: CreateTicketState = {
         department_target_id: null,
         description: '',
         physical_location_id: null,
-        specified_location_id: null,
+        specified_location_name: '',
         deadline: null,
         support_files: [],
     },
@@ -122,7 +122,7 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             }));
             if (field === 'physical_location_id') {
                 set((state) => ({
-                    formData: { ...state.formData, specified_location_id: null },
+                    formData: { ...state.formData, specified_location_id: '' },
                     options: { ...state.options, specifiedLocations: [] },
                 }));
             }
@@ -146,7 +146,7 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             body.append('department_target_id', String(formData.department_target_id));
             body.append('description', formData.description);
             if (formData.physical_location_id) body.append('physical_location_id', String(formData.physical_location_id));
-            if (formData.specified_location_id) body.append('specified_location_id', String(formData.specified_location_id));
+            if (formData.specified_location_name) body.append('specified_location_name', formData.specified_location_name);
             if (formData.deadline) body.append('deadline', format(formData.deadline, 'yyyy-MM-dd'));
             formData.support_files.forEach(file => {
                 if (file instanceof File) {

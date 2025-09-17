@@ -59,7 +59,7 @@ export default function ReviseTicketPage() {
                 setFormField('department_target_id', ticketData.data.department_target_id);
                 setFormField('description', ticketData.data.description);
                 setFormField('physical_location_id', ticketData.data.physical_location_id?.Int64);
-                setFormField('specified_location_id', ticketData.data.specified_location_id?.Int64);
+                setFormField('specified_location_name', ticketData.data.specified_location_name || '');
                 if (ticketData.data.deadline?.Valid) {
                     setFormField('deadline', new Date(ticketData.data.deadline.Time));
                 }
@@ -136,10 +136,16 @@ export default function ReviseTicketPage() {
                 department_target_id: formData.department_target_id,
                 description: formData.description,
                 physical_location_id: formData.physical_location_id,
-                specified_location_id: formData.specified_location_id,
+                specified_location_name: formData.specified_location_name,
                 deadline: formData.deadline ? format(formData.deadline, 'yyyy-MM-dd') : null,
                 version: originalTicket.version,
             };
+
+            if (updatePayload.specified_location_name && !updatePayload.physical_location_id) {
+                toast.error('Lokasi Area wajib diisi jika Lokasi Daerah diisi.');
+                setIsSubmitting(false);
+                return;
+            }
 
             const updateRes = await fetch(`${HTTP_BASE_URL}/tickets/${id}`, {
                 method: 'PUT',
