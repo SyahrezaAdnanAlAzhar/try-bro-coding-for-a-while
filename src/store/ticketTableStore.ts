@@ -3,6 +3,7 @@ import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
 import { HTTP_BASE_URL } from '../config/api';
+import type { FilterOptions, SelectedFilters } from '../types/filter';
 
 interface TicketTableFilters {
     search?: string;
@@ -18,6 +19,8 @@ interface TicketTableState {
     status: 'idle' | 'loading' | 'success' | 'error';
     filters: TicketTableFilters;
     sort: TicketTableSort;
+    filterOptions: FilterOptions;
+    selectedFilters: SelectedFilters;
 }
 
 interface TicketTableActions {
@@ -29,10 +32,21 @@ interface TicketTableActions {
     saveTicketOrder: () => Promise<boolean>;
     addOrUpdateTicket: (updatedTicket: Ticket) => void;
     removeTicket: (ticketId: number) => void;
+    fetchFilterOptions: (params: { sectionId: number; departmentTargetId: number }) => Promise<void>;
+    setSelectedFilter: <K extends keyof SelectedFilters>(filterType: K, value: SelectedFilters[K]) => void;
+    applyFilters: () => void;
+    resetFilters: () => void;
 }
 
 type TicketTableStore = TicketTableState & {
     actions: TicketTableActions;
+};
+
+const initialSelectedFilters: SelectedFilters = {
+    statusIds: [],
+    requestorDepartmentIds: [],
+    requestorNpks: [],
+    picNpks: [],
 };
 
 const initialState: TicketTableState = {
@@ -45,6 +59,13 @@ const initialState: TicketTableState = {
         by: 'priority',
         direction: 'asc',
     },
+    filterOptions: {
+        statuses: [],
+        requestorDepartments: [],
+        requestors: [],
+        pics: [],
+    },
+    selectedFilters: initialSelectedFilters,
 }
 
 export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
@@ -165,6 +186,51 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 tickets: state.tickets.filter((t) => t.ticket_id !== ticketId),
             }));
         },
+
+        fetchFilterOptions: async ({ sectionId, departmentTargetId }) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            const headers = { Authorization: `Bearer ${accessToken}` };
+            try {
+                const [statusRes, reqDeptRes, reqRes, picRes] = await Promise.all([
+                    fetch(`${HTTP_BASE_URL}/status-ticket?section_id=${sectionId}`),
+                    fetch(`${HTTP_BASE_URL}/departments/options?section_id=${sectionId}&department_target_id=${departmentTargetId}`),
+                    fetch(`${HTTP_BASE_URL}/employees/options?role=requestor&section_id=${sectionId}&department_target_id=${departmentTargetId}`, { headers }),
+                    fetch(`${HTTP_BASE_URL}/employees/options?role=pic&section_id=${sectionId}&department_target_id=${departmentTargetId}`, { headers }),
+                ]);
+
+                const statuses = (await statusRes.json()).data;
+                const requestorDepartments = (await reqDeptRes.json()).data;
+                const requestors = (await reqRes.json()).data;
+                const pics = (await picRes.json()).data;
+
+                set({
+                    filterOptions: {
+                        statuses,
+                        requestorDepartments: requestorDepartments.map((d: any) => ({ value: d.id, label: d.name })),
+                        requestors: requestors.map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
+                        pics: pics.map((e: any) => ({ value: e.npk, label: `${e.npk} - ${e.name}` })),
+                    },
+                });
+            } catch (error) {
+                console.error("Failed to fetch filter options:", error);
+            }
+        },
+
+        setSelectedFilter: (filterType, value) => {
+            set(state => ({ selectedFilters: { ...state.selectedFilters, [filterType]: value } }));
+        },
+
+        applyFilters: () => {
+            const selectedDepartmentId = useDepartmentStore.getState().selectedDepartmentId;
+            if (selectedDepartmentId) {
+                get().actions.fetchTickets({ departmentId: selectedDepartmentId });
+            }
+        },
+
+        resetFilters: () => {
+            set({ selectedFilters: initialSelectedFilters });
+            get().actions.applyFilters();
+        },
     },
 }));
 
@@ -173,3 +239,5 @@ export const useTicketTableStatus = () => useTicketTableStore((state) => state.s
 export const useTicketTableFilters = () => useTicketTableStore((state) => state.filters);
 export const useTicketTableSort = () => useTicketTableStore((state) => state.sort);
 export const useTicketTableActions = () => useTicketTableStore((state) => state.actions);
+export const useTicketTableFilterOptions = () => useTicketTableStore((state) => state.filterOptions);
+export const useTicketTableSelectedFilters = () => useTicketTableStore((state) => state.selectedFilters);
