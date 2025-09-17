@@ -13,7 +13,7 @@ import { CreatableCombobox } from '../../ui/CreatableCombobox';
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
     const { setFormField, fetchSpecifiedLocations } = useCreateTicketActions();
-    const accessToken = useAuthStore((state) => state.accessToken); 
+    const accessToken = useAuthStore((state) => state.accessToken);
     const toast = useToast();
 
     const handleFileAction = async (file: UploadedFile, action: 'view' | 'download') => {
@@ -57,7 +57,6 @@ export const CreateTicketForm = () => {
     );
 
     const selectedSpecifiedLocation = useMemo(() => {
-        // Cari opsi yang cocok, atau buat opsi "sementara" jika tidak ada
         const foundOption = options.specifiedLocations.find(l => l.name === formData.specified_location_name);
         if (foundOption) {
             return { value: foundOption.id, label: foundOption.name };

@@ -25,6 +25,8 @@ export const Navbar = () => {
     const isLoggedIn = authStatus === 'authenticated' && user;
     const firstName = user?.employee_name.split(' ')[0] || '';
 
+    const ticketUrl = selectedDepartmentId ? `/?department_id=${selectedDepartmentId}` : '/';
+
     const navbarColorClass = useMemo(() => {
         if (location.pathname.startsWith('/job') && user) {
             return getNavbarColorClass(user.employee_department);
@@ -65,7 +67,7 @@ export const Navbar = () => {
                     {/* LOGO AND NAVIGATION */}
                     <div className="flex-shrink-0">
                         <Link
-                            to="/"
+                            to={ticketUrl}
                             className="flex items-center gap-2 rounded-full bg-mono-white px-3 py-2 text-blue-mtm-700 shadow-sm"
                         >
                             <MtmLogo className="h-6 w-auto" />
@@ -75,7 +77,7 @@ export const Navbar = () => {
 
                     {/* MAIN NAV */}
                     <div className="items-baseline">
-                        <NavLink to="/" className={navLinkClasses} end>
+                        <NavLink to={ticketUrl} className={navLinkClasses} end>
                             Ticket
                         </NavLink>
                         {isLoggedIn && can('CREATE_TICKET') && (
