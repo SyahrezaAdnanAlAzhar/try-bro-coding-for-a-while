@@ -55,15 +55,12 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         socketUrl,
         {
             onOpen: () => {
-                console.log('WebSocket connection established.');
                 realtimeActions.setConnectionStatus('connected');
             },
             onClose: () => {
-                console.log('WebSocket connection closed.');
                 realtimeActions.setConnectionStatus('disconnected');
             },
-            onError: (event) => {
-                console.error('WebSocket error:', event);
+            onError: () => {
                 realtimeActions.setConnectionStatus('disconnected');
             },
             shouldReconnect: (_closeEvent) => true,
@@ -75,7 +72,6 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     useEffect(() => {
         if (lastJsonMessage) {
             const message = lastJsonMessage as WebSocketMessage;
-            console.log('Received WebSocket message:', message);
 
             switch (message.event) {
                 case 'TICKET_CREATED': {

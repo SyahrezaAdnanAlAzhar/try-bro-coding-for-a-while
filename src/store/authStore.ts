@@ -84,6 +84,7 @@ export const useAuthStore = create<AuthStore>()(
                         }
                     }
 
+                    set({ accessToken: null, refreshToken: null, user: null, status: 'unauthenticated' });
                     useApprovalStore.getState().actions.reset();
                     useCreateTicketStore.getState().actions.reset();
                     useHistoryAllTicketStore.getState().actions.reset();
@@ -92,8 +93,6 @@ export const useAuthStore = create<AuthStore>()(
                     useRealtimeStore.getState().actions.reset();
                     useTicketSummaryStore.getState().actions.reset();
                     useTicketTableStore.getState().actions.reset();
-
-                    set({ accessToken: null, refreshToken: null, user: null, status: 'unauthenticated' });
                 },
 
                 refreshToken: async () => {

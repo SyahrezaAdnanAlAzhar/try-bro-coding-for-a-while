@@ -32,6 +32,7 @@ interface DepartmentState {
 interface DepartmentActions {
     fetchDepartments: (initialDepartmentId?: number) => Promise<void>;
     setSelectedDepartment: (id: number | null) => void;
+    reset: () => void;
 }
 
 interface DepartmentSelectors {
@@ -45,13 +46,24 @@ type DepartmentStore = DepartmentState & {
     selectors: DepartmentSelectors;
 };
 
-export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
+const initialState: Omit<DepartmentState, 'actions' | 'selectors'> = {
     departments: [],
     selectedDepartmentId: null,
     status: 'idle',
+};
+
+export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
+    ...initialState,
 
     actions: {
         fetchDepartments: async (initialDepartmentId) => {
+            const { status } = get();
+            if (status === 'loading' || status === 'success') {
+                if (initialDepartmentId) {
+                    set({ selectedDepartmentId: initialDepartmentId });
+                }
+                return;
+            }
             set({ status: 'loading' });
 
             try {
@@ -82,6 +94,9 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
         },
         setSelectedDepartment: (id) => {
             set({ selectedDepartmentId: id });
+        },
+        reset: () => {
+            set(initialState);
         },
     },
 
