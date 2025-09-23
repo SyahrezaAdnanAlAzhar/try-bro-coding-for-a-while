@@ -40,7 +40,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             const { user } = useAuthStore.getState();
             const accessToken = useAuthStore.getState().accessToken;
 
-            if (!user || !user.employee_department) {
+            if (!user || user.user_type === 'master' || !user.employee_department) {
                 console.warn("Job fetch skipped: User not logged in or doesn't have a department.");
                 set({ jobs: [], status: 'success' });
                 return;
@@ -115,7 +115,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             if (originalJobs.length === 0 || !user?.employee_department) return false;
 
             const userDepartment = departments.find(
-                (dep) => dep.name.toUpperCase() === user.employee_department.toUpperCase()
+                (dep) => dep.name.toUpperCase() === user.employee_department?.toUpperCase()
             );
             if (!userDepartment) return false;
 

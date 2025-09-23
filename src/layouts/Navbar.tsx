@@ -23,12 +23,20 @@ export const Navbar = () => {
     const { getNavbarColorClass } = useDepartmentSelectors();
 
     const isLoggedIn = authStatus === 'authenticated' && user;
-    const firstName = user?.employee_name.split(' ')[0] || '';
+    const isMasterUser = user?.user_type === 'master';
+    const displayName = useMemo(() => {
+        if (!user) return '';
+        if (user.user_type === 'master') {
+            return user.employee_position;
+        }
+        const firstName = user.employee_name?.split(' ')[0] || '';
+        return `${user.employee_npk} - ${firstName}`;
+    }, [user]);
 
     const ticketUrl = selectedDepartmentId ? `/?department_id=${selectedDepartmentId}` : '/';
 
     const navbarColorClass = useMemo(() => {
-        if (location.pathname.startsWith('/job') && user) {
+        if (location.pathname.startsWith('/job') && user?.user_type === 'employee') {
             return getNavbarColorClass(user.employee_department);
         }
         if ((location.pathname === '/' || location.pathname.startsWith('/history')) && selectedDepartmentId) {
@@ -39,11 +47,11 @@ export const Navbar = () => {
     }, [location.pathname, user, selectedDepartmentId, departments, getNavbarColorClass]);
 
     const canViewJobLink = useMemo(() => {
-        if (!isLoggedIn || !user?.employee_department || departments.length === 0) {
+        if (!isLoggedIn || user.user_type !== 'employee' || !user.employee_department || departments.length === 0) {
             return false;
         }
         return departments.some(
-            (dep) => dep.name.toUpperCase() === user.employee_department.toUpperCase()
+            (dep) => dep.name.toUpperCase() === user.employee_department?.toUpperCase()
         );
     }, [isLoggedIn, user?.employee_department, departments]);
 
@@ -80,19 +88,19 @@ export const Navbar = () => {
                         <NavLink to={ticketUrl} className={navLinkClasses} end>
                             Ticket
                         </NavLink>
-                        {isLoggedIn && can('CREATE_TICKET') && (
+                        {!isMasterUser && isLoggedIn && can('CREATE_TICKET') && (
                             <NavLink to="/approval" className={navLinkClasses}>
                                 Approval
                             </NavLink>
                         )}
-                        {canViewJobLink && (
+                        {!isMasterUser && canViewJobLink && (
                             <NavLink to="/job" className={navLinkClasses}>
                                 Job
                             </NavLink>
                         )}
-                        {isLoggedIn &&
+                        {!isMasterUser && isLoggedIn && (
                             <HistoryDropdown navLinkClasses={navLinkClasses} />
-                        }
+                        )}
                     </div>
 
                     {/* AUTH */}
@@ -100,8 +108,7 @@ export const Navbar = () => {
                         {isLoggedIn ? (
                             <div className="flex items-center gap-3">
                                 <div className="hidden sm:block rounded-full bg-mono-white px-4 py-2 text-sm font-semibold text-mono-dark-grey">
-                                    <span>{user.employee_npk} - </span>
-                                    <span className="text-blue-mtm-500">{firstName}</span>
+                                    <span className="text-blue-mtm-500">{displayName}</span>
                                 </div>
                                 <Button variant="destructive" size="sm" onClick={handleLogout} leftIcon={<LogOut size={16} strokeWidth={4} />}>
                                     Keluar

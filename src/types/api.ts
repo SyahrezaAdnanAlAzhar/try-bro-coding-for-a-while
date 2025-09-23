@@ -1,13 +1,13 @@
 export interface User {
     user_id: number;
     username: string;
-    user_type: string;
-    employee_npk: string;
-    employee_name: string;
+    user_type: 'employee' | 'master';
+    employee_npk?: string;
+    employee_name?: string;
     employee_position: string;
-    employee_department: string;
-    employee_area: string;
-    permissions: string[];
+    employee_department?: string;
+    employee_area?: string;
+    permissions: string[] | null;
 }
 
 export interface Department {
