@@ -86,7 +86,7 @@ export const Navbar = () => {
                     </div>
 
                     {/* MAIN NAV */}
-                    <div className="items-baseline">
+                    <div className="hidden md:flex items-baseline gap-2">
                         <NavLink to={ticketUrl} className={navLinkClasses} end>
                             Ticket
                         </NavLink>
@@ -103,7 +103,7 @@ export const Navbar = () => {
                         {!isMasterUser && isLoggedIn && (
                             <HistoryDropdown navLinkClasses={navLinkClasses} />
                         )}
-                        <MasterEditDropdown />
+                        <MasterEditDropdown navLinkClasses={navLinkClasses} />
                     </div>
 
                     {/* AUTH */}
