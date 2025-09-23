@@ -74,6 +74,21 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             const message = lastJsonMessage as WebSocketMessage;
 
             switch (message.event) {
+                case 'CONNECTION_ESTABLISHED': {
+                    if (message.payload?.system_status) {
+                        realtimeActions.setEditMode(message.payload.system_status);
+                    }
+                    break;
+                }
+                case 'SYSTEM_EDIT_MODE_CHANGED': {
+                    realtimeActions.setEditMode(message.payload);
+                    toast.warning(
+                        <Text variant="body-sm">
+                            Status sistem telah diubah oleh admin.
+                        </Text>
+                    );
+                    break;
+                }
                 case 'TICKET_CREATED': {
                     const newTicket = message.payload as Ticket;
                     ticketTableActions.addOrUpdateTicket(newTicket);
