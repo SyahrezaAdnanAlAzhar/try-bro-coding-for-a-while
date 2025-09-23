@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { useAuthorization } from '../hooks/useAuthorization';
 import { HistoryDropdown } from './HistoryDropdown';
 import { EditModeToggle } from './EditModeToggle';
+import { MasterEditDropdown } from './MasterEditDropdown';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
@@ -102,6 +103,7 @@ export const Navbar = () => {
                         {!isMasterUser && isLoggedIn && (
                             <HistoryDropdown navLinkClasses={navLinkClasses} />
                         )}
+                        <MasterEditDropdown />
                     </div>
 
                     {/* AUTH */}

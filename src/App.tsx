@@ -14,6 +14,12 @@ import TicketDetailPage from './pages/TicketDetailPage'
 import HistoryAllTicketsPage from './pages/HistoryAllTicketsPage'
 import HistoryMyTicketsPage from './pages/HistoryMyTicketsPage'
 import ReviseTicketPage from './pages/ReviseTicketPage'
+import { MasterEditProtection } from './router/MasterEditProtection'
+import MasterDepartmentPage from './pages/master/MasterDepartmentPage'
+import MasterAreaPage from './pages/master/MasterAreaPage'
+import MasterEmployeePage from './pages/master/MasterEmployeePage'
+import MasterAuthorizationPage from './pages/master/MasterAuthorizationPage'
+import MasterTicketPage from './pages/master/MasterTicketPage'
 
 function App() {
   return (
@@ -91,6 +97,28 @@ function App() {
                   </Can>
                 </ProtectedRoute>
               }
+            />
+
+            {/* MASTER USER */}
+            <Route
+              path="/master/department"
+              element={<MasterEditProtection><MasterDepartmentPage /></MasterEditProtection>}
+            />
+            <Route
+              path="/master/area"
+              element={<MasterEditProtection><MasterAreaPage /></MasterEditProtection>}
+            />
+            <Route
+              path="/master/employee"
+              element={<MasterEditProtection><MasterEmployeePage /></MasterEditProtection>}
+            />
+            <Route
+              path="/master/authorization"
+              element={<MasterEditProtection><MasterAuthorizationPage /></MasterEditProtection>}
+            />
+            <Route
+              path="/master/ticket"
+              element={<MasterEditProtection><MasterTicketPage /></MasterEditProtection>}
             />
           </Routes>
         </MainLayout>
