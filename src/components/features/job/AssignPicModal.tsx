@@ -34,7 +34,7 @@ export const AssignPicModal = ({ jobDescription, onConfirm, children }: AssignPi
             const fetchEmployees = async () => {
                 setIsLoading(true);
                 const userDepartment = departments.find(
-                    (dep) => dep.name.toUpperCase() === user.employee_department.toUpperCase()
+                    (dep) => dep.name.toUpperCase() === user.employee_department?.toUpperCase()
                 );
 
                 if (!userDepartment) {

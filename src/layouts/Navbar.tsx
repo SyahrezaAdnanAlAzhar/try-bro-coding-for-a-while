@@ -9,6 +9,7 @@ import "../App.css"
 import { useMemo } from 'react';
 import { useAuthorization } from '../hooks/useAuthorization';
 import { HistoryDropdown } from './HistoryDropdown';
+import { EditModeToggle } from './EditModeToggle';
 
 export const Navbar = () => {
     const authStatus = useAuthStatus();
@@ -107,7 +108,8 @@ export const Navbar = () => {
                     <div className="flex-shrink-0">
                         {isLoggedIn ? (
                             <div className="flex items-center gap-3">
-                                <div className="hidden sm:block rounded-full bg-mono-white px-4 py-2 text-sm font-semibold text-mono-dark-grey">
+                                <div className="hidden sm:flex items-center gap-4 rounded-full bg-mono-white px-4 py-2 text-sm font-semibold text-mono-dark-grey">
+                                    {isMasterUser && <EditModeToggle />}
                                     <span className="text-blue-mtm-500">{displayName}</span>
                                 </div>
                                 <Button variant="destructive" size="sm" onClick={handleLogout} leftIcon={<LogOut size={16} strokeWidth={4} />}>
