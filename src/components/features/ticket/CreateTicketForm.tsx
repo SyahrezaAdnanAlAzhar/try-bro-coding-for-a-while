@@ -119,9 +119,9 @@ export const CreateTicketForm = () => {
                 />
             </div>
 
-            {/* Lokasi Daerah */}
+            {/* Lokasi Sub Area */}
             <div>
-                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Lokasi Daerah (Opsional)</label>
+                <label className="mb-1 block text-base font-semibold text-blue-mtm-400">Lokasi Sub Area (Opsional)</label>
                 <CreatableCombobox
                     options={specifiedLocationOptions}
                     value={selectedSpecifiedLocation}

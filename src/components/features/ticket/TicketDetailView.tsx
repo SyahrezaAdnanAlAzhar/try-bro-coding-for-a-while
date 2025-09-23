@@ -143,7 +143,7 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
             />
 
             <FormField
-                label="Lokasi Daerah"
+                label="Lokasi Sub Area"
                 value={ticket.specified_location_name || '-'}
                 readOnly
             />

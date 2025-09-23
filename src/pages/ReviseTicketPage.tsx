@@ -142,7 +142,7 @@ export default function ReviseTicketPage() {
             };
 
             if (updatePayload.specified_location_name && !updatePayload.physical_location_id) {
-                toast.error('Lokasi Area wajib diisi jika Lokasi Daerah diisi.');
+                toast.error('Lokasi Area wajib diisi jika Lokasi Sub Area diisi.');
                 setIsSubmitting(false);
                 return;
             }
