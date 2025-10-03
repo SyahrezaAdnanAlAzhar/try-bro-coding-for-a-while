@@ -50,7 +50,7 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
             set({ status: 'loading' });
             const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/department`, {
+                const response = await fetch(`${HTTP_BASE_URL}/departments`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch departments');
@@ -94,14 +94,33 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
 
         updateDepartment: async (id, payload) => {
             const accessToken = useAuthStore.getState().accessToken;
+            const { departments } = get();
+            const departmentToUpdate = departments.find(d => d.id === id);
+
+            if (!departmentToUpdate) {
+                console.error(`Department with id ${id} not found in store.`);
+                return false;
+            }
+
+            const fullPayload = {
+                ...departmentToUpdate,
+                ...payload,
+            };
+
+            console.log('Sending FULL PUT /department payload:', JSON.stringify(fullPayload));
+
             try {
                 const response = await fetch(`${HTTP_BASE_URL}/department/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(fullPayload),
                 });
                 if (!response.ok) throw new Error('Failed to update department');
-                await get().actions.fetchDepartments();
+
+                set(state => ({
+                    departments: state.departments.map(d => d.id === id ? fullPayload : d)
+                }));
+
                 return true;
             } catch (error) {
                 console.error(error);
@@ -128,16 +147,24 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
 
         updateArea: async (id, payload) => {
             const accessToken = useAuthStore.getState().accessToken;
+            const { areas } = get();
+            const areaToUpdate = areas.find(a => a.id === id);
+            if (!areaToUpdate) return false;
+
+            const fullPayload = { ...areaToUpdate, ...payload };
+
             try {
                 const response = await fetch(`${HTTP_BASE_URL}/area/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(fullPayload),
                 });
                 if (!response.ok) throw new Error('Failed to update area');
-                if ('department_id' in payload && payload.department_id) {
-                    await get().actions.fetchAreas(payload.department_id);
-                }
+
+                set(state => ({
+                    areas: state.areas.map(a => a.id === id ? fullPayload : a)
+                }));
+
                 return true;
             } catch (error) {
                 console.error(error);
