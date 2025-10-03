@@ -5,6 +5,7 @@ import { Text } from '../../ui/Text';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface RejectionData {
     reason: string;
@@ -26,8 +27,7 @@ export const RejectionInfoCard = ({ ticketId }: RejectionInfoCardProps) => {
     useEffect(() => {
         const fetchRejectionInfo = async () => {
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/last-rejection`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets/${ticketId}/last-rejection`, {
                 });
                 if (!response.ok) return;
                 const { data } = await response.json();

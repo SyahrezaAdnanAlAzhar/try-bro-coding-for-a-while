@@ -4,6 +4,7 @@ import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
 import { HTTP_BASE_URL } from '../config/api';
 import type { FilterOptions, SelectedFilters } from '../types/filter';
+import { apiClient } from '../lib/apiClient';
 
 interface TicketTableFilters {
     search?: string;
@@ -90,7 +91,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
 
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
                 if (!response.ok) throw new Error('Failed to fetch tickets');
 
                 const { data } = await response.json();
@@ -123,7 +124,6 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         },
         saveTicketOrder: async () => {
             const originalTickets = get().tickets;
-            const accessToken = useAuthStore.getState().accessToken;
             const selectedDepartmentId = useDepartmentStore.getState().selectedDepartmentId;
 
             if (originalTickets.length === 0 || !selectedDepartmentId) return false;
@@ -137,11 +137,10 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
             };
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets/reorder`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets/reorder`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify(payload),
                 });

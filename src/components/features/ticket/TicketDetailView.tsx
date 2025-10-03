@@ -8,6 +8,7 @@ import { DeadlineCell } from './table/DeadlineCell';
 import { FileSection } from '../files/FileSection';
 import { TicketActionHandler } from '../actions/TicketActionHandler';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface FileData {
     file_name: string;
@@ -42,8 +43,7 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
         const fetchFiles = async () => {
             setIsLoadingFiles(true);
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticket.ticket_id}/files`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets/${ticket.ticket_id}/files`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch attached files');
                 const { data } = await response.json();
@@ -66,8 +66,7 @@ export const TicketDetailView = ({ ticket, onActionSuccess }: TicketDetailViewPr
         }
         try {
             const encodedPath = encodeURIComponent(filePath);
-            const response = await fetch(`${HTTP_BASE_URL}/files/${action}?path=${encodedPath}`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
+            const response = await apiClient(`${HTTP_BASE_URL}/files/${action}?path=${encodedPath}`, {
             });
             if (!response.ok) throw new Error(`Gagal untuk ${action} file.`);
 

@@ -4,6 +4,7 @@ import type { Department, PhysicalLocation, SpecifiedLocation } from '../types/a
 import { format } from 'date-fns';
 import type { UploadedFile } from '../components/ui/FileInput';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 interface CreateTicketFormData {
     department_target_id: number | null;
@@ -98,10 +99,8 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
 
         fetchSpecifiedLocations: async (physicalLocationId) => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}&is_active=true`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}&is_active=true`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch specified locations');
                 const { data } = await response.json();
@@ -140,7 +139,6 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             }
 
             set({ status: 'submitting' });
-            const accessToken = useAuthStore.getState().accessToken;
             const body = new FormData();
 
             body.append('department_target_id', String(formData.department_target_id));
@@ -155,9 +153,8 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets`, {
                     method: 'POST',
-                    headers: { Authorization: `Bearer ${accessToken}` },
                     body,
                 });
 

@@ -8,6 +8,7 @@ import { Can } from '../../auth/Can';
 import { AssignPicModal } from '../job/AssignPicModal';
 import { useNavigate } from 'react-router-dom';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface TicketActionHandlerProps {
     ticketId: number;
@@ -76,9 +77,8 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
+            const response = await apiClient(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${accessToken}` },
                 body: formData,
             });
 
@@ -98,11 +98,10 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
 
     const handleAssignConfirm = async (picNpk: string) => {
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/jobs/${ticketId}/assign`, {
+            const response = await apiClient(`${HTTP_BASE_URL}/jobs/${ticketId}/assign`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({ pic_job: picNpk }),
             });

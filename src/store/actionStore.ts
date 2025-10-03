@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 export interface Action {
     id: number;
@@ -38,7 +39,7 @@ export const useActionStore = create<ActionStore>((set, get) => ({
             set({ status: 'loading' });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/actions`);
+                const response = await apiClient(`${HTTP_BASE_URL}/actions`);
                 if (!response.ok) throw new Error('Failed to fetch actions');
 
                 const { data }: { data: Action[] } = await response.json();

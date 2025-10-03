@@ -6,6 +6,7 @@ import { Button } from '../../ui/Button';
 import { Combobox, type ComboboxOption } from '../../ui/Combobox';
 import { Text } from '../../ui/Text';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface Employee {
     npk: string;
@@ -43,10 +44,10 @@ export const AssignPicModal = ({ jobDescription, onConfirm, children }: AssignPi
                 }
 
                 try {
-                    const response = await fetch(
+                    const response = await apiClient(
                         `${HTTP_BASE_URL}/employee?department_id=${userDepartment.id}&is_active=true`,
                         {
-                            headers: { Authorization: `Bearer ${accessToken}` },
+
                         }
                     );
                     if (!response.ok) throw new Error('Failed to fetch employees');

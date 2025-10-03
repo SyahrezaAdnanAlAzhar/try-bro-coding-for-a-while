@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 interface ApprovalState {
     tickets: Ticket[];
@@ -25,7 +26,7 @@ const initialState: ApprovalState = {
 
 const getDepartmentIdByName = async (name: string): Promise<number | null> => {
     try {
-        const response = await fetch(`${HTTP_BASE_URL}/departments?name=${encodeURIComponent(name)}`);
+        const response = await apiClient(`${HTTP_BASE_URL}/departments?name=${encodeURIComponent(name)}`);
         if (!response.ok) return null;
         const { data } = await response.json();
         return data?.[0]?.id || null;
@@ -43,7 +44,6 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
             set({ status: 'loading' });
 
             const { user } = useAuthStore.getState();
-            const accessToken = useAuthStore.getState().accessToken;
 
             if (!user || !user.employee_department) {
                 console.warn("Approval fetch skipped: User not logged in or doesn't have a department.");
@@ -65,10 +65,7 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
             });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets?${params.toString()}`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch approval tickets');
 

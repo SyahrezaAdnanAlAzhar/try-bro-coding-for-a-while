@@ -3,6 +3,7 @@ import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 interface JobState {
     jobs: Ticket[];
@@ -38,7 +39,6 @@ export const useJobStore = create<JobStore>((set, get) => ({
         fetchJobs: async () => {
             set({ status: 'loading' });
             const { user } = useAuthStore.getState();
-            const accessToken = useAuthStore.getState().accessToken;
 
             if (!user || user.user_type === 'master' || !user.employee_department) {
                 console.warn("Job fetch skipped: User not logged in or doesn't have a department.");
@@ -51,10 +51,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+                const response = await apiClient(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch jobs');
 
@@ -68,7 +65,6 @@ export const useJobStore = create<JobStore>((set, get) => ({
         fetchMyJobs: async () => {
             set({ myJobsStatus: 'loading' });
             const { user } = useAuthStore.getState();
-            const accessToken = useAuthStore.getState().accessToken;
 
             if (!user || !user.employee_npk) {
                 console.warn("My Jobs fetch skipped: User not logged in or doesn't have an NPK.");
@@ -81,10 +77,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
             });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+                const response = await apiClient(`${HTTP_BASE_URL}/jobs?${params.toString()}`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch my jobs');
 
@@ -109,7 +102,6 @@ export const useJobStore = create<JobStore>((set, get) => ({
         saveJobOrder: async () => {
             const originalJobs = get().jobs;
             const { user } = useAuthStore.getState();
-            const accessToken = useAuthStore.getState().accessToken;
             const { departments } = useDepartmentStore.getState();
 
             if (originalJobs.length === 0 || !user?.employee_department) return false;
@@ -128,11 +120,10 @@ export const useJobStore = create<JobStore>((set, get) => ({
             };
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/jobs/reorder`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/jobs/reorder`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify(payload),
                 });

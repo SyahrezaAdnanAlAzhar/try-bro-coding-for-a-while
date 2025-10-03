@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuthUser } from './authStore';
 import { useMemo } from 'react';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 const NAVBAR_COLORS = [
     'bg-basic-red-light',
@@ -67,7 +68,7 @@ export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
             set({ status: 'loading' });
 
             try {
-                const response = await fetch(
+                const response = await apiClient(
                     `${HTTP_BASE_URL}/departments?receive_job=true&is_active=true`,
                 );
 

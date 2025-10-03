@@ -5,6 +5,7 @@ import { useApprovalActions } from '../../../store/approvalStore';
 import { useToast } from '../../../hooks/useToast';
 import { PrebuiltActionButton } from '../actions/PrebuiltActionButton';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface ApprovalActionsCellProps {
     ticketId: number;
@@ -31,11 +32,8 @@ export const ApprovalActionsCell = ({ ticketId }: ApprovalActionsCellProps) => {
         }
 
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
+            const response = await apiClient(`${HTTP_BASE_URL}/tickets/${ticketId}/action`, {
                 method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
                 body,
             });
 

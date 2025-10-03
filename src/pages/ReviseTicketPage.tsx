@@ -13,6 +13,7 @@ import type { Ticket } from "../types/api";
 import { format } from "date-fns";
 import { RejectionInfoCard } from "../components/features/ticket/RejectionInfoCard";
 import { HTTP_BASE_URL } from "../config/api";
+import { apiClient } from "../lib/apiClient";
 
 interface ApiFile {
     file_name: string;
@@ -74,7 +75,7 @@ export default function ReviseTicketPage() {
 
                 setOriginalFiles(existingFiles);
                 setFormField('support_files', existingFiles);
-            } catch (error) {
+            } catch {
                 toast.error('Gagal memuat data tiket untuk revisi.');
             }
         };
@@ -147,9 +148,9 @@ export default function ReviseTicketPage() {
                 return;
             }
 
-            const updateRes = await fetch(`${HTTP_BASE_URL}/tickets/${id}`, {
+            const updateRes = await apiClient(`${HTTP_BASE_URL}/tickets/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatePayload),
             });
             if (!updateRes.ok) throw new Error('Gagal memperbarui data tiket.');
@@ -157,9 +158,8 @@ export default function ReviseTicketPage() {
             const resubmitBody = new FormData();
             resubmitBody.append('ActionName', 'Revisi');
 
-            const resubmitRes = await fetch(`${HTTP_BASE_URL}/tickets/${id}/action`, {
+            const resubmitRes = await apiClient(`${HTTP_BASE_URL}/tickets/${id}/action`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${accessToken}` },
                 body: resubmitBody,
             });
             if (!resubmitRes.ok) throw new Error('Gagal mengirim ulang tiket untuk approval.');

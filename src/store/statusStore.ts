@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { TicketStatus } from '../types/api';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 interface StatusState {
     statuses: TicketStatus[];
@@ -36,7 +37,7 @@ export const useStatusStore = create<StatusStore>((set, get) => ({
             set({ status: 'loading' });
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/status-ticket`);
+                const response = await apiClient(`${HTTP_BASE_URL}/status-ticket`);
                 if (!response.ok) throw new Error('Failed to fetch statuses');
 
                 const { data }: { data: TicketStatus[] } = await response.json();

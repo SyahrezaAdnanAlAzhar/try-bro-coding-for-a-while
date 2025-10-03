@@ -6,6 +6,7 @@ import { useJobActions } from '../../../../store/jobStore';
 import { useToast } from '../../../../hooks/useToast';
 import { ExecuteActionModal } from '../../actions/ExecuteActionModal';
 import { HTTP_BASE_URL } from '../../../../config/api';
+import { apiClient } from '../../../../lib/apiClient';
 
 interface AvailableAction {
     action_name: string;
@@ -33,8 +34,7 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
         const fetchAvailableActions = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets/${jobId}/available-actions`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets/${jobId}/available-actions`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch actions');
                 const { data } = await response.json();
@@ -62,9 +62,8 @@ export const DynamicJobActions = ({ jobId, jobDescription }: DynamicJobActionsPr
     const handleExecuteAction = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/tickets/${jobId}/action`, {
+            const response = await apiClient(`${HTTP_BASE_URL}/tickets/${jobId}/action`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${accessToken}` },
                 body: formData,
             });
 

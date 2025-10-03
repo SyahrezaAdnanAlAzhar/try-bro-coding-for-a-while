@@ -6,6 +6,7 @@ import { CreateModal } from './CreateModal';
 import { EditableCell } from './EditableCell';
 import { ToggleCell } from './ToggleCell';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface PhysicalLocationTableProps {
     onViewSpecified: (location: PhysicalLocation) => void;
@@ -16,7 +17,7 @@ const SubAreaList = ({ physicalLocationId }: { physicalLocationId: number }) => 
     useEffect(() => {
         const fetchSubAreas = async () => {
             try {
-                const res = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`);
+                const res = await apiClient(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`);
                 const { data } = await res.json();
                 setSubAreas(data || []);
             } catch (error) {

@@ -9,6 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { RejectionInfoCard } from '../components/features/ticket/RejectionInfoCard';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 export default function TicketDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -21,7 +22,7 @@ export default function TicketDetailPage() {
         if (!id) return;
         setStatus('loading');
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/tickets/${id}`);
+            const response = await apiClient(`${HTTP_BASE_URL}/tickets/${id}`);
             if (!response.ok) throw new Error('Failed to fetch ticket details');
             const { data } = await response.json();
             setTicket(data);

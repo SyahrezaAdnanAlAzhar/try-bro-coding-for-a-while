@@ -1,6 +1,6 @@
 import { HTTP_BASE_URL } from '../../../../config/api';
 import { useToast } from '../../../../hooks/useToast';
-import { useAuthStore } from '../../../../store/authStore';
+import { apiClient } from '../../../../lib/apiClient';
 import { useJobActions } from '../../../../store/jobStore';
 import { Can } from '../../../auth/Can';
 import { Button } from '../../../ui/Button';
@@ -14,17 +14,15 @@ interface JobPicCellProps {
 }
 
 export const JobPicCell = ({ picName, jobId, jobDescription }: JobPicCellProps) => {
-    const accessToken = useAuthStore((state) => state.accessToken);
     const { fetchJobs } = useJobActions();
     const toast = useToast();
 
     const handleAssignConfirm = async (picNpk: string) => {
         try {
-            const response = await fetch(`${HTTP_BASE_URL}/jobs/${jobId}/assign`, {
+            const response = await apiClient(`${HTTP_BASE_URL}/jobs/${jobId}/assign`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({ pic_job: picNpk }),
             });

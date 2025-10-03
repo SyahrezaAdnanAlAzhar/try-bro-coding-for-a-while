@@ -9,6 +9,7 @@ import { Text } from '../../ui/Text';
 import { useAuthStore } from '../../../store/authStore';
 import { useToast } from '../../../hooks/useToast';
 import { CreatableCombobox } from '../../ui/CreatableCombobox';
+import { apiClient } from '../../../lib/apiClient';
 
 export const CreateTicketForm = () => {
     const { formData, options, errors } = useCreateTicket();
@@ -19,8 +20,7 @@ export const CreateTicketForm = () => {
     const handleFileAction = async (file: UploadedFile, action: 'view' | 'download') => {
         if (!accessToken) return toast.error('Otentikasi dibutuhkan.');
         try {
-            const response = await fetch(file.url, {
-                headers: { Authorization: `Bearer ${accessToken}` },
+            const response = await apiClient(file.url, {
             });
             if (!response.ok) throw new Error(`Gagal untuk ${action} file.`);
             const blob = await response.blob();

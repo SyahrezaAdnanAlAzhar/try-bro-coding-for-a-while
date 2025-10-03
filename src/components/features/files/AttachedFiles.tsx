@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../../store/authStore';
 import { useToast } from '../../../hooks/useToast';
 import { HTTP_BASE_URL } from '../../../config/api';
+import { apiClient } from '../../../lib/apiClient';
 
 interface FileData {
     file_name: string;
@@ -30,8 +31,7 @@ export const AttachedFiles = ({ ticketId, onDataLoaded }: AttachedFilesProps) =>
         const fetchFiles = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/files`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets/${ticketId}/files`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch attached files');
                 const { data } = await response.json();

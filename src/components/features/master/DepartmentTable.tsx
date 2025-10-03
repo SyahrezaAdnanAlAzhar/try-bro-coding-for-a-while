@@ -6,6 +6,7 @@ import { CreateModal } from "./CreateModal";
 import { EditableCell } from "./EditableCell";
 import { ToggleCell } from "./ToggleCell";
 import { HTTP_BASE_URL } from "../../../config/api";
+import { apiClient } from "../../../lib/apiClient";
 
 interface DepartmentTableProps {
     onViewAreas: (department: MasterDepartment) => void;
@@ -16,7 +17,7 @@ const AreaList = ({ departmentId }: { departmentId: number }) => {
     useEffect(() => {
         const fetchDeptAreas = async () => {
             try {
-                const res = await fetch(`${HTTP_BASE_URL}/areas?department_id=${departmentId}`);
+                const res = await apiClient(`${HTTP_BASE_URL}/areas?department_id=${departmentId}`);
                 const { data } = await res.json();
                 setAreas(data || []);
             } catch (error) {

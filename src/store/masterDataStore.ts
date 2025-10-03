@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { HTTP_BASE_URL } from "../config/api";
-import { useAuthStore } from "./authStore";
+import { apiClient } from "../lib/apiClient";
 
 export interface MasterDepartment {
     id: number;
@@ -74,10 +74,8 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
     actions: {
         fetchDepartments: async () => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/departments`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/departments`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch departments');
                 const { data } = await response.json();
@@ -91,7 +89,7 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         fetchAreas: async (departmentId) => {
             set({ status: 'loading' });
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/areas?department_id=${departmentId}`);
+                const response = await apiClient(`${HTTP_BASE_URL}/areas?department_id=${departmentId}`);
                 if (!response.ok) throw new Error('Failed to fetch areas');
                 const { data } = await response.json();
                 set({ areas: data, status: 'idle' });
@@ -102,11 +100,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         createDepartment: async (name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/department`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/department`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, receive_job: false }),
                 });
                 if (!response.ok) throw new Error('Failed to create department');
@@ -119,7 +116,6 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updateDepartment: async (id, payload) => {
-            const accessToken = useAuthStore.getState().accessToken;
             const { departments } = get();
             const departmentToUpdate = departments.find(d => d.id === id);
 
@@ -136,9 +132,9 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
             console.log('Sending FULL PUT /department payload:', JSON.stringify(fullPayload));
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/department/${id}`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/department/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(fullPayload),
                 });
                 if (!response.ok) throw new Error('Failed to update department');
@@ -155,11 +151,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         createArea: async (departmentId, name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/area`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/area`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ department_id: departmentId, name }),
                 });
                 if (!response.ok) throw new Error('Failed to create area');
@@ -172,7 +167,6 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updateArea: async (id, payload) => {
-            const accessToken = useAuthStore.getState().accessToken;
             const { areas } = get();
             const areaToUpdate = areas.find(a => a.id === id);
             if (!areaToUpdate) return false;
@@ -180,9 +174,9 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
             const fullPayload = { ...areaToUpdate, ...payload };
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/area/${id}`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/area/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(fullPayload),
                 });
                 if (!response.ok) throw new Error('Failed to update area');
@@ -199,10 +193,8 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
         fetchPhysicalLocations: async () => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/physical-location`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/physical-location`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch physical locations');
                 const { data } = await response.json();
@@ -215,10 +207,8 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
 
         fetchSpecifiedLocations: async (physicalLocationId) => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+                const response = await apiClient(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
                 });
                 if (!response.ok) throw new Error('Failed to fetch specified locations');
                 const { data } = await response.json();
@@ -230,11 +220,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         createPhysicalLocation: async (name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/physical-location`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/physical-location`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name }),
                 });
                 if (!response.ok) throw new Error('Failed to create physical location');
@@ -247,11 +236,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         createSpecifiedLocation: async (physicalLocationId, name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/specified-location`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ physical_location_id: physicalLocationId, name }),
                 });
                 if (!response.ok) throw new Error('Failed to create specified location');
@@ -264,11 +252,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updatePhysicalLocationName: async (id, name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/physical-location/${id}`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/physical-location/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name }),
                 });
                 if (!response.ok) throw new Error('Failed to update physical location name');
@@ -281,11 +268,10 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updateSpecifiedLocationName: async (id, physicalLocationId, name) => {
-            const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location/${id}`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/specified-location/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ physical_location_id: physicalLocationId, name }),
                 });
                 if (!response.ok) throw new Error('Failed to update specified location name');
@@ -298,13 +284,11 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updatePhysicalLocationStatus: async (id, isActive) => {
-            const accessToken = useAuthStore.getState().accessToken;
-            // --- PERBAIKAN: Buat payload secara eksplisit ---
             const payload = { is_active: isActive };
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/physical-location/${id}/status`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/physical-location/${id}/status`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
                 if (!response.ok) throw new Error('Failed to update physical location status');
@@ -316,13 +300,11 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
         },
 
         updateSpecifiedLocationStatus: async (id, isActive) => {
-            const accessToken = useAuthStore.getState().accessToken;
-            // --- PERBAIKAN: Buat payload secara eksplisit ---
             const payload = { is_active: isActive };
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location/${id}/status`, {
+                const response = await apiClient(`${HTTP_BASE_URL}/specified-location/${id}/status`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
                 if (!response.ok) throw new Error('Failed to update specified location status');

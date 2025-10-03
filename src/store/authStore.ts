@@ -10,6 +10,7 @@ import { useTicketTableStore } from "./ticketTableStore";
 import { useHistoryAllTicketStore } from "./historyAllTicketsStore";
 import { useHistoryMyTicketStore } from "./historyMyTicketStore";
 import { HTTP_BASE_URL } from "../config/api";
+import { apiClient } from "../lib/apiClient";
 
 export interface AuthState {
     accessToken: string | null;
@@ -42,7 +43,7 @@ export const useAuthStore = create<AuthStore>()(
                 login: async (username, password) => {
                     set({ status: 'loading' });
                     try {
-                        const response = await fetch(`${HTTP_BASE_URL}/login`, {
+                        const response = await apiClient(`${HTTP_BASE_URL}/login`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ username, password }),
@@ -75,9 +76,8 @@ export const useAuthStore = create<AuthStore>()(
                     const { accessToken } = get();
                     if (accessToken) {
                         try {
-                            await fetch(`${HTTP_BASE_URL}/logout`, {
+                            await apiClient(`${HTTP_BASE_URL}/logout`, {
                                 method: 'POST',
-                                headers: { Authorization: `Bearer ${accessToken}` },
                             });
                         } catch (error) {
                             console.error('Logout API call failed, but proceeding with local logout:', error);
@@ -103,7 +103,7 @@ export const useAuthStore = create<AuthStore>()(
                     }
 
                     try {
-                        const response = await fetch(`${HTTP_BASE_URL}/refresh`, {
+                        const response = await apiClient(`${HTTP_BASE_URL}/refresh`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ refresh_token: refreshToken }),
@@ -137,9 +137,8 @@ export const useAuthStore = create<AuthStore>()(
                     }
 
                     try {
-                        const response = await fetch(`${HTTP_BASE_URL}/auth/ws-ticket`, {
+                        const response = await apiClient(`${HTTP_BASE_URL}/auth/ws-ticket`, {
                             method: 'POST',
-                            headers: { Authorization: `Bearer ${accessToken}` },
                         });
 
                         if (!response.ok) {
@@ -162,7 +161,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 requestPublicWsTicket: async () => {
                     try {
-                        const response = await fetch(`${HTTP_BASE_URL}/auth/ws-public-ticket`, {
+                        const response = await apiClient(`${HTTP_BASE_URL}/auth/ws-public-ticket`, {
                             method: 'POST',
                         });
                         if (!response.ok) throw new Error('Failed to get public WebSocket ticket');

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Ticket } from '../types/api';
 import { useAuthStore } from './authStore';
 import { HTTP_BASE_URL } from '../config/api';
+import { apiClient } from '../lib/apiClient';
 
 interface HistoryFilters {
     search?: string;
@@ -56,7 +57,7 @@ export const useHistoryMyTicketStore = create<HistoryMyTicketStore>((set, get) =
             }
 
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
+                const response = await apiClient(`${HTTP_BASE_URL}/tickets?${params.toString()}`);
                 if (!response.ok) throw new Error('Failed to fetch my history tickets');
 
                 const { data } = await response.json();
