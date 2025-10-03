@@ -16,9 +16,25 @@ export interface MasterArea {
     is_active: boolean;
 }
 
+export interface PhysicalLocation {
+    id: number;
+    name: string;
+    is_active: boolean;
+}
+
+export interface SpecifiedLocation {
+    id: number;
+    physical_location_id: number;
+    name: string;
+    is_active: boolean;
+}
+
+
 interface MasterDataState {
     departments: MasterDepartment[];
     areas: MasterArea[];
+    physicalLocations: PhysicalLocation[];
+    specifiedLocations: SpecifiedLocation[];
     status: 'idle' | 'loading' | 'error';
 }
 
@@ -29,6 +45,14 @@ interface MasterDataActions {
     updateDepartment: (id: number, payload: Partial<Omit<MasterDepartment, 'id'>>) => Promise<boolean>;
     createArea: (departmentId: number, name: string) => Promise<boolean>;
     updateArea: (id: number, payload: Partial<Omit<MasterArea, 'id'>>) => Promise<boolean>;
+    fetchPhysicalLocations: () => Promise<void>;
+    fetchSpecifiedLocations: (physicalLocationId: number) => Promise<void>;
+    createPhysicalLocation: (name: string) => Promise<boolean>;
+    createSpecifiedLocation: (physicalLocationId: number, name: string) => Promise<boolean>;
+    updatePhysicalLocationName: (id: number, name: string) => Promise<boolean>;
+    updateSpecifiedLocationName: (id: number, physicalLocationId: number, name: string) => Promise<boolean>;
+    updatePhysicalLocationStatus: (id: number, isActive: boolean) => Promise<boolean>;
+    updateSpecifiedLocationStatus: (id: number, physicalLocationId: number, isActive: boolean) => Promise<boolean>;
     reset: () => void;
 }
 
@@ -39,6 +63,8 @@ type MasterDataStore = MasterDataState & {
 const initialState: MasterDataState = {
     departments: [],
     areas: [],
+    physicalLocations: [],
+    specifiedLocations: [],
     status: 'idle',
 };
 
@@ -165,6 +191,141 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
                     areas: state.areas.map(a => a.id === id ? fullPayload : a)
                 }));
 
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+        fetchPhysicalLocations: async () => {
+            set({ status: 'loading' });
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/physical-location`, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                if (!response.ok) throw new Error('Failed to fetch physical locations');
+                const { data } = await response.json();
+                set({ physicalLocations: data, status: 'idle' });
+            } catch (error) {
+                console.error(error);
+                set({ status: 'error' });
+            }
+        },
+
+        fetchSpecifiedLocations: async (physicalLocationId) => {
+            set({ status: 'loading' });
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                if (!response.ok) throw new Error('Failed to fetch specified locations');
+                const { data } = await response.json();
+                set({ specifiedLocations: data, status: 'idle' });
+            } catch (error) {
+                console.error(error);
+                set({ status: 'error' });
+            }
+        },
+
+        createPhysicalLocation: async (name) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/physical-location`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify({ name }),
+                });
+                if (!response.ok) throw new Error('Failed to create physical location');
+                await get().actions.fetchPhysicalLocations();
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+
+        createSpecifiedLocation: async (physicalLocationId, name) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify({ physical_location_id: physicalLocationId, name }),
+                });
+                if (!response.ok) throw new Error('Failed to create specified location');
+                await get().actions.fetchSpecifiedLocations(physicalLocationId);
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+
+        updatePhysicalLocationName: async (id, name) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/physical-location/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify({ name }),
+                });
+                if (!response.ok) throw new Error('Failed to update physical location name');
+                await get().actions.fetchPhysicalLocations();
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+
+        updateSpecifiedLocationName: async (id, physicalLocationId, name) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify({ physical_location_id: physicalLocationId, name }),
+                });
+                if (!response.ok) throw new Error('Failed to update specified location name');
+                await get().actions.fetchSpecifiedLocations(physicalLocationId);
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+
+        updatePhysicalLocationStatus: async (id, isActive) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            // --- PERBAIKAN: Buat payload secara eksplisit ---
+            const payload = { is_active: isActive };
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/physical-location/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) throw new Error('Failed to update physical location status');
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        },
+
+        updateSpecifiedLocationStatus: async (id, isActive) => {
+            const accessToken = useAuthStore.getState().accessToken;
+            // --- PERBAIKAN: Buat payload secara eksplisit ---
+            const payload = { is_active: isActive };
+            try {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) throw new Error('Failed to update specified location status');
                 return true;
             } catch (error) {
                 console.error(error);

@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useDropzone, type Accept } from 'react-dropzone';
-import { UploadCloud, File as FileIcon, Trash2, Eye } from 'lucide-react';
+import { UploadCloud, File as FileIcon, X, Eye } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
 import { Icon } from './Icon';
@@ -164,7 +164,7 @@ export const FileInput = ({
                                         onClick={() => removeFile(index)}
                                         className="h-8 w-8 p-0 text-add-red hover:bg-add-red/20"
                                     >
-                                        <Trash2 className="h-5 w-5" />
+                                        <X className="h-5 w-5" />
                                     </Button>
                                 </div>
                             </div>

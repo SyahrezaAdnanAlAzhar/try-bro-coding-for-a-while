@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useId, forwardRef } from 'react';
-import { ChevronDown, Search, Trash2 } from 'lucide-react';
+import { ChevronDown, Search, X } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
 
@@ -116,7 +116,7 @@ export const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
                                 className="mr-2 rounded-full p-1 text-add-red transition-colors hover:bg-add-red/15"
                                 aria-label="Clear selection"
                             >
-                                <Trash2 size={16} />
+                                <X size={16} />
                             </button>
                         )}
                         <ChevronDown size={18} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />

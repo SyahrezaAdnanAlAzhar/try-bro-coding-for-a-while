@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useId, useMemo } from 'react';
-import { ChevronDown, Search, Trash2, PlusCircle } from 'lucide-react';
+import { ChevronDown, Search, X, PlusCircle } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
 
@@ -130,7 +130,7 @@ export const CreatableCombobox = ({
                 <div className="flex items-center">
                     {value && !disabled && (
                         <button type="button" onClick={handleClear} className="mr-2 rounded-full p-1 text-add-red transition-colors hover:bg-add-red/15" aria-label="Clear selection">
-                            <Trash2 size={16} />
+                            <X size={16} />
                         </button>
                     )}
                     <ChevronDown size={18} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />

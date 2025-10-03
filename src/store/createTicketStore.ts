@@ -100,7 +100,7 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
             set({ status: 'loading' });
             const accessToken = useAuthStore.getState().accessToken;
             try {
-                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}`, {
+                const response = await fetch(`${HTTP_BASE_URL}/specified-location?physical_location_id=${physicalLocationId}&is_active=true`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch specified locations');
