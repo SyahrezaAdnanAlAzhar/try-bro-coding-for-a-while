@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import type { Ticket } from '../types/api';
-import { useAuthStore } from './authStore';
 import { useDepartmentStore } from './departmentStore';
 import { HTTP_BASE_URL } from '../config/api';
 import type { FilterOptions, SelectedFilters } from '../types/filter';
@@ -190,14 +189,12 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         },
 
         fetchFilterOptions: async ({ sectionId, departmentTargetId }) => {
-            const accessToken = useAuthStore.getState().accessToken;
-            const headers = { Authorization: `Bearer ${accessToken}` };
             try {
                 const [statusRes, reqDeptRes, reqRes, picRes] = await Promise.all([
-                    fetch(`${HTTP_BASE_URL}/status-ticket?section_id=${sectionId}`),
-                    fetch(`${HTTP_BASE_URL}/department/options?department_target_id=${departmentTargetId}`, { headers }),
-                    fetch(`${HTTP_BASE_URL}/employee/options?role=requestor&department_target_id=${departmentTargetId}`, { headers }),
-                    fetch(`${HTTP_BASE_URL}/employee/options?role=pic&department_target_id=${departmentTargetId}`, { headers }),
+                    apiClient(`${HTTP_BASE_URL}/status-ticket?section_id=${sectionId}`),
+                    apiClient(`${HTTP_BASE_URL}/department/options?department_target_id=${departmentTargetId}`),
+                    apiClient(`${HTTP_BASE_URL}/employee/options?role=requestor&department_target_id=${departmentTargetId}`),
+                    apiClient(`${HTTP_BASE_URL}/employee/options?role=pic&department_target_id=${departmentTargetId}`),
                 ]);
 
                 const statuses = (await statusRes.json()).data;

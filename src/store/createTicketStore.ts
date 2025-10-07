@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { useAuthStore } from './authStore';
 import type { Department, PhysicalLocation, SpecifiedLocation } from '../types/api';
 import { format } from 'date-fns';
 import type { UploadedFile } from '../components/ui/FileInput';
@@ -69,13 +68,10 @@ export const useCreateTicketStore = create<CreateTicketStore>((set, get) => ({
     actions: {
         fetchInitialData: async () => {
             set({ status: 'loading' });
-            const accessToken = useAuthStore.getState().accessToken;
             try {
                 const [deptRes, locRes] = await Promise.all([
-                    fetch(`${HTTP_BASE_URL}/departments?receive_job=true&is_active=true`),
-                    fetch(`${HTTP_BASE_URL}/physical-location?is_active=true`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }),
+                    apiClient(`${HTTP_BASE_URL}/departments?receive_job=true&is_active=true`),
+                    apiClient(`${HTTP_BASE_URL}/physical-location?is_active=true`),
                 ]);
 
                 if (!deptRes.ok || !locRes.ok) throw new Error('Failed to fetch initial data');

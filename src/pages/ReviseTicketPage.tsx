@@ -42,12 +42,8 @@ export default function ReviseTicketPage() {
             if (!id) return;
             try {
                 const [ticketRes, filesRes] = await Promise.all([
-                    fetch(`${HTTP_BASE_URL}/tickets/${id}`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }),
-                    fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }),
+                    apiClient(`${HTTP_BASE_URL}/tickets/${id}`),
+                    apiClient(`${HTTP_BASE_URL}/tickets/${id}/files`),
                 ]);
 
                 if (!ticketRes.ok || !filesRes.ok) throw new Error('Failed to fetch ticket data');
@@ -105,11 +101,10 @@ export default function ReviseTicketPage() {
             const filePromises = [];
 
             if (filePathsToDelete.length > 0) {
-                const deletePromise = fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
+                const deletePromise = apiClient(`${HTTP_BASE_URL}/tickets/${id}/files`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify({ file_paths_to_delete: filePathsToDelete }),
                 });
@@ -118,9 +113,8 @@ export default function ReviseTicketPage() {
             if (filesToAdd.length > 0) {
                 const addBody = new FormData();
                 filesToAdd.forEach(file => addBody.append('files', file));
-                const addPromise = fetch(`${HTTP_BASE_URL}/tickets/${id}/files`, {
+                const addPromise = apiClient(`${HTTP_BASE_URL}/tickets/${id}/files`, {
                     method: 'POST',
-                    headers: { Authorization: `Bearer ${accessToken}` },
                     body: addBody,
                 });
                 filePromises.push(addPromise);

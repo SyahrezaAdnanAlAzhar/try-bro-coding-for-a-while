@@ -33,12 +33,8 @@ export const TicketActionHandler = ({ ticketId, ticketDescription, onSuccess, bu
             setIsLoading(true);
             try {
                 const [ticketActionsRes, jobActionsRes] = await Promise.all([
-                    fetch(`${HTTP_BASE_URL}/tickets/${ticketId}/available-actions`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }),
-                    fetch(`${HTTP_BASE_URL}/jobs/${ticketId}/available-actions`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }),
+                    apiClient(`${HTTP_BASE_URL}/tickets/${ticketId}/available-actions`),
+                    apiClient(`${HTTP_BASE_URL}/jobs/${ticketId}/available-actions`),
                 ]);
 
                 if (!ticketActionsRes.ok || !jobActionsRes.ok) throw new Error('Failed to fetch available actions');

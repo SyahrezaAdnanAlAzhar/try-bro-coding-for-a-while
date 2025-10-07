@@ -86,3 +86,19 @@ export interface ClientEditingPayload {
     entity: 'ticket_priority' | 'job_priority';
     context_id: number;
 }
+
+export interface Employee {
+    npk: string;
+    name: string;
+    department_id: number;
+    department_name: string;
+    area_id: { Int64: number; Valid: boolean };
+    area_name: string | null;
+    is_active: boolean;
+    position: { id: number; name: string };
+}
+
+export interface EmployeeOption {
+    id: number;
+    name: string;
+}

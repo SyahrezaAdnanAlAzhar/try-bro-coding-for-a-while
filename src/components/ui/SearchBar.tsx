@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC } from 'react';
+import { useState, useEffect, type FC, type ChangeEventHandler } from 'react';
 import { Search, Delete } from 'lucide-react';
 import { Input } from './Input';
 
@@ -10,6 +10,7 @@ export interface SearchBarProps {
     placeholder?: string;
     disabled?: boolean;
     className?: string;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
 
@@ -21,6 +22,7 @@ export const SearchBar: FC<SearchBarProps> = ({
     placeholder = 'Search...',
     disabled = false,
     className,
+    onChange,
 }) => {
     const [query, setQuery] = useState(value);
 
@@ -57,8 +59,13 @@ export const SearchBar: FC<SearchBarProps> = ({
                 type="text"
                 placeholder={placeholder}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
                 disabled={disabled || isLoading}
+                onChange={(e) => {
+                    setQuery(e.target.value);
+                    if (onChange) {
+                        onChange(e);
+                    }
+                }}
                 className="rounded-full pl-16 pr-10 py-6"
             />
 
