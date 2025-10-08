@@ -6,6 +6,7 @@ import svgr from 'vite-plugin-svgr'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/e-memo-job-reservation/',
   plugins: [
     react(),
     tailwindcss(),
@@ -64,18 +65,6 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    // proxy: {
-    //   // Proxy API & WebSocket ke backend
-    //   '/api/e-memo-job-reservation': {
-    //     target: 'http://api:8080',
-    //     changeOrigin: true,
-    //     ws: true
-    //   },
-    //   '/ws': {
-    //     target: 'ws://api:3000',
-    //     ws: true
-    //   },
-    // }
     proxy: {
       // 1. Proxy untuk semua request HTTP API
       '/api/e-memo-job-reservation': {
@@ -85,8 +74,8 @@ export default defineConfig({
       },
       // 2. Proxy SPESIFIK untuk path WebSocket
       '/api/e-memo-job-reservation/ws': {
-        target: 'ws://api:8080', // Target harus ws://
-        ws: true, // Wajib
+        target: 'ws://api:8080',
+        ws: true,
       },
     }
   }

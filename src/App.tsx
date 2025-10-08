@@ -24,7 +24,7 @@ import MasterTicketPage from './pages/master/MasterTicketPage'
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename="/e-memo-job-reservation">
         <AppInitializer />
         <MainLayout>
           <Routes>
